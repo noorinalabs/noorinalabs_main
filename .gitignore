@@ -1,6 +1,7 @@
 # Child repositories (managed independently)
 isnad-graph/
 noorinalabs_landing_page/
+noorinalabs-deploy/
 
 # Claude Code project data
 .claude/projects/
