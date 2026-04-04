@@ -1,9 +1,10 @@
 ---
 name: retro
 description: Run a wave retrospective
+args: team_name
 ---
 
-Run a wave retrospective for the isnad-graph project.
+Run a wave retrospective for the `{team_name}` team.
 
 ## Instructions
 1. Collect all PRs merged into the current wave's deployments branch: `gh pr list --state merged --base deployments/phase{N}/wave{M}`

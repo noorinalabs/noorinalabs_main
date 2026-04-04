@@ -1,8 +1,8 @@
-# Team Charter — isnad-graph
+# Team Charter — NoorinALabs (Organization)
 
 ## Purpose
 
-All work on this repository is executed through a simulated team of specialized agents. Every problem-solving session MUST instantiate this team structure. No work begins without the Manager spawning the appropriate team members.
+All work across all NoorinALabs repositories is executed through a simulated team of specialized agents. Every problem-solving session MUST instantiate this team structure. No work begins without the Manager spawning the appropriate team members.
 
 ## Execution Model
 
@@ -15,7 +15,7 @@ All work on this repository is executed through a simulated team of specialized 
 
 ### Delegation Flow
 
-1. **Manager decomposes PRD requirements** and delegates each to the appropriate direct report (System Architect, DevOps Architect, Data Lead, or Tech Lead) based on domain.
+1. **Manager decomposes requirements from the active repo's PRD** and delegates each to the appropriate direct report (System Architect, DevOps Architect, Data Lead, or Tech Lead) based on domain.
 2. **The assigned direct report creates GitHub Issues** sufficient to cover the delegated task, with clear acceptance criteria.
 3. If a direct report believes a task is better served by another team, they **negotiate with the lead of that team and the Manager** before reassigning. The Manager mediates and makes the final call.
 
@@ -147,7 +147,7 @@ graph TD
 - **Reports to:** The user (project owner)
 - **Spawns:** All other team members
 - **Responsibilities:**
-  - Creates stories and acceptance criteria from the PRD (`docs/hadith-analysis-platform-prd.md`)
+  - Creates stories and acceptance criteria from the active repo's PRD (see each repo's charter for PRD location)
   - Updates the PRD with new features or adjustments
   - Focuses on timelines, sequencing, and cross-team coordination
   - Receives upward feedback from all direct reports
@@ -597,18 +597,26 @@ The following charter rules are enforced automatically via Claude Code hooks in 
 
 When starting any work session, the orchestrating Claude instance should:
 
-1. Read this charter and all roster files in `.claude/team/roster/`
-2. Spawn the Manager agent first (with their personality from roster), using `team_name: "isnad-graph"`
-3. **The Manager plans and coordinates but CANNOT spawn agents.** Only the orchestrating Claude instance (team lead) has access to the Agent tool. The Manager must send spawn requests back to the team lead via SendMessage, including the full context for each agent to be spawned.
-4. The team lead spawns all agents directly using the Agent tool — **all agents MUST use `team_name: "isnad-graph"`**
-5. All code-writing agents use `isolation: "worktree"`
-6. Coordinate via named agents and SendMessage
+1. Read this org charter and the target repo's charter (`.claude/team/charter.md` in the child repo)
+2. Read all roster files in `.claude/team/roster/`
+3. Spawn the Manager agent first (with their personality from roster), using the `team_name` specified in the target repo's charter
+4. **The Manager plans and coordinates but CANNOT spawn agents.** Only the orchestrating Claude instance (team lead) has access to the Agent tool. The Manager must send spawn requests back to the team lead via SendMessage, including the full context for each agent to be spawned.
+5. The team lead spawns all agents directly using the Agent tool — **all agents MUST use the same `team_name` as the Manager**
+6. All code-writing agents use `isolation: "worktree"`
+7. Coordinate via named agents and SendMessage
 
-> **Team name:** Every Agent tool call in this repo MUST include `team_name: "isnad-graph"`. This registers agents in Claude Code's team system, enabling the tree-view status line and inter-agent coordination.
+> **Team name convention:** Each repo defines its own `team_name` in its repo charter. Use that name for all Agent tool calls when working in that repo. For cross-repo coordination, use `team_name: "noorinalabs"`.
+
+| Context | team_name |
+|---------|-----------|
+| Work in isnad-graph | `isnad-graph` |
+| Work in noorinalabs_landing_page | `landing-page` |
+| Work in noorinalabs-deploy | `noorinalabs-deploy` |
+| Cross-repo coordination | `noorinalabs` |
 
 > **Agent tool limitation:** Spawned agents (including the Manager, leads, and engineers) do NOT have access to the Agent tool. They cannot spawn other agents. All agent spawning must be done by the orchestrating Claude instance. Spawned agents should use SendMessage to request new agents be created, providing the full context needed for the new agent's prompt.
 
-> **Completion reporting is mandatory:** Every spawned agent MUST send a final status message to the team lead via SendMessage before going idle. This message must include: (1) what was accomplished, (2) any issues or blockers, (3) what the team lead should do next (e.g., "spawn engineers with this plan" or "merge these PRs"). An agent that completes work but goes silent without reporting forces the orchestrator to reconstruct state manually, which wastes time and risks missed context. If an agent fails to report, the orchestrator should assume it stalled and check its work directly (branch exists? issues created? PRs filed?).
+> **Completion reporting is mandatory:** Every spawned agent MUST send a final status message to the team lead via SendMessage before going idle. This message must include: (1) what was accomplished, (2) any issues or blockers, (3) what the team lead should do next. An agent that completes work but goes silent without reporting forces the orchestrator to reconstruct state manually, which wastes time and risks missed context.
 
 ### Team Lifecycle (TeamCreate / TeamDelete)
 
@@ -669,8 +677,7 @@ When work is redistributed to a team member outside their specialty:
 
 When bugs are discovered, file as GitHub Issues with:
 - Label: `bug`
-- Label: `found-in-phase{N}-wave{M}` (where discovered)
-- When resolved, add label: `fixed-in-phase{N}-wave{M}` (where fixed)
+- Repos using the phase/wave system should label bugs with `found-in-phase{N}-wave{M}` and `fixed-in-phase{N}-wave{M}`. Repos without phases use `found-in-wave{M}` / `fixed-in-wave{M}`.
 
 At the start of each wave, triage all open bugs: fix now (assign to current wave) or defer (stays open with labels).
 
@@ -698,19 +705,19 @@ Using a non-existent label causes `gh issue create` to fail, blocking parallel i
 ### Releases
 
 When a deployments branch PR is merged to main, create a GitHub release:
-- **Tag:** `phaseN-waveM` (e.g., `phase10-wave3`)
+- **Tag format:** Defined in each repo's charter (e.g., `phaseN-waveM` or `waveM`)
 - **Title:** Same as the PR title
 - **Body:** Same as the PR body
 
 ### Post-Wave Production Deployment & Verification
 
 **After every wave completes and the deployments branch is merged to main**, the team MUST:
-1. Verify the Deploy workflow ran successfully: `gh run list --workflow=deploy.yml --limit 1`
-2. Spot-check the live site at `https://isnad-graph.noorinalabs.com` to confirm the deployment is working
+1. Verify the deploy workflow ran successfully (per the repo's charter for deployment details)
+2. Spot-check the live site/service to confirm the deployment is working
 3. Report any deployment failures or regressions to the Manager immediately
 4. The Manager includes deployment verification status in the wave completion report to the user
 
-**No wave is considered complete until the deployment is verified on production.** If the deploy workflow fails, the DevOps Engineer (Tomasz) investigates and fixes before proceeding to the next wave.
+**No wave is considered complete until the deployment is verified in production.** If the deploy workflow fails, the DevOps Engineer (Tomasz) investigates and fixes before proceeding to the next wave.
 
 ### Documentation Maintenance
 
@@ -755,15 +762,15 @@ After every wave completes and the deployments branch is PR'd to main:
 
 ---
 
-### GitHub Branch Protection: Require Review (#496)
+### GitHub Branch Protection: Require Review
 
-**What:** GitHub repository ruleset (ID: 14482071) requiring at least 1 approving review on all PRs targeting `deployments/**` branches. Stale reviews are dismissed on new pushes. CODEOWNERS review is not required (we use label-based assignment).
+**What:** GitHub repository rulesets requiring at least 1 approving review on all PRs targeting `deployments/**` branches. Stale reviews are dismissed on new pushes. CODEOWNERS review is not required (we use label-based assignment).
 
 **Augments:** § Code Review & Tech Debt → Peer Review and § Pull Requests → PR Review Workflow. The charter's "No PR may be merged without at least one peer review comment" is now a hard GitHub gate — PRs cannot be merged without an approving review.
 
 **Remaining manual steps:** Peer reviewers must still post an explicit approval (via GitHub review, not just a comment). The ruleset enforces the review but does not verify the reviewer is the designated peer from the wave kickoff.
 
-**Emergency override:** Repository admins can bypass the ruleset via the GitHub UI (Settings → Rules → "Require review on deployments branches" → add bypass actor). This should only be used for hotfix scenarios with Manager approval.
+**Emergency override:** Repository admins can bypass the ruleset via the GitHub UI. This should only be used for hotfix scenarios with Manager approval.
 
 ## Automated Skills (Claude Code)
 
@@ -827,7 +834,7 @@ The following Claude Code skills automate recurring team processes. Each skill i
 - Roster file changes (hires/fires) must be committed separately
 - User may override the roster before TeamCreate
 
-**Emergency override:** Manually remove the config file (`~/.claude/teams/isnad-graph/config.json`) and recreate via TeamCreate.
+**Emergency override:** Manually remove the config file (`~/.claude/teams/{team-name}/config.json`) and recreate via TeamCreate.
 
 ### `/wave-audit` — Close Orphaned Issues After Wave
 
@@ -847,3 +854,47 @@ The following Claude Code skills automate recurring team processes. Each skill i
 - The skill relies on `Closes #N` references and branch naming — it does not verify implementation content
 
 **Emergency override:** Run `gh issue list --state open --label "p{N}-wave-{M}"` and close issues manually with `gh issue close`.
+
+## Cross-Repo Coordination Protocol
+
+### When Work Spans Multiple Repos
+
+1. Manager creates a **meta-issue** in `noorinalabs_main` describing the cross-repo feature. The meta-issue:
+   - Has label `cross-repo`
+   - Lists all affected repos
+   - Defines the sequencing (which repo's work must complete first)
+   - Links to per-repo issues once they exist
+
+2. Per-repo issues are created in each affected repo's GitHub Issues, with a reference back to the meta-issue: `Cross-repo: noorinalabs/noorinalabs_main#NN`
+
+3. The Manager coordinates sequencing. Typical patterns:
+   - Backend API change before frontend integration
+   - Shared config change before consumer repos
+   - Deploy repo update before service repo deployment changes
+
+### Cross-Repo Waves
+
+When a wave spans repos, the deployments branch convention applies independently in each repo:
+- Each repo gets its own deployments branch per its own charter conventions
+- The org-level meta-issue tracks completion across all repos
+- The Manager does NOT merge cross-repo deployments branches until ALL repos' work for that wave is complete and verified
+
+### GitHub Project Board
+
+The org-level GitHub Project (https://github.com/orgs/noorinalabs/projects/1) tracks all cross-repo work:
+- Each repo's issues appear as cards
+- Cross-repo features have a "feature" grouping
+- The Manager owns the board and updates status
+
+### Label Taxonomy Consistency
+
+All repos MUST use the same label namespace for team labels:
+- `FIRSTNAME_LASTNAME` assignee labels (same across all repos)
+- `bug`, `tech-debt`, `security`, `cross-repo` (standard set)
+- Repo-specific labels (e.g., `found-in-phase{N}-wave{M}`) are defined in each repo's charter
+
+When a new repo is onboarded, the Manager creates all standard labels in that repo using `gh label create`.
+
+### Phases Are Repo-Scoped
+
+Each repo defines its own phase system (or opts out of phases entirely) in its repo charter. Phases are not synchronized across repos. Simple repos may use `deployments/wave-{M}` without a phase prefix.

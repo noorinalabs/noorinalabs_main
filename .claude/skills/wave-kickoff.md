@@ -1,10 +1,10 @@
 ---
 name: wave-kickoff
 description: Automated wave planning — branch creation, label management, issue labeling, kickoff comments, and execution plan
-args: Phase number, Wave number
+args: team_name, Phase number, Wave number
 ---
 
-Automate the wave kickoff process for the isnad-graph project.
+Automate the wave kickoff process for the `{team_name}` team.
 
 ## Instructions
 

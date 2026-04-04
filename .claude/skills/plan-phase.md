@@ -1,10 +1,10 @@
 ---
 name: plan-phase
 description: Plan a phase by creating and reviewing issues
-args: Phase number
+args: team_name, Phase number
 ---
 
-Plan a phase of work for the isnad-graph project.
+Plan a phase of work for the `{team_name}` team.
 
 ## Instructions
 1. Read the phase scope from memory/project docs

@@ -1,9 +1,10 @@
 ---
 name: wave-start
 description: Initialize a new wave
+args: team_name
 ---
 
-Initialize a new wave for the isnad-graph project.
+Initialize a new wave for the `{team_name}` team.
 
 ## Instructions
 1. Run `git worktree prune` to clean stale worktrees

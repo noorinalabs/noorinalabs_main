@@ -1,10 +1,10 @@
 ---
 name: wave-retro
 description: Automated wave retrospective — PR analysis, assessments, trust matrix updates, feedback log, charter change proposals
-args: Phase number, Wave number
+args: team_name, Phase number, Wave number
 ---
 
-Run a retrospective for a completed wave of the isnad-graph project.
+Run a retrospective for a completed wave of the `{team_name}` team.
 
 ## Instructions
 
