@@ -22,7 +22,7 @@ Each child repo has its own `CLAUDE.md` with repo-specific build commands, archi
 This repo (`noorinalabs-main`) is a **parent-level git repo that `.gitignore`s child repos**. Child repos are independent git repositories cloned/managed beneath this directory. This gives us:
 - Org-wide team config and hooks version-controlled in one place
 - Child repos retain full independence (own branches, PRs, CI)
-- Cross-repo coordination via the Manager role
+- Cross-repo coordination via the Program Director role
 
 ## Team Workflow
 
@@ -34,22 +34,23 @@ This repo (`noorinalabs-main`) is a **parent-level git repo that `.gitignore`s c
 - **Feedback log:** `.claude/team/feedback_log.md`
 
 ### Team Composition
+
+This is the **org-level coordination team** for `noorinalabs-main`. Each child repo has its own team — this team coordinates across repos.
+
 | Role | Level | Name | File |
 |------|-------|------|------|
-| Infrastructure Manager | Senior VP (Executive) | Bereket Tadesse | `roster/manager_bereket.md` |
-| Platform Architect | Staff | Weronika Zielinska | `roster/platform_architect_weronika.md` |
-| SRE Engineer | Senior | Lucas Ferreira | `roster/sre_engineer_lucas.md` |
-| SRE Engineer | Senior | Aisha Idrissi | `roster/sre_engineer_aisha.md` |
-| Security Engineer | Senior | Nino Kavtaradze | `roster/security_engineer_nino.md` |
-| Observability Engineer | Senior | Nurul Hakim | `roster/observability_engineer_nurul.md` |
+| Program Director | Senior VP (Executive) | Nadia Khoury | `roster/program_director_nadia.md` |
+| Technical Program Manager | Staff | Wanjiku Mwangi | `roster/tpm_wanjiku.md` |
+| Release Coordinator | Senior | Santiago Ferreira | `roster/release_coordinator_santiago.md` |
+| Standards & Quality Lead | Staff | Aino Virtanen | `roster/standards_lead_aino.md` |
 
 ### Key Rules
 - **Commit identity:** Each team member commits using per-commit `-c` flags with their name and `parametrization+{FirstName}.{LastName}@gmail.com` email — **never** set global/repo git config. See `.claude/team/charter.md` § Commit Identity for the full table.
 - **Worktrees** are the preferred isolation method for all code-writing agents
-- Manager spawns team members, creates stories/AC from PRD, and owns timelines
-- Manager, Platform Architect, and SRE Engineers coordinate to prevent cross-team blocking
+- Program Director spawns team members, creates cross-repo meta-issues, and owns timelines
+- Program Director coordinates with repo-level managers to prevent cross-team blocking
 - Feedback flows up and down; severe feedback triggers fire-and-replace
-- If the Manager receives significant negative feedback from the user, the Manager is replaced
+- If the Program Director receives significant negative feedback from the user, they are replaced
 - Team evolves toward steady state of minimal negative feedback
 
 ## Developer Tooling & Orchestration
@@ -57,21 +58,24 @@ This repo (`noorinalabs-main`) is a **parent-level git repo that `.gitignore`s c
 - **gh-cli** is installed and available from the terminal
 - **SSH access** is enabled from the terminal
 - **GitHub Projects** — project/feature tracking and board management
-- **GitHub Issues** — story/task/bug tracking (created by Manager, assigned to team members)
+- **GitHub Issues** — story/task/bug tracking (created by Program Director, assigned to team members)
 - **GitHub Actions** — CI/CD pipelines, automated tests, linting, deployment
 - These three (Projects, Issues, Actions) are the **core orchestration layer** — do not introduce alternative tools for these concerns
-- **Branching strategy:** Feature branches named `{FirstInitial}.{LastName}\{IIII}-{issue-name}` (e.g., `F.Okonkwo\0042-setup-docker-compose`) merged to `main` via PR
+- **Branching strategy:** Feature branches named `{FirstInitial}.{LastName}\{IIII}-{issue-name}` (e.g., `N.Khoury\0042-update-charter`) merged to `main` via PR
 
 ## Cross-Repo Coordination
 
 When a feature spans multiple repositories:
-1. Manager creates a **meta-issue** in the primary repo describing the cross-repo work
+1. Program Director creates a **meta-issue** in `noorinalabs-main` describing the cross-repo work
 2. Per-repo issues are created in each affected repo, linked back to the meta-issue
 3. GitHub Project cards track the cross-repo feature as a single unit
-4. Manager coordinates sequencing — e.g., backend API before frontend integration
+4. Program Director coordinates sequencing — e.g., backend API before frontend integration
+5. TPM tracks cross-repo dependencies and timeline risks
+6. Release Coordinator manages deployment sequencing across repos
 
 ## Shared Conventions
 
 - All repos use **GitHub Flow** (feature branches off `main`, PRs for merge)
 - All repos use the same team roster and commit identity system
 - Hooks in `.claude/` enforce commit identity, block `--no-verify`, and block `git config` user changes
+- Standards & Quality Lead audits repos for convention compliance

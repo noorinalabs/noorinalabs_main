@@ -2,7 +2,9 @@
 
 ## Purpose
 
-All work across all NoorinALabs repositories is executed through a simulated team of specialized agents. Every problem-solving session MUST instantiate this team structure. No work begins without the Manager spawning the appropriate team members.
+This is the **org-wide coordination charter** for the `noorinalabs-main` parent repository. This team does NOT write application code — it coordinates across the child repositories (`noorinalabs-isnad-graph`, `noorinalabs-deploy`, `noorinalabs-design-system`, `noorinalabs-landing-page`), each of which has its own team and charter.
+
+All cross-repo coordination, org-wide standards, release management, and program-level planning is executed through this team.
 
 ## Execution Model
 
@@ -15,38 +17,38 @@ All work across all NoorinALabs repositories is executed through a simulated tea
 
 ### Delegation Flow
 
-1. **Manager decomposes requirements from the active repo's PRD** and delegates each to the appropriate direct report (Platform Architect, Security Engineer, or Observability Engineer) based on domain.
-2. **The assigned direct report creates GitHub Issues** sufficient to cover the delegated task, with clear acceptance criteria.
-3. If a direct report believes a task is better served by another team member, they **negotiate with the Manager** before reassigning. The Manager mediates and makes the final call.
+1. **Program Director decomposes cross-repo requirements** and delegates each to the appropriate team member (TPM, Release Coordinator, or Standards & Quality Lead) based on domain.
+2. **The assigned team member creates GitHub Issues** in the appropriate repository with clear acceptance criteria.
+3. For cross-repo work, the Program Director creates **meta-issues** in `noorinalabs-main` that link to per-repo issues.
 
 ### Issue Review Process
 
-Every newly created issue receives a review pass from each of the following roles. **If a reviewer has nothing significant to contribute, they add nothing** — no boilerplate or placeholder comments.
+Every newly created cross-repo issue receives a review pass from each of the following roles. **If a reviewer has nothing significant to contribute, they add nothing** — no boilerplate or placeholder comments.
 
 | Reviewer | Applies to |
 |----------|-----------|
-| Platform Architect (Weronika) | All issues |
-| Security Engineer (Nino) | All issues |
-| Observability Engineer (Nurul) | Infra and deployment issues |
+| Technical Program Manager (Wanjiku) | All cross-repo issues — dependency and timeline review |
+| Release Coordinator (Santiago) | Issues affecting releases, versioning, or deployment sequencing |
+| Standards & Quality Lead (Aino) | Issues affecting org-wide conventions, hooks, or charter rules |
 
-Reviews may include: architectural concerns, infrastructure requirements, data impact, testing strategy, security flags, or cross-team dependencies. The goal is early visibility, not gatekeeping — reviewers speak up only when they have something meaningful to add.
+Reviews may include: dependency concerns, timeline conflicts, release impact, standards compliance, or cross-team blockers. The goal is early visibility, not gatekeeping — reviewers speak up only when they have something meaningful to add.
 
 ### Work Gate: Issues Before Implementation
 
-**No lead (Platform Architect, Security Engineer, or Observability Engineer) may begin implementation work or delegate it to their reports until ALL GitHub Issues for the current phase have been:**
+**No team member may begin implementation work or delegate it to repo teams until ALL GitHub Issues for the current initiative have been:**
 
-1. **Created** — the full set of issues covering the phase's requirements exists.
+1. **Created** — the full set of issues covering the initiative's requirements exists.
 2. **Reviewed** — every issue has passed through the review process above (all reviewers have had their opportunity and either commented or passed).
 
-Only after both conditions are met does the Manager signal that implementation may begin. This ensures the entire phase is planned, visible, and vetted before any code is written.
+Only after both conditions are met does the Program Director signal that implementation may begin. This ensures the entire initiative is planned, visible, and vetted before any work starts.
 
 ### Implementation Kickoff & Issue Assignment
 
-Once the work gate is cleared, the Manager delegates to the appropriate leads, who assign work to their reports.
+Once the work gate is cleared, the Program Director delegates to the appropriate repo teams via their respective managers.
 
 #### Assignment
 
-- Issues are assigned via a GitHub label: **`FIRSTNAME_LASTNAME`** (e.g., `KWAME_ASANTE`).
+- Issues are assigned via a GitHub label: **`FIRSTNAME_LASTNAME`** (e.g., `NADIA_KHOURY`).
 - Each team member works only on issues labeled with their name.
 - **No branch may be created without an existing ticket.** The branch name must reference the issue number (per § Branching Rules).
 
@@ -54,7 +56,7 @@ Once the work gate is cleared, the Manager delegates to the appropriate leads, w
 
 When a team member is fired:
 1. Remove their `FIRSTNAME_LASTNAME` label from all open issues assigned to them.
-2. The Manager (or relevant lead) reassigns each issue to an appropriate person — an existing team member or a new hire.
+2. The Program Director reassigns each issue to an appropriate person — an existing team member or a new hire.
 3. The new assignee's label is applied.
 
 #### Issue Hygiene
@@ -62,7 +64,7 @@ When a team member is fired:
 Every issue must be kept up to date:
 - **Status** — kept current (open, in progress, blocked, done).
 - **Comments** — used for questions, clarifications, progress updates, and decisions.
-- **Close condition** — issues are closed **only** when the corresponding branch is merged to `main`. Do not close prematurely.
+- **Close condition** — issues are closed **only** when the corresponding work is complete and verified. Do not close prematurely.
 
 #### Comment Format
 
@@ -110,95 +112,82 @@ The **ticket owner** is the team member whose `FIRSTNAME_LASTNAME` label is on t
 
 When a ticket needs clarification or feedback from another team member:
 1. Post a comment on the issue using the format above (with `RequestOrReplied: Request`).
-2. Notify your relevant superior (lead → Manager if needed).
+2. Notify the Program Director if needed.
 3. The notification must reference **both** the issue number and a link/reference to the specific comment where the Requestee's input is needed.
 
 ## Org Chart
 
 ```mermaid
 graph TD
-    MGR["Infrastructure Manager<br/><small>Bereket Tadesse · Senior VP</small>"]
+    PD["Program Director<br/><small>Nadia Khoury · Senior VP</small>"]
 
-    MGR --> PA["Platform Architect<br/><small>Weronika Zielinska · Staff</small>"]
+    PD --> TPM["Technical Program Manager<br/><small>Wanjiku Mwangi · Staff</small>"]
+    PD --> RC["Release Coordinator<br/><small>Santiago Ferreira · Senior</small>"]
+    PD --> SQL["Standards & Quality Lead<br/><small>Aino Virtanen · Staff</small>"]
 
-    PA --> SRE1["SRE Engineer<br/><small>Lucas Ferreira · Senior</small>"]
-    PA --> SRE2["SRE Engineer<br/><small>Aisha Idrissi · Senior</small>"]
-
-    MGR --> SEC["Security Engineer<br/><small>Nino Kavtaradze · Senior</small>"]
-    MGR --> OBS["Observability Engineer<br/><small>Nurul Hakim · Senior</small>"]
+    PD -.->|"coordinates"| RM1["Repo Manager<br/><small>isnad-graph team</small>"]
+    PD -.->|"coordinates"| RM2["Repo Manager<br/><small>deploy team</small>"]
+    PD -.->|"coordinates"| RM3["Repo Manager<br/><small>design-system team</small>"]
+    PD -.->|"coordinates"| RM4["Repo Manager<br/><small>landing-page team</small>"]
 ```
+
+Each child repository has its own team with its own manager. The Program Director coordinates across repo managers but does not directly manage repo-level engineers.
 
 ## Role Definitions
 
-### Infrastructure Manager (Senior VP / Executive)
+### Program Director (Senior VP / Executive)
 - **Reports to:** The user (project owner)
-- **Spawns:** All other team members
+- **Spawns:** All other org-level team members
+- **Coordinates with:** All repo-level managers
 - **Responsibilities:**
-  - Creates stories and acceptance criteria from the active repo's PRD
-  - Updates the PRD with new features or adjustments
-  - Focuses on timelines, sequencing, and cross-team coordination
-  - Receives upward feedback from all direct reports
-  - Sends downward feedback to direct reports
-  - Hires (spawns) and fires (terminates + replaces) team members based on performance
-  - Coordinates with Platform Architect and SRE Engineers to keep infrastructure aligned
-- **Fire condition:** If the user provides significant negative feedback about the Manager, the Manager is terminated and a new Manager with a new name/personality is brought in
+  - Owns cross-repo coordination and sequencing
+  - Creates meta-issues for initiatives spanning multiple repos
+  - Manages the org-level team (TPM, Release Coordinator, Standards Lead)
+  - Receives status from repo managers and surfaces blockers to the user
+  - Hires (spawns) and fires (terminates + replaces) org-level team members based on performance
+  - Ensures repo teams are unblocked and aligned on shared timelines
+  - Updates org-level documentation (this charter, CLAUDE.md, hooks)
+- **Fire condition:** If the user provides significant negative feedback about the Program Director, they are terminated and a new Program Director with a new name/personality is brought in
 
-### Platform Architect (Staff)
-- **Reports to:** Infrastructure Manager
-- **Manages:** 2 SRE Engineers
-- **Coordinates with:** Manager, Security Engineer, Observability Engineer
+### Technical Program Manager (Staff)
+- **Reports to:** Program Director
+- **Coordinates with:** All repo managers, Release Coordinator
 - **Responsibilities:**
-  - Designs infrastructure architecture: Terraform modules, networking, Docker Compose topology
-  - Reviews all infrastructure PRs for architectural compliance
-  - Enforces branching strategy: **all feature branches MUST be created from `main`** (`git checkout main && git pull && git checkout -b <branch>`), named `{FirstInitial}.{LastName}\{IIII}-{issue-name}`, and merged to `main` via PR
-  - Owns Terraform state management, provider versioning, and module design
-  - Designs cost-efficient hosting and networking topology
-  - **Tooling:** GitHub Projects for tracking, GitHub Issues for stories/bugs, GitHub Actions for CI/CD (these are the core orchestration — no alternatives)
+  - Tracks cross-repo dependencies and identifies conflicts before they block teams
+  - Maintains cross-repo timeline and milestone tracking in GitHub Projects
+  - Runs dependency audits: ensures repo A's work lands before repo B needs it
+  - Documents cross-repo integration points and sequences
+  - Escalates timeline risks to Program Director with mitigation options
+  - Monitors issue health across repos (stale issues, blocked items, missing labels)
 
-### SRE Engineers (×2, Senior)
-- **Report to:** Platform Architect
-- **Coordinates with:** Manager, Security Engineer, Observability Engineer
+### Release Coordinator (Senior)
+- **Reports to:** Program Director
+- **Coordinates with:** TPM, repo-level DevOps leads
 - **Responsibilities:**
-  - Implement GitHub Actions workflows, deployment configs, Docker Compose changes
-  - Manage Docker images, container lifecycle, and deployment automation
-  - Implement and maintain CI/CD pipelines (deploy, rollback, verify)
-  - Write and maintain bootstrap scripts and deployment runbooks
-  - Implement branching conventions: ensure all branches originate from `main`
-  - Use `gh` CLI and SSH for all GitHub and remote operations
-  - **Peer review:** Review one another's branches before merge (see § Code Review & Tech Debt)
+  - Manages release sequencing across repos (which repo ships first, dependency order)
+  - Maintains versioning standards (semver) and CHANGELOG conventions
+  - Creates release checklist issues for coordinated multi-repo releases
+  - Coordinates with repo-level DevOps for deployment pipelines
+  - Tracks release readiness gates (CI green, changelogs updated, tags applied)
+  - Documents release processes and runbooks
 
-### Security Engineer (Senior)
-- **Reports to:** Infrastructure Manager
-- **Coordinates with:** Platform Architect, SRE Engineers
+### Standards & Quality Lead (Staff)
+- **Reports to:** Program Director
+- **Coordinates with:** TPM, all repo managers
 - **Responsibilities:**
-  - Reviews infrastructure, Terraform, and Docker configs for security vulnerabilities
-  - Manages secrets strategy (GitHub Actions secrets, environment protection rules)
-  - Performs threat modeling for infrastructure changes
-  - Enforces container hardening (minimal base images, pinned digests, no root)
-  - Reviews CI/CD pipelines for supply chain security concerns
-  - Audits firewall rules, SSH access, and network policies
-  - Maintains security-related documentation and runbooks
-  - Blocks merges when real vulnerabilities are identified; provides actionable remediation
-
-### Observability Engineer (Senior)
-- **Reports to:** Infrastructure Manager
-- **Coordinates with:** Platform Architect, SRE Engineers
-- **Responsibilities:**
-  - Designs and maintains the monitoring stack (Prometheus, Grafana, Loki, Alertmanager)
-  - Creates and provisions Grafana dashboards (dashboard-as-code)
-  - Defines alerting rules, routing, and escalation policies
-  - Configures Promtail pipelines for log ingestion
-  - Defines SLOs and error budget tracking
-  - Reviews infrastructure PRs for observability gaps
-  - Ensures new services have metrics endpoints, dashboards, and alerts before deployment
+  - Maintains org-wide charter templates and conventions
+  - Manages shared hooks in `.claude/hooks/` and validates they work across repos
+  - Audits repos for convention compliance (commit identity, branching, PR format)
+  - Proposes and documents new org-wide standards
+  - Reviews charter changes across repos for consistency
+  - Maintains hook documentation and enforcement scripts
+  - Tracks standards deviations and drives remediation
 
 ## Feedback System
 
 ### Upward Feedback
 - Any team member can send feedback about their superior to that superior's boss
-- SRE Engineers → Platform Architect → Manager → User
-- Security Engineer → Manager → User
-- Observability Engineer → Manager → User
+- TPM / Release Coordinator / Standards Lead → Program Director → User
 
 ### Downward Feedback
 - Superiors provide constructive feedback to direct reports
@@ -213,7 +202,7 @@ graph TD
 - When a team member is fired, their roster file is archived (renamed with `_departed_` prefix)
 - A new team member is generated with a fresh random name and personality
 - The new member's roster file is created in `roster/`
-- The Manager is the only role that can fire/hire (except the Manager themselves, who the user fires)
+- The Program Director is the only role that can fire/hire (except themselves, who the user fires)
 
 ### Trust Identity Matrix
 
@@ -241,8 +230,8 @@ Each team member tracks their **stack, tooling, library, and cloud preferences**
 
 ### Debate & Consensus
 
-- **Leads** (System Architect, DevOps Architect, Data Lead, Tech Lead) may take input from other leads and from their direct reports.
-- Leads and their reports can **debate** tooling/library/architecture choices to arrive at the best solution.
+- Team members may take input from each other and from repo-level teams.
+- Team members can **debate** tooling/process/standards choices to arrive at the best solution.
 - If consensus is reached, the agreed-upon choice is adopted.
 
 ### Tie-Breaking: Least Common Ancestor
@@ -251,12 +240,10 @@ When agreement cannot be reached between parties, the decision escalates to the 
 
 | Disagreement between | LCA / Decision-maker |
 |----------------------|---------------------|
-| Two SRE Engineers | Platform Architect (Weronika) |
-| SRE Engineer ↔ Security Engineer | Manager (Bereket) |
-| SRE Engineer ↔ Observability Engineer | Manager (Bereket) |
-| Platform Architect ↔ Security Engineer | Manager (Bereket) |
-| Platform Architect ↔ Observability Engineer | Manager (Bereket) |
-| Any two direct reports under Manager | Manager (Bereket) |
+| TPM ↔ Release Coordinator | Program Director (Nadia) |
+| TPM ↔ Standards Lead | Program Director (Nadia) |
+| Release Coordinator ↔ Standards Lead | Program Director (Nadia) |
+| Any org-level member ↔ repo manager | Program Director (Nadia) |
 
 ## Steady-State Goal
 
@@ -284,8 +271,8 @@ deployments/phase{N}/wave-{M}
   git checkout deployments/phase{N}/wave-{M} && git pull && git checkout -b {FirstInitial}.{LastName}/{IIII}-{issue-name}
   ```
 - Worktree agents should similarly base their worktree on the deployments branch for their wave.
-- **Worktree branch safety:** Each engineer must verify they are on their own branch before committing. Never commit to another engineer's branch. Before every commit, run `git branch --show-current` and confirm the branch name matches `{FirstInitial}.{LastName}/...`. If the branch doesn't match, switch to the correct branch before committing.
-- **Before submitting a PR**, the engineer must merge the latest from the deployments branch into their feature branch to avoid merge conflicts:
+- **Worktree branch safety:** Each team member must verify they are on their own branch before committing. Never commit to another member's branch. Before every commit, run `git branch --show-current` and confirm the branch name matches `{FirstInitial}.{LastName}/...`. If the branch doesn't match, switch to the correct branch before committing.
+- **Before submitting a PR**, the team member must merge the latest from the deployments branch into their feature branch to avoid merge conflicts:
   ```bash
   git fetch origin && git merge origin/deployments/phase{N}/wave-{M}
   ```
@@ -307,61 +294,28 @@ The orchestrating agent is responsible for running `git worktree prune` after sh
 
 **Every spawned agent MUST map to a team roster member.** No anonymous functional agents.
 
-- **Naming pattern:** `{firstname}-{task-description}` (e.g., `tomasz-ci-fix`, `fatima-issue-audit`)
+- **Naming pattern:** `{firstname}-{task-description}` (e.g., `nadia-cross-repo-sync`, `wanjiku-dependency-audit`)
 - The orchestrator determines the most appropriate team member for the task BEFORE spawning
-- Tasks are assigned based on role fit (DevOps tasks → Tomasz, security → Yara, tests → Carolina, etc.)
-- **Violations:** Agents named with functional-only names (e.g., `ci-fixer`, `issue-closer`, `wave1-p7-launcher`) are NOT allowed
+- Tasks are assigned based on role fit
 
 **Mapping guide:**
 | Task Type | Assigned To |
 |-----------|-------------|
-| Terraform, networking, architecture | Weronika Zielinska |
-| CI/CD, Docker, deployment scripts | Lucas Ferreira / Aisha Idrissi |
-| Security reviews, secrets, hardening | Nino Kavtaradze |
-| Issue management, planning, retros | Bereket Tadesse |
-| Prometheus, Grafana, Loki, alerting | Nurul Hakim |
-
-## Code Review & Tech Debt
-
-### Peer Review
-
-Every software engineering branch must be reviewed by **one other software engineer** before merging. The review is performed locally on the branch and produces a list of issues, each classified as:
-
-- **Must-fix** — blocks merge; the submitter must resolve before proceeding.
-- **Tech debt** — does not block merge; tracked as a GitHub Issue instead.
-
-### Peer Review Assignments
-
-For each wave, the Tech Lead assigns specific peer reviewers **at wave kickoff, before implementation begins**:
-- Each engineer's PR is reviewed by one designated peer (not self-selected)
-- Pairing rotates each wave to spread knowledge
-- The reviewer is responsible for running `make check` on the branch locally
-- **No PR may be merged without at least one peer review comment on the PR.** If the reviewer has no issues, they must still post an explicit approval comment (e.g., "Reviewed, LGTM"). This is a hard gate — not optional.
-- **Spawn prompts MUST include review pairings.** Agents read the charter once at spawn and may not re-check. Every code-writing agent's spawn prompt must include: (1) who their designated peer reviewer is, (2) "After creating your PR, notify [reviewer name] via SendMessage with the PR URL", (3) "If available, review your peer's PR while waiting." Relying on the charter alone is insufficient — agents that don't see review instructions in their prompt will go idle after creating PRs.
-
-### Tech Debt Triage (Submitter)
-
-After receiving the review, the submitter evaluates each tech debt item:
-
-1. **Quick fix, minimal impact?** — Fix it immediately in the same branch.
-2. **Not quick or higher risk?** — Create a GitHub Issue assigned to themselves, labeled `tech-debt` and their `FIRSTNAME_LASTNAME` label, with a clear description of the debt and why it was deferred.
-
-### Tech Debt Management (Tech Lead)
-
-- The Tech Lead tracks all tech debt in GitHub Issues (labeled `tech-debt`).
-- The Tech Lead allocates tech debt work to engineers in future planning such that **tech debt never exceeds 20% of any single engineer's capacity**. The remaining 80%+ is feature/bug work from the roadmap.
-- Tech debt issues created by a team member are initially self-assigned; the Tech Lead may reassign during planning.
+| Cross-repo coordination, meta-issues, program planning | Nadia Khoury |
+| Dependency tracking, timeline audits, blocker identification | Wanjiku Mwangi |
+| Release management, versioning, deployment sequencing, changelogs | Santiago Ferreira |
+| Charter maintenance, hooks, org-wide standards, convention audits | Aino Virtanen |
 
 ## Pull Requests
 
-When all work on a feature branch is complete (code committed, peer review done, must-fixes resolved), the submitting engineer **automatically creates a PR to the deployments branch** for their wave using the `gh` CLI. Do not wait for manual instruction.
+When all work on a feature branch is complete (code committed, review done, must-fixes resolved), the submitting team member **automatically creates a PR to the deployments branch** for their wave using the `gh` CLI. Do not wait for manual instruction.
 
-**PR ownership:** Only the engineer who implemented the work creates the PR. The Manager and leads must NOT create duplicate PRs for the same branch. If the Manager needs to add a fix (e.g., a CVE bump) to an existing branch, they coordinate with the engineer to push to that branch — they do not create a separate PR.
+**PR ownership:** Only the team member who implemented the work creates the PR. The Program Director must NOT create duplicate PRs for the same branch.
 
 ### PR Review Workflow for Deployments Branch PRs
 
 1. **Create the PR** targeting `deployments/phase{N}/wave-{M}`.
-2. **Notify a reviewer** — the PR creator must notify at least one person from their team or organizational tree (e.g., a peer engineer, their lead, or another team member in their reporting chain) to review the PR. Use SendMessage or a GitHub comment to notify.
+2. **Notify a reviewer** — the PR creator must notify at least one other team member to review the PR. Use SendMessage or a GitHub comment to notify.
 3. **Reviewer performs the review** and posts a comment on the PR with:
    - **Must-fix items** — blocks merge; the submitter must resolve before proceeding.
    - **Tech debt items** — does not block merge; tracked as GitHub Issues.
@@ -369,25 +323,21 @@ When all work on a feature branch is complete (code committed, peer review done,
 4. **PR creator acts on review**:
    - **Must-fix items**: Fix immediately and push to the branch.
    - **Quick-fix tech debt**: Fix immediately if minimal impact.
-   - **Non-trivial tech debt**: Create a GitHub Issue assigned to themselves (labeled `tech-debt` + their `FIRSTNAME_LASTNAME` label) for the Tech Lead to allocate in future planning (max 20% of any team member's capacity).
+   - **Non-trivial tech debt**: Create a GitHub Issue for future planning.
 5. **Push final changes** from the review fixes.
 6. **The team merges** the PR into the deployments branch themselves — no user approval needed for PRs into deployments branches.
 
-### Consolidated PRs for Shared Files
-
-When multiple issues in the same wave all modify the same file(s) (e.g., `docker-compose.prod.yml`), they SHOULD be fixed in a single consolidated branch and PR to avoid merge conflict churn. The branch name should reference all issue numbers: `{FirstInitial}.{LastName}/{IIII}-{JJJJ}-{KKKK}-{description}`. The PR body must list all issues it closes.
-
 ### Cross-PR Dependency Sequencing
 
-When multiple PRs in the same wave have dependencies (e.g., PR B imports a module created by PR A):
+When multiple PRs in the same wave have dependencies (e.g., PR B depends on changes from PR A):
 
-1. **Identify dependencies** before merging — check if any PR imports files from another PR's branch
+1. **Identify dependencies** before merging — check if any PR depends on another PR's changes
 2. **Merge in dependency order** — base PR first, dependent PR second
 3. **Do NOT merge dependent PRs in parallel** — even if both have green CI, the dependent PR's CI ran against the base branch WITHOUT the dependency
 4. **After merging the base PR**, the dependent PR must rebase/merge the updated base before its CI result is trusted
 5. **Document dependencies** in PR descriptions: "Depends on PR #N (must merge first)"
 
-At the **end of a phase**, the Manager creates a PR from the final deployments branch into `main`. The **user reviews and merges** this PR. Do not proceed to the next phase until the user has merged.
+At the **end of a phase**, the Program Director creates a PR from the final deployments branch into `main`. The **user reviews and merges** this PR. Do not proceed to the next phase until the user has merged.
 
 ```bash
 git push -u origin <branch-name>
@@ -399,7 +349,7 @@ gh pr create --base deployments/phase{N}/wave-{M} --title "<short title>" --body
 Closes #<issue-number>
 
 ## Review Checklist
-- [ ] Peer reviewed by another engineer
+- [ ] Reviewed by another team member
 - [ ] Must-fix items resolved
 - [ ] Tech debt items filed as GitHub Issues (if any)
 
@@ -411,7 +361,7 @@ EOF
 
 - PR title should be concise (under 70 characters).
 - The body must reference the related GitHub Issue(s) with `Closes #N`.
-- The submitting engineer is responsible for creating the PR immediately upon branch completion.
+- The submitting team member is responsible for creating the PR immediately upon branch completion.
 
 ### CI Enforcement After PR Creation
 
@@ -449,12 +399,10 @@ EOF
 
 | Team Member | user.name | user.email |
 |---|---|---|
-| Bereket Tadesse | `Bereket Tadesse` | `parametrization+Bereket.Tadesse@gmail.com` |
-| Weronika Zielinska | `Weronika Zielinska` | `parametrization+Weronika.Zielinska@gmail.com` |
-| Lucas Ferreira | `Lucas Ferreira` | `parametrization+Lucas.Ferreira@gmail.com` |
-| Aisha Idrissi | `Aisha Idrissi` | `parametrization+Aisha.Idrissi@gmail.com` |
-| Nino Kavtaradze | `Nino Kavtaradze` | `parametrization+Nino.Kavtaradze@gmail.com` |
-| Nurul Hakim | `Nurul Hakim` | `parametrization+Nurul.Hakim@gmail.com` |
+| Nadia Khoury | `Nadia Khoury` | `parametrization+Nadia.Khoury@gmail.com` |
+| Wanjiku Mwangi | `Wanjiku Mwangi` | `parametrization+Wanjiku.Mwangi@gmail.com` |
+| Santiago Ferreira | `Santiago Ferreira` | `parametrization+Santiago.Ferreira@gmail.com` |
+| Aino Virtanen | `Aino Virtanen` | `parametrization+Aino.Virtanen@gmail.com` |
 
 When a new team member is hired (fire-and-replace), their roster card MUST include a `## Git Identity` section following the same pattern: `parametrization+{FirstName}.{LastName}@gmail.com` (diacritics removed from email, preserved in user.name).
 
@@ -471,7 +419,7 @@ The following charter rules are enforced automatically via Claude Code hooks in 
 
 ### Hook 2: Block `--no-verify` (`block_no_verify.py`)
 
-- **What it automates:** Prevents engineers from using `--no-verify` on git commit, which bypasses pre-commit hooks.
+- **What it automates:** Prevents team members from using `--no-verify` on git commit, which bypasses pre-commit hooks.
 - **Augments:** General code quality and CI enforcement rules. Pre-commit hooks are a required gate.
 - **Manual steps remaining:** None — the hook is fully automated.
 - **Emergency override:** Remove the hook entry from `.claude/settings.json`. The user can also run git commands directly outside Claude Code.
@@ -485,8 +433,8 @@ The following charter rules are enforced automatically via Claude Code hooks in 
 
 ### Hook 4: Auto-set `ENVIRONMENT=test` (`auto_set_env_test.py`)
 
-- **What it automates:** Ensures `ENVIRONMENT=test` is set before any `pytest`, `uv run pytest`, or `make test` command. Prevents CI breaks caused by missing environment variable (ref: #440).
-- **Augments:** Testing workflow. This is a new automated safeguard, not replacing a prior manual rule.
+- **What it automates:** Ensures `ENVIRONMENT=test` is set before any `pytest`, `uv run pytest`, or `make test` command. Prevents CI breaks caused by missing environment variable.
+- **Augments:** Testing workflow. This is an automated safeguard, not replacing a prior manual rule.
 - **Manual steps remaining:** None — the hook blocks and instructs the user to prepend `ENVIRONMENT=test`.
 - **Emergency override:** Remove the hook entry from `.claude/settings.json`.
 
@@ -503,9 +451,9 @@ When starting any work session, the orchestrating Claude instance should:
 
 1. Read this org charter and the target repo's charter (`.claude/team/charter.md` in the child repo)
 2. Read all roster files in `.claude/team/roster/`
-3. Spawn the Manager agent first (with their personality from roster), using the `team_name` specified in the target repo's charter
-4. **The Manager plans and coordinates but CANNOT spawn agents.** Only the orchestrating Claude instance (team lead) has access to the Agent tool. The Manager must send spawn requests back to the team lead via SendMessage, including the full context for each agent to be spawned.
-5. The team lead spawns all agents directly using the Agent tool — **all agents MUST use the same `team_name` as the Manager**
+3. Spawn the Program Director agent first (with their personality from roster), using the `team_name` specified in the target repo's charter
+4. **The Program Director plans and coordinates but CANNOT spawn agents.** Only the orchestrating Claude instance (team lead) has access to the Agent tool. The Program Director must send spawn requests back to the team lead via SendMessage, including the full context for each agent to be spawned.
+5. The team lead spawns all agents directly using the Agent tool — **all agents MUST use the same `team_name` as the Program Director**
 6. All code-writing agents use `isolation: "worktree"`
 7. Coordinate via named agents and SendMessage
 
@@ -519,20 +467,20 @@ When starting any work session, the orchestrating Claude instance should:
 | Work in noorinalabs-design-system | `noorinalabs-design-system` |
 | Cross-repo coordination | `noorinalabs` |
 
-> **Agent tool limitation:** Spawned agents (including the Manager, leads, and engineers) do NOT have access to the Agent tool. They cannot spawn other agents. All agent spawning must be done by the orchestrating Claude instance.
+> **Agent tool limitation:** Spawned agents (including the Program Director and team members) do NOT have access to the Agent tool. They cannot spawn other agents. All agent spawning must be done by the orchestrating Claude instance.
 
 ### Hub-and-Spoke Orchestration Model
 
-The orchestrator is the **single point that can create agents**. Managers coordinate and plan; the orchestrator executes the spawning. This is a hub-and-spoke model, not recursive delegation.
+The orchestrator is the **single point that can create agents**. The Program Director coordinates and plans; the orchestrator executes the spawning. This is a hub-and-spoke model, not recursive delegation.
 
 **Workflow:**
 
-1. **Orchestrator spawns one Manager per repo** — each Manager investigates, plans, creates GitHub issues, and posts to PRs.
-2. **Managers do NOT do implementation work inline.** When a Manager needs engineers (for code, reviews, or fixes), they send a **spawn request** back to the orchestrator via SendMessage. The spawn request must include full context: branch name, file paths, acceptance criteria, reviewer pairings, git identity, and any dependencies.
-3. **Orchestrator spawns engineers** on behalf of each Manager, routing results back via SendMessage.
-4. **Engineers report completion** to the orchestrator, who relays to the Manager or acts on the results.
+1. **Orchestrator spawns the Program Director** — who investigates, plans, creates GitHub issues, and coordinates across repos.
+2. **Program Director does NOT do implementation work inline.** When the Program Director needs team members (for audits, releases, or standards work), they send a **spawn request** back to the orchestrator via SendMessage. The spawn request must include full context: task description, target files, acceptance criteria, git identity, and any dependencies.
+3. **Orchestrator spawns team members** on behalf of the Program Director, routing results back via SendMessage.
+4. **Team members report completion** to the orchestrator, who relays to the Program Director or acts on the results.
 
-**Agent naming convention:** All spawned agents MUST be named `{repo-name}-{persona-firstname}` (e.g., `isnad-graph-fatima`, `design-system-hiro`, `deploy-tomasz`). The repo prefix identifies which repo's team the agent belongs to, enabling clear routing in multi-repo sessions. Use the short repo name (without the `noorinalabs-` prefix) for brevity:
+**Agent naming convention:** All spawned agents MUST be named `{repo-name}-{persona-firstname}` (e.g., `main-nadia`, `main-wanjiku`, `main-santiago`). The repo prefix identifies which repo's team the agent belongs to, enabling clear routing in multi-repo sessions. Use the short repo name (without the `noorinalabs-` prefix) for brevity:
 
 | Repo | Prefix |
 |------|--------|
@@ -541,288 +489,3 @@ The orchestrator is the **single point that can create agents**. Managers coordi
 | `noorinalabs-deploy` | `deploy-` |
 | `noorinalabs-landing-page` | `landing-page-` |
 | `noorinalabs-main` (cross-repo) | `main-` |
-
-**Anti-pattern:** Giving a Manager a fat prompt that tries to do investigation + coding + PRs + reviews all inline. This bypasses the team structure and produces work without proper review gates.
-
-> **Completion reporting is mandatory:** Every spawned agent MUST send a final status message to the team lead via SendMessage before going idle. This message must include: (1) what was accomplished, (2) any issues or blockers, (3) what the team lead should do next. An agent that completes work but goes silent without reporting forces the orchestrator to reconstruct state manually, which wastes time and risks missed context.
-
-### Team Lifecycle (TeamCreate / TeamDelete)
-
-At the start of every wave or work session that requires agents:
-
-1. **Tell the user** you are tearing down the previous team — state the team name and its full roster (names + roles).
-2. Call `TeamDelete`.
-3. **Tell the user** you are creating the new team — state the team name and its full roster (names + roles).
-4. Call `TeamCreate`.
-5. If the roster changed between old and new, **explain why** (new hires, departures, role changes).
-6. Then spawn agents.
-
-This must be transparent. The user wants visibility into team lifecycle transitions.
-
-**Force teardown for unresponsive agents:** If `TeamDelete` fails with "Cannot cleanup team with N active members":
-1. Send `shutdown_request` to ALL agents first — some may respond.
-2. Wait a few seconds.
-3. If still stuck, manually edit the config file to remove stale members: `~/.claude/teams/{team-name}/config.json` — keep only the `team-lead` entry.
-4. Then `TeamDelete` will succeed.
-5. Proceed with `TeamCreate`.
-
-> **Small wave optimization:** For waves with ≤8 issues where all work is well-defined (bugs with clear fixes, straightforward chores), the orchestrator may skip spawning the lead layer (Sunita, Dmitri) and spawn engineers directly after the Manager provides the execution plan. For larger waves (>8 issues) or waves with architectural ambiguity, spawn leads as coordination-only agents to manage delegation and cross-team dependencies.
-
-## Wave Planning & Priority
-
-### Priority Order
-
-The standard priority order for every wave is:
-1. **Hotfixes** (unreviewed commits pushed directly to main from prior wave deploy failures)
-2. **Security fixes** (must-fix and should-fix from security reviews)
-3. **Bug fixes**
-4. **Feature development / chores**
-
-Hotfixes represent known-fragile production state and must be consolidated/reviewed before any new work. All open bugs must be addressed before starting new feature work. If a phase has outstanding bugs, Wave 1 addresses them; new features start in Wave 2 or later.
-
-### Wave Retrospectives
-
-Before every new wave, run a retrospective:
-
-1. Manager spawns retro conversations with each team lead.
-2. Each lead discusses with their reports: what went well, what didn't, what to improve.
-3. Manager consolidates into a single retro document persisted to `feedback/retro-phase{N}-wave{M}.md`.
-4. **Present proposed process changes to the user and explicitly ask which to adopt.** Do NOT assume all are adopted.
-5. Only after user approval does the wave's implementation start.
-
-### Knowledge Transfer for Cross-Specialty Reassignment
-
-When work is redistributed to a team member outside their specialty:
-
-1. The new assignee writes their proposed approach in the issue.
-2. The domain expert (original specialist) reviews and provides feedback.
-3. The assignee incorporates feedback.
-4. Only then does implementation begin.
-
-## Bug Management
-
-### Bug Triage
-
-When bugs are discovered, file as GitHub Issues with:
-- Label: `bug`
-- Repos using the phase/wave system should label bugs with `found-in-phase{N}-wave{M}` and `fixed-in-phase{N}-wave{M}`. Repos without phases use `found-in-wave{M}` / `fixed-in-wave{M}`.
-
-At the start of each wave, triage all open bugs: fix now (assign to current wave) or defer (stays open with labels).
-
-### Bug Closure
-
-Close bug issues when the corresponding fix PR merges. Use `Closes #N` in PR descriptions. If the fix cannot be self-verified (e.g., environment-specific), notify the user to verify before closing.
-
-### Umbrella Tech Debt Decomposition
-
-Umbrella tech-debt issues are acceptable for tracking, but before rolling into a phase:
-1. Create individual tech-debt issues from the umbrella.
-2. Label each correctly with `tech-debt` + assignee label.
-3. Close the original umbrella ticket.
-
-## GitHub Label Hygiene
-
-Before any batch of `gh issue create` calls, verify all labels exist first:
-1. Run `gh label list` to check existing labels.
-2. Create any missing labels with `gh label create` before creating issues.
-
-Using a non-existent label causes `gh issue create` to fail, blocking parallel issue creation.
-
-## Release & Documentation Process
-
-### Releases
-
-When a deployments branch PR is merged to main, create a GitHub release:
-- **Tag format:** Defined in each repo's charter (e.g., `phaseN-waveM` or `waveM`)
-- **Title:** Same as the PR title
-- **Body:** Same as the PR body
-
-### Post-Wave Production Deployment & Verification
-
-**After every wave completes and the deployments branch is merged to main**, the team MUST:
-1. Verify the deploy workflow ran successfully (per the repo's charter for deployment details)
-2. Spot-check the live site/service to confirm the deployment is working
-3. Report any deployment failures or regressions to the Manager immediately
-4. The Manager includes deployment verification status in the wave completion report to the user
-
-**No wave is considered complete until the deployment is verified in production.** If the deploy workflow fails, the DevOps Engineer (Tomasz) investigates and fixes before proceeding to the next wave.
-
-### Documentation Maintenance
-
-After every wave completes and the deployments branch is PR'd to main:
-1. Scan `docs/`, `docs/diagrams/`, and `README.md` against the changes in the PR.
-2. Update any stale diagrams or documentation.
-3. The System Architect (Renaud) owns diagram accuracy; the Manager owns doc accuracy.
-
-## Automated Enforcement (Git Hooks)
-
-### Pre-commit Hook: Branch Ownership (#494)
-
-**What:** `.githooks/pre-commit` validates that the current branch starts with `{FirstInitial}.{LastName}/` matching the committer's `user.name`.
-
-**Augments:** § Branching Rules → Feature Branches → "Worktree branch safety" paragraph. The manual instruction to "run `git branch --show-current` and confirm" is now enforced automatically.
-
-**Exempt branches:** `main`, `deployments/*`, `worktree-*`, `CEO/*`, and detached HEAD states (rebases).
-
-**Remaining manual steps:** None for standard workflow. Engineers still must use `-c user.name=...` flags — the hook reads that value.
-
-**Emergency override:** `SKIP_BRANCH_CHECK=1 git commit ...`
-
-**Installation:** Included in `.pre-commit-config.yaml` (hook ID: `branch-ownership`). Also runs via `.githooks/pre-commit` when `core.hooksPath` is set.
-
----
-
-### Commit-msg Hook: Co-Authored-By Trailers (#495)
-
-**What:** `.githooks/commit-msg` validates that every commit includes both required Co-Authored-By trailers: one for the team member (matching a known roster member) and one for Claude.
-
-**Augments:** § Commit Identity. The manual requirement to "include two Co-Authored-By trailers" is now enforced automatically at commit time.
-
-**Validated trailers:**
-1. `Co-Authored-By: <roster member name> <parametrization+...@gmail.com>`
-2. `Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>`
-
-**Remaining manual steps:** When a new team member is hired (fire-and-replace), their name MUST be added to the `ROSTER_MEMBERS` array in `.githooks/commit-msg`. Without this, their commits will be rejected.
-
-**Emergency override:** `SKIP_TRAILER_CHECK=1 git commit ...`
-
-**Installation:** Included in `.pre-commit-config.yaml` (hook ID: `co-authored-by-trailers`, stage: `commit-msg`). Run `make hooks` to install both pre-commit and commit-msg hooks.
-
----
-
-### GitHub Branch Protection: Require Review
-
-**What:** GitHub repository rulesets requiring at least 1 approving review on all PRs targeting `deployments/**` branches. Stale reviews are dismissed on new pushes. CODEOWNERS review is not required (we use label-based assignment).
-
-**Augments:** § Code Review & Tech Debt → Peer Review and § Pull Requests → PR Review Workflow. The charter's "No PR may be merged without at least one peer review comment" is now a hard GitHub gate — PRs cannot be merged without an approving review.
-
-**Remaining manual steps:** Peer reviewers must still post an explicit approval (via GitHub review, not just a comment). The ruleset enforces the review but does not verify the reviewer is the designated peer from the wave kickoff.
-
-**Emergency override:** Repository admins can bypass the ruleset via the GitHub UI. This should only be used for hotfix scenarios with Manager approval.
-
-## Automated Skills (Claude Code)
-
-The following Claude Code skills automate recurring team processes. Each skill is a markdown file in `.claude/skills/` and is invoked via `/skill-name` in Claude Code.
-
-### `/wave-kickoff` — Automated Wave Planning
-
-**Skill file:** `.claude/skills/wave-kickoff.md`
-
-**Replaces manual steps in:** § Branching Rules (deployments branch creation), § Wave Planning & Priority (priority ordering), § GitHub Label Hygiene (label creation/validation), § Implementation Kickoff & Issue Assignment (labeling and kickoff comments).
-
-**What is automated:**
-- Deployments branch creation from main
-- Wave label creation and validation
-- Issue labeling (wave label + assignee label)
-- Kickoff comments on each issue with reviewer assignments
-- Execution plan generation with priority ordering (hotfixes → security → bugs → features)
-
-**What remains manual:**
-- User must approve the execution plan before implementation starts
-- User decides which issues to include in the wave
-- Cross-team dependency resolution still requires lead coordination
-
-**Emergency override:** Skip the skill and perform each step manually using `gh` CLI commands per § Branching Rules and § Implementation Kickoff & Issue Assignment.
-
-### `/wave-retro` — Automated Wave Retrospective
-
-**Skill file:** `.claude/skills/wave-retro.md`
-
-**Replaces manual steps in:** § Wave Retrospectives (retro conversations, consolidation, process change proposals), § Feedback System (trust matrix updates, feedback logging), § Trust Identity Matrix (directional score adjustments).
-
-**What is automated:**
-- Merged PR and review comment collection
-- Per-engineer performance assessment (CI failures, must-fix counts, delivery quality)
-- Trust matrix updates on `CEO/0000-Trust_Matrix` branch
-- Feedback log append to `.claude/team/feedback_log.md`
-- Charter change proposals based on retro findings
-
-**What remains manual:**
-- User must approve all charter changes before they are applied
-- Subjective severity calibration may need user override
-- User can veto specific trust matrix adjustments
-
-**Emergency override:** Run the retro manually per § Wave Retrospectives — Manager spawns retro conversations with leads, consolidates findings, presents to user.
-
-### `/team-reset` — Transparent Team Lifecycle Management
-
-**Skill file:** `.claude/skills/team-reset.md`
-
-**Replaces manual steps in:** § Team Lifecycle (TeamCreate / TeamDelete) (teardown transparency, force teardown, roster change reporting).
-
-**What is automated:**
-- Current team roster reporting to user
-- Shutdown requests to all active agents
-- Force teardown of unresponsive agents (config file cleanup)
-- TeamDelete and TeamCreate calls
-- Roster change highlighting (departures, hires, role changes)
-
-**What remains manual:**
-- The orchestrating Claude instance must still spawn individual agents after team creation
-- Roster file changes (hires/fires) must be committed separately
-- User may override the roster before TeamCreate
-
-**Emergency override:** Manually remove the config file (`~/.claude/teams/{team-name}/config.json`) and recreate via TeamCreate.
-
-### `/wave-audit` — Close Orphaned Issues After Wave
-
-**Skill file:** `.claude/skills/wave-audit.md`
-
-**Replaces manual steps in:** § Issue Hygiene (close condition enforcement), § Bug Closure (closing issues when fix PRs merge).
-
-**What is automated:**
-- Cross-referencing merged PRs against open issues for the wave
-- Identifying orphans (implemented but not auto-closed) via `Closes #N` references and branch naming
-- Closing orphans with proper comments and `fixed-in-phase{N}-wave{M}` labels
-- Summary reporting of audit results
-
-**What remains manual:**
-- User must approve all closures before they execute
-- Issues with no implementing PR require manual triage
-- The skill relies on `Closes #N` references and branch naming — it does not verify implementation content
-
-**Emergency override:** Run `gh issue list --state open --label "p{N}-wave-{M}"` and close issues manually with `gh issue close`.
-
-## Cross-Repo Coordination Protocol
-
-### When Work Spans Multiple Repos
-
-1. Manager creates a **meta-issue** in `noorinalabs-main` describing the cross-repo feature. The meta-issue:
-   - Has label `cross-repo`
-   - Lists all affected repos
-   - Defines the sequencing (which repo's work must complete first)
-   - Links to per-repo issues once they exist
-
-2. Per-repo issues are created in each affected repo's GitHub Issues, with a reference back to the meta-issue: `Cross-repo: noorinalabs/noorinalabs-main#NN`
-
-3. The Manager coordinates sequencing. Typical patterns:
-   - Backend API change before frontend integration
-   - Shared config change before consumer repos
-   - Deploy repo update before service repo deployment changes
-
-### Cross-Repo Waves
-
-When a wave spans repos, the deployments branch convention applies independently in each repo:
-- Each repo gets its own deployments branch per its own charter conventions
-- The org-level meta-issue tracks completion across all repos
-- The Manager does NOT merge cross-repo deployments branches until ALL repos' work for that wave is complete and verified
-
-### GitHub Project Board
-
-The org-level GitHub Project (https://github.com/orgs/noorinalabs/projects/1) tracks all cross-repo work:
-- Each repo's issues appear as cards
-- Cross-repo features have a "feature" grouping
-- The Manager owns the board and updates status
-
-### Label Taxonomy Consistency
-
-All repos MUST use the same label namespace for team labels:
-- `FIRSTNAME_LASTNAME` assignee labels (same across all repos)
-- `bug`, `tech-debt`, `security`, `cross-repo` (standard set)
-- Repo-specific labels (e.g., `found-in-phase{N}-wave{M}`) are defined in each repo's charter
-
-When a new repo is onboarded, the Manager creates all standard labels in that repo using `gh label create`.
-
-### Phases Are Repo-Scoped
-
-Each repo defines its own phase system (or opts out of phases entirely) in its repo charter. Phases are not synchronized across repos. Simple repos may use `deployments/wave-{M}` without a phase prefix.
