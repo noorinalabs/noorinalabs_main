@@ -327,6 +327,19 @@ When all work on a feature branch is complete (code committed, review done, must
 5. **Push final changes** from the review fixes.
 6. **The team merges** the PR into the deployments branch themselves — no user approval needed for PRs into deployments branches.
 
+### Post-Merge Integration Verification
+
+**After every PR merge into a deployments branch**, the manager must verify the integrated result before merging the next PR:
+
+1. **Pull the updated deployments branch** locally (or in a worktree).
+2. **Run the repo's full check command** (`make check`, `npm run check`, or equivalent — lint + typecheck + build).
+3. **If the check fails:** The last-merged PR introduced a regression. The manager must notify the PR author to fix it before any further PRs are merged.
+4. **If the check passes:** The next PR may be merged.
+
+This catches semantic conflicts that GitHub's textual merge cannot detect (e.g., two PRs that individually pass CI but break when combined). Managers must NOT merge multiple PRs in rapid succession without verifying in between.
+
+**CI enforcement:** All repositories must configure CI workflows to trigger on pushes to `deployments/**` branches (not just PRs). This provides automatic verification after each merge, complementing the manager's manual check.
+
 ### Cross-PR Dependency Sequencing
 
 When multiple PRs in the same wave have dependencies (e.g., PR B depends on changes from PR A):
