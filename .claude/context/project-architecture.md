@@ -12,14 +12,14 @@
 
 | Repo | Purpose | Deploy |
 |------|---------|--------|
-| `noorinalabs_main` | Parent orchestration — team config, charter, hooks, skills | N/A |
-| `isnad-graph` | Hadith analysis platform (FastAPI, React, Neo4j) | VPS via deploy repo |
+| `noorinalabs-main` | Parent orchestration — team config, charter, hooks, skills | N/A |
+| `noorinalabs-isnad-graph` | Hadith analysis platform (FastAPI, React, Neo4j) | VPS via deploy repo |
 | `noorinalabs-deploy` | Deployment orchestration (Terraform, Docker Compose, workflows) | Self (GitHub Actions) |
-| `noorinalabs_landing_page` | Organization landing page | TBD |
+| `noorinalabs-landing-page` | Organization landing page | TBD |
 
 ## Parent Repo Pattern
 
-`noorinalabs_main` is a git repo that `.gitignore`s child repos. Child repos are independent git repositories cloned beneath it. This gives:
+`noorinalabs-main` is a git repo that `.gitignore`s child repos. Child repos are independent git repositories cloned beneath it. This gives:
 - Org-wide team config version-controlled in one place
 - Child repos retain full independence (own branches, PRs, CI)
 - Cross-repo coordination via the Manager role
@@ -27,14 +27,14 @@
 ## Deploy Pipeline
 
 ```
-isnad-graph push to main
+noorinalabs-isnad-graph push to main
   → notify-deploy.yml fires repository_dispatch
-  → noorinalabs-deploy/deploy-isnad-graph.yml
+  → noorinalabs-deploy/deploy-noorinalabs-isnad-graph.yml
   → SSH to VPS → pull source → docker compose up
   → verify-deploy.yml health checks
 ```
 
-Currently builds locally on VPS (GHCR image publishing not yet set up).
+Images published to GHCR via ghcr-publish.yml workflow.
 
 ## Infrastructure
 
@@ -44,18 +44,18 @@ Currently builds locally on VPS (GHCR image publishing not yet set up).
 - **DNS:** Cloudflare (noorinalabs.com, .net, .org all registered)
 - **Old domain:** how-a-steve-do.com (Squarespace, retiring)
 - **Deploy repo on VPS:** `/opt/noorinalabs-deploy`
-- **isnad-graph source on VPS:** `/opt/isnad-graph` (for local Docker builds)
+- **isnad-graph source on VPS:** `/opt/noorinalabs-isnad-graph`
 
 ## Charter Split
 
-- **Org charter** (`noorinalabs_main/.claude/team/charter.md`): Team structure, roster, feedback, commit identity, branching conventions, cross-repo coordination protocol
+- **Org charter** (`noorinalabs-main/.claude/team/charter.md`): Team structure, roster, feedback, commit identity, branching conventions, cross-repo coordination protocol
 - **Repo charters** (each repo's `.claude/team/charter.md`): PRD reference, phases, team_name, deployment details, repo-specific labels
 
 ## team_name Convention
 
 | Context | team_name |
 |---------|-----------|
-| isnad-graph work | `isnad-graph` |
-| Landing page work | `landing-page` |
+| isnad-graph work | `noorinalabs-isnad-graph` |
+| Landing page work | `noorinalabs-landing-page` |
 | Deploy repo work | `noorinalabs-deploy` |
 | Cross-repo coordination | `noorinalabs` |

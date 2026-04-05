@@ -609,8 +609,8 @@ When starting any work session, the orchestrating Claude instance should:
 
 | Context | team_name |
 |---------|-----------|
-| Work in isnad-graph | `isnad-graph` |
-| Work in noorinalabs_landing_page | `landing-page` |
+| Work in noorinalabs-isnad-graph | `noorinalabs-isnad-graph` |
+| Work in noorinalabs-landing-page | `noorinalabs-landing-page` |
 | Work in noorinalabs-deploy | `noorinalabs-deploy` |
 | Cross-repo coordination | `noorinalabs` |
 
@@ -859,13 +859,13 @@ The following Claude Code skills automate recurring team processes. Each skill i
 
 ### When Work Spans Multiple Repos
 
-1. Manager creates a **meta-issue** in `noorinalabs_main` describing the cross-repo feature. The meta-issue:
+1. Manager creates a **meta-issue** in `noorinalabs-main` describing the cross-repo feature. The meta-issue:
    - Has label `cross-repo`
    - Lists all affected repos
    - Defines the sequencing (which repo's work must complete first)
    - Links to per-repo issues once they exist
 
-2. Per-repo issues are created in each affected repo's GitHub Issues, with a reference back to the meta-issue: `Cross-repo: noorinalabs/noorinalabs_main#NN`
+2. Per-repo issues are created in each affected repo's GitHub Issues, with a reference back to the meta-issue: `Cross-repo: noorinalabs/noorinalabs-main#NN`
 
 3. The Manager coordinates sequencing. Typical patterns:
    - Backend API change before frontend integration

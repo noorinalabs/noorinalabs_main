@@ -1,6 +1,6 @@
 # CLAUDE.md — noorinalabs (Organization)
 
-This file provides guidance to Claude Code when working from the parent `noorinalabs_main` directory, which orchestrates all NoorinALabs repositories.
+This file provides guidance to Claude Code when working from the parent `noorinalabs-main` directory, which orchestrates all NoorinALabs repositories.
 
 ## Organization Overview
 
@@ -10,15 +10,15 @@ This file provides guidance to Claude Code when working from the parent `noorina
 
 | Repository | Description | Path |
 |-----------|-------------|------|
-| `isnad-graph` | Computational hadith analysis platform (FastAPI, React, Neo4j) | `isnad-graph/` |
+| `noorinalabs-isnad-graph` | Computational hadith analysis platform (FastAPI, React, Neo4j) | `noorinalabs-isnad-graph/` |
 | `noorinalabs-deploy` | Deployment orchestration (Terraform, Docker Compose, workflows) | `noorinalabs-deploy/` |
-| `noorinalabs_landing_page` | Organization landing page | `noorinalabs_landing_page/` |
+| `noorinalabs-landing-page` | Organization landing page | `noorinalabs-landing-page/` |
 
 Each child repo has its own `CLAUDE.md` with repo-specific build commands, architecture, and conventions. Refer to those for repo-specific work.
 
 ## Architecture
 
-This repo (`noorinalabs_main`) is a **parent-level git repo that `.gitignore`s child repos**. Child repos are independent git repositories cloned/managed beneath this directory. This gives us:
+This repo (`noorinalabs-main`) is a **parent-level git repo that `.gitignore`s child repos**. Child repos are independent git repositories cloned/managed beneath this directory. This gives us:
 - Org-wide team config and hooks version-controlled in one place
 - Child repos retain full independence (own branches, PRs, CI)
 - Cross-repo coordination via the Manager role

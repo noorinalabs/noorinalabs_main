@@ -7,4 +7,4 @@
 
 ## References
 
-- **2real team framework:** Extracted from isnad-graph Phase 8 into its own repo at `parametrization/2real-team-framework` (Apache 2.0). Dual npm + pip publishing. User plans to develop separately.
+- **2real team framework:** Extracted from noorinalabs-isnad-graph Phase 8 into its own repo at `parametrization/2real-team-framework` (Apache 2.0). Dual npm + pip publishing. User plans to develop separately.
