@@ -1,0 +1,62 @@
+design-system:
+  provides:
+    - artifact: "@noorinalabs/design-system"
+      type: npm-package
+      registry: npm.pkg.github.com
+      signal: release-published
+  needs: []
+
+landing-page:
+  provides:
+    - artifact: "ghcr.io/noorinalabs/noorinalabs-landing-page"
+      type: docker-image
+      signal: image-pushed
+  needs:
+    - artifact: "@noorinalabs/design-system"
+      version: ">=0.0.1"
+      trigger: release-published
+      action: "run integration check"
+
+isnad-graph:
+  provides:
+    - artifact: "ghcr.io/noorinalabs/noorinalabs-isnad-graph"
+      type: docker-image
+      signal: image-pushed
+    - artifact: "isnad-graph API"
+      type: service
+      endpoint: "https://isnad-graph.noorinalabs.com"
+  needs:
+    - artifact: "@noorinalabs/design-system"
+      version: ">=0.0.1"
+      trigger: release-published
+      action: "update frontend dependency"
+    - artifact: "ingest-platform pipeline"
+      type: data
+      trigger: manifest-changed
+      action: "reload graph data"
+
+isnad-graph-ingestion:
+  provides:
+    - artifact: "pipeline data"
+      type: b2-bucket
+      path: "ingest/[source]/"
+      signal: manifest-changed
+  needs:
+    - artifact: "isnad-graph Neo4j"
+      type: database
+      action: "load nodes and edges"
+
+deploy:
+  provides:
+    - artifact: "deployment orchestration"
+      type: terraform-config
+      signal: deploy-completed
+  needs:
+    - artifact: "ghcr.io/noorinalabs/noorinalabs-isnad-graph"
+      type: docker-image
+      trigger: image-pushed
+      action: "update deployment config"
+    - artifact: "ghcr.io/noorinalabs/noorinalabs-landing-page"
+      type: docker-image
+      trigger: image-pushed
+      action: "update deployment config"

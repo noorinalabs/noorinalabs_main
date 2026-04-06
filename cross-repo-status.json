@@ -1,0 +1,40 @@
+{
+  "design-system": {
+    "latest_version": "0.0.1",
+    "status": "published",
+    "deployments_branch": null,
+    "wave_status": "merged_to_main",
+    "blocked_by": [],
+    "last_updated": "2026-04-05T00:00:00Z"
+  },
+  "isnad-graph": {
+    "latest_deploy": null,
+    "status": "active",
+    "deployments_branch": null,
+    "wave_status": "merged_to_main",
+    "blocked_by": [],
+    "last_updated": "2026-04-05T00:00:00Z"
+  },
+  "landing-page": {
+    "status": "active",
+    "deployments_branch": null,
+    "wave_status": "merged_to_main",
+    "blocked_by": [],
+    "deploy_status": "not_deployed",
+    "last_updated": "2026-04-05T00:00:00Z"
+  },
+  "deploy": {
+    "status": "active",
+    "deployments_branch": null,
+    "wave_status": "merged_to_main",
+    "blocked_by": [],
+    "last_updated": "2026-04-05T00:00:00Z"
+  },
+  "isnad-graph-ingestion": {
+    "status": "active",
+    "deployments_branch": null,
+    "wave_status": "merged_to_main",
+    "blocked_by": [],
+    "last_updated": "2026-04-05T00:00:00Z"
+  }
+}
