@@ -9,7 +9,7 @@ All cross-repo coordination, org-wide standards, release management, and program
 ## Execution Model
 
 - All team members are spawned as Claude Code agents (via the Agent tool)
-- **Worktrees are the preferred isolation method** — each agent working on code should use `isolation: "worktree"`
+- **Worktrees are REQUIRED for all code-writing agents** — each agent working on code MUST use `isolation: "worktree"`. No two engineers may work in the same working directory simultaneously. This prevents branch contention and accidental cross-branch commits.
 - Each team member has a persistent name and personality (see `roster/` directory)
 - Team members communicate via the SendMessage tool when named and running concurrently
 
@@ -41,6 +41,14 @@ Reviews may include: dependency concerns, timeline conflicts, release impact, st
 2. **Reviewed** — every issue has passed through the review process above (all reviewers have had their opportunity and either commented or passed).
 
 Only after both conditions are met does the Program Director signal that implementation may begin. This ensures the entire initiative is planned, visible, and vetted before any work starts.
+
+### Pre-Wave Checklist
+
+Before any wave begins, the Manager must verify:
+
+1. **Roster validation** — all assigned engineers exist in the org-level `roster.json`. If missing, add them before work begins. This prevents commit identity blockers.
+2. **CI workflow exists** — the repo has a working CI workflow that triggers on `deployments/**` branches. If this is Wave 1 of a new repo/phase, the scaffolding issue MUST include a CI workflow. No Wave 2 work starts without CI running.
+3. **Critical-path work identified** — if a task blocks others, that engineer is spawned first with priority.
 
 ### Implementation Kickoff & Issue Assignment
 
@@ -315,7 +323,7 @@ When all work on a feature branch is complete (code committed, review done, must
 ### PR Review Workflow for Deployments Branch PRs
 
 1. **Create the PR** targeting `deployments/phase{N}/wave-{M}`.
-2. **Notify a reviewer** — the PR creator must notify at least one other team member to review the PR. Use SendMessage or a GitHub comment to notify.
+2. **Notify a reviewer** — the PR creator must notify at least one other team member to review the PR. Use SendMessage or a GitHub comment to notify. **A PR MUST NOT be merged without at least one peer review.** For waves with fewer than 4 engineers, the manager's review counts but must include a substantive review comment (not just "LGTM").
 3. **Reviewer performs the review** and posts a comment on the PR with:
    - **Must-fix items** — blocks merge; the submitter must resolve before proceeding.
    - **Tech debt items** — does not block merge; tracked as GitHub Issues.
@@ -350,7 +358,15 @@ When multiple PRs in the same wave have dependencies (e.g., PR B depends on chan
 4. **After merging the base PR**, the dependent PR must rebase/merge the updated base before its CI result is trusted
 5. **Document dependencies** in PR descriptions: "Depends on PR #N (must merge first)"
 
-At the **end of a phase**, the Program Director creates a PR from the final deployments branch into `main`. The **user reviews and merges** this PR. Do not proceed to the next phase until the user has merged.
+### Wave Merge PR Verification
+
+At the **end of a wave or phase**, the Manager creates a PR from the deployments branch into `main`. Before presenting the PR to the user:
+
+1. **Verify all CI checks are green** — run `gh pr checks {NUMBER}` and confirm every job passes.
+2. **If any check fails**, fix it before notifying the user. The user should NEVER see a wave merge PR with red CI.
+3. **Report CI status** explicitly when presenting the PR: "All N checks passing."
+
+The **user reviews and merges** this PR. Do not proceed to the next phase until the user has merged.
 
 ```bash
 git push -u origin <branch-name>
@@ -375,6 +391,17 @@ EOF
 - PR title should be concise (under 70 characters).
 - The body must reference the related GitHub Issue(s) with `Closes #N`.
 - The submitting team member is responsible for creating the PR immediately upon branch completion.
+
+### Pre-Push Checklist
+
+Before pushing a branch and creating a PR, every engineer must:
+
+1. **Run the repo's lint check** (`ruff check` / `npm run lint` / equivalent) — fix all errors.
+2. **Run the repo's format check** (`ruff format --check` / `npx prettier --check` / equivalent) — fix any formatting issues.
+3. **Run the repo's typecheck** (`mypy` / `npm run typecheck` / equivalent) — fix type errors.
+4. **Verify branch name** — `git branch --show-current` must match `{FirstInitial}.{LastName}/{IIII}-{issue-name}`.
+
+Pushing code that fails lint or formatting is a **minor feedback event**.
 
 ### CI Enforcement After PR Creation
 
@@ -469,6 +496,17 @@ When starting any work session, the orchestrating Claude instance should:
 5. The team lead spawns all agents directly using the Agent tool — **all agents MUST use the same `team_name` as the Program Director**
 6. All code-writing agents use `isolation: "worktree"`
 7. Coordinate via named agents and SendMessage
+
+### Agent Lifecycle Management
+
+**Agents MUST be shut down as soon as their work is complete.** The orchestrator is responsible for:
+
+1. **Shutting down implementation agents** immediately after their PR is created and confirmed. Do not leave agents idle waiting for potential follow-up work.
+2. **Shutting down manager agents** once their wave is fully merged and retro is complete.
+3. **Monitoring team size** — if the team config shows more than 10 active members, something is wrong. Shut down completed agents before spawning new ones.
+4. **End-of-session cleanup** — before ending a session, shut down all agents and run `TeamDelete` to clean up.
+
+Failure to manage agent lifecycle leads to resource exhaustion and duplicate agent confusion. This is a **moderate feedback event** for the orchestrator.
 
 > **Team name convention:** Each repo defines its own `team_name` in its repo charter. Use that name for all Agent tool calls when working in that repo. For cross-repo coordination, use `team_name: "noorinalabs"`.
 
