@@ -37,6 +37,22 @@ When starting any work session, the orchestrating Claude instance should:
 3. **Monitoring team size** — if the team config shows more than 10 active members, something is wrong. Shut down completed agents before spawning new ones.
 4. **End-of-session cleanup** — before ending a session, run the full team teardown procedure below.
 
+### Wave Retrospective (Required)
+
+**Every wave MUST have a formal retrospective before agents are shut down.** Do NOT skip retros.
+
+1. **Keep agents alive** until the wave is fully complete (all PRs merged, CI verified).
+2. **Each participating agent contributes** via SendMessage to the orchestrator:
+   - What went well
+   - What went poorly
+   - What to change for next wave
+3. **The orchestrator adds** their own observations (deploy iterations, stalled agents, process gaps).
+4. **Write findings** to `.claude/team/feedback_log.md` in the relevant repo(s).
+5. **Actionable items** become charter updates, process changes, or new issues.
+6. **Only then** shut down agents.
+
+Skipping retros is a **moderate feedback event** for the orchestrator.
+
 ### Team Teardown Procedure
 
 `TeamDelete` does NOT terminate running agents — it only removes the config. Always follow this procedure:
