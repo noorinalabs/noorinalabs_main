@@ -1,34 +1,40 @@
 {
+  "wave_active": true,
+  "current_wave": "wave-c",
+  "wave_started": "2026-04-07T21:45:00Z",
+  "deployments_branch": "deployments/wave-c",
   "design-system": {
     "latest_version": "0.0.1",
     "status": "published",
     "deployments_branch": null,
-    "wave_status": "merged_to_main",
+    "wave_status": "no_wave_c_items",
     "blocked_by": [],
-    "last_updated": "2026-04-05T00:00:00Z"
+    "last_updated": "2026-04-07T21:45:00Z"
   },
   "isnad-graph": {
     "latest_deploy": null,
     "status": "active",
     "deployments_branch": null,
-    "wave_status": "merged_to_main",
+    "wave_status": "in_progress",
     "blocked_by": [],
-    "last_updated": "2026-04-05T00:00:00Z"
+    "open_prs": [733, 734, 735, 736],
+    "last_updated": "2026-04-07T21:45:00Z"
   },
   "landing-page": {
     "status": "active",
     "deployments_branch": null,
-    "wave_status": "merged_to_main",
+    "wave_status": "in_progress",
     "blocked_by": [],
-    "deploy_status": "not_deployed",
-    "last_updated": "2026-04-05T00:00:00Z"
+    "deploy_status": "live",
+    "last_updated": "2026-04-07T21:45:00Z"
   },
   "deploy": {
     "status": "active",
     "deployments_branch": null,
-    "wave_status": "merged_to_main",
+    "wave_status": "in_progress",
     "blocked_by": [],
-    "last_updated": "2026-04-05T00:00:00Z"
+    "open_prs": [22],
+    "last_updated": "2026-04-07T21:45:00Z"
   },
   "isnad-graph-ingestion": {
     "status": "active",
@@ -36,5 +42,12 @@
     "wave_status": "merged_to_main",
     "blocked_by": [],
     "last_updated": "2026-04-05T00:00:00Z"
+  },
+  "isnad-ingest-platform": {
+    "status": "active",
+    "deployments_branch": null,
+    "wave_status": "in_progress",
+    "blocked_by": [],
+    "last_updated": "2026-04-07T21:45:00Z"
   }
 }
