@@ -103,7 +103,7 @@ All cross-repo work is tracked on the **[Cross-Repo Wave Plan](https://github.co
 - New issues created during a wave must be added to the board immediately
 
 **Wave wrapup:**
-- Mark all completed issues as "Done"
+- **Verify before marking Done** — for each issue, confirm: PR merged, CI green, no open must-fix items, no unresolved follow-ups. Do NOT mark Done based solely on issue state — an issue can be closed but the work incomplete.
 - Verify no open issues remain in the current wave
 - Update `cross-repo-status.json` with latest state
 - Add any new issues discovered during the wave to the board with appropriate Wave tag
