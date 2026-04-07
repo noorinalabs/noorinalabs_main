@@ -52,12 +52,20 @@ When a team member is fired:
 2. The Program Director reassigns each issue to an appropriate person — an existing team member or a new hire.
 3. The new assignee's label is applied.
 
+### Manual Issues
+
+Issues that require a human to complete (e.g., configuring a third-party dashboard, signing up for a service, uploading credentials) MUST have their title prefixed with `[MANUAL]`. Example: `[MANUAL] Enable GitHub Pages in design-system repo settings`.
+
+- A `[MANUAL]` issue does **not** require a PR (though one may accompany it)
+- It is closed when the human confirms the action is done (via issue comment)
+- Agents may create `[MANUAL]` issues when they identify work they cannot perform
+
 ### Issue Hygiene
 
 Every issue must be kept up to date:
 - **Status** — kept current (open, in progress, blocked, done).
 - **Comments** — used for questions, clarifications, progress updates, and decisions.
-- **Close condition** — issues are closed **only** when the corresponding work is complete and verified. Do not close prematurely.
+- **Close condition** — issues are closed **only** when the corresponding work is complete and verified. Do not close prematurely. For `[MANUAL]` issues, the human confirms completion via comment.
 
 ## Comment Format
 
