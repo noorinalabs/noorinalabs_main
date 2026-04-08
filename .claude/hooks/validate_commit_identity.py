@@ -23,6 +23,51 @@ except (FileNotFoundError, json.JSONDecodeError):
     ROSTER = {}
 
 
+def _strip_heredocs(text: str) -> str:
+    """Remove heredoc bodies (<<'DELIM' ... DELIM and <<DELIM ... DELIM)."""
+    return re.sub(
+        r"<<-?\s*['\"]?(\w+)['\"]?.*?\n.*?\n\1\b",
+        "",
+        text,
+        flags=re.DOTALL,
+    )
+
+
+def _strip_quoted_strings(text: str) -> str:
+    """Remove content of single- and double-quoted strings."""
+    # Remove single-quoted strings (no escaping inside single quotes in shell)
+    text = re.sub(r"'[^']*'", "''", text)
+    # Remove double-quoted strings (handle escaped quotes)
+    text = re.sub(r'"(?:[^"\\]|\\.)*"', '""', text)
+    return text
+
+
+def _is_git_commit_command(command: str) -> bool:
+    """Return True only if the command invokes `git ... commit` as a real command.
+
+    Strips heredoc bodies and quoted strings first so that mentions of
+    "git commit" inside string literals do not trigger a false positive.
+    Then requires `git` to appear as a command — at the start of the
+    (trimmed) command or after a shell operator (&&, ||, ;, |).
+    """
+    cleaned = _strip_heredocs(command)
+    cleaned = _strip_quoted_strings(cleaned)
+
+    # Match `git [options] commit` where commit is the subcommand.
+    # Git options before the subcommand are: -c key=val, -C path, --flag, etc.
+    # We skip those and check if the first non-option argument is "commit".
+    return bool(
+        re.search(
+            r"(?:^|[;&|]\s*|&&\s*|\|\|\s*)\s*git\b"
+            r"(?:\s+-c\s+\S+)*"       # skip -c key=val pairs
+            r"(?:\s+-[A-Za-z]\s+\S+)*" # skip other -X val options
+            r"\s+commit(?:\s|$)",
+            cleaned,
+            re.MULTILINE,
+        )
+    )
+
+
 def main() -> None:
     try:
         input_data = json.load(sys.stdin)
@@ -35,9 +80,9 @@ def main() -> None:
 
     command = input_data.get("tool_input", {}).get("command", "")
 
-    # Only match git commit commands (not git commit --amend checking, etc.)
-    # We want any command that contains "git" followed by "commit"
-    if not re.search(r"\bgit\b.*\bcommit\b", command):
+    # Only match actual `git commit` invocations — not mentions of "git" and
+    # "commit" inside heredocs, quoted strings, or other non-command text.
+    if not _is_git_commit_command(command):
         sys.exit(0)
 
     # Extract -c user.name="..." or -c user.name='...' or -c user.name=...
