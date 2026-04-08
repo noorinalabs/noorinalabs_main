@@ -4,6 +4,8 @@ noorinalabs-landing-page/
 noorinalabs-deploy/
 noorinalabs-design-system/
 noorinalabs-isnad-graph-ingestion/
+noorinalabs-isnad-ingest-platform/
+noorinalabs-user-service/
 
 # Claude Code project data
 .claude/projects/
