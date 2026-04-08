@@ -49,7 +49,7 @@ def is_emergency(message: str) -> bool:
 def is_utility_agent(tool_input: dict) -> bool:
     """Check if the target agent is a utility agent that doesn't need retros."""
     target = tool_input.get("to", "").lower()
-    return "explorer" in target or "reviewer" in target
+    return "explorer" in target or "review" in target or "hook" in target
 
 
 def main() -> None:
