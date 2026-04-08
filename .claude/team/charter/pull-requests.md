@@ -19,6 +19,36 @@ TechDebt: none | #15, #16, ...
 - The `Requestor` must differ from the branch author (validated by the merge hook). This is enforced by the `block_gh_pr_review.py` PreToolUse hook and validated by `validate_pr_review.py` at merge time.
 - The `TechDebt:` line is **mandatory** on every review. If the reviewer found non-blocking observations, they MUST create `tech-debt` labeled issues BEFORE posting the review, then list the issue numbers. If no tech-debt was found, write `TechDebt: none`. This is enforced by the `validate_pr_review.py` PreToolUse hook at merge time.
 
+## Review Prompt Template (Mandatory)
+
+When the orchestrator assigns a review to any agent, the prompt **MUST** include a copy-paste-ready `gh pr comment` command with all fields pre-filled. Do not rely on agents writing the format from memory — this has a 100% error rate.
+
+**Template for orchestrator prompts:**
+```
+Post your review using this exact command:
+
+gh pr comment {PR_NUMBER} --repo noorinalabs/{REPO} --body "Requestor: {AUTHOR_NAME}
+Requestee: {REVIEWER_NAME}
+RequestOrReplied: Approved
+TechDebt: none
+
+{Your review summary here.}"
+```
+
+Replace `Approved` with `Changes Requested` if blocking issues found. Replace `TechDebt: none` with issue numbers if tech-debt filed. Do NOT add bold markers, parenthetical descriptions, or extra fields.
+
+**Why:** In Phase 3 Wave 1, all 7 initial reviews used wrong field names (`Requestee (reviewer):` instead of `Requestee:`) and omitted the `TechDebt:` line, requiring re-posts and blocking merges for ~15 minutes.
+
+Failing to include the review template in a review assignment prompt is a **minor feedback event** for the orchestrator.
+
+## Two-Reviewer Assignment at Wave Kickoff
+
+Every PR must have **two reviewers** assigned at wave kickoff — a primary and a secondary. Both reviewers are named in the agent's spawn prompt and in the execution plan.
+
+**Why:** In Phase 3 Wave 1, only one reviewer was planned per PR. Every PR needed ad-hoc second reviewer assignments, causing merge delays while idle agents were redirected.
+
+The Program Director's execution plan MUST include a review matrix with two named reviewers per expected PR. The orchestrator verifies this before spawning agents.
+
 ## PR Review Workflow for Deployments Branch PRs
 
 1. **Create the PR** targeting `deployments/phase{N}/wave-{M}`.

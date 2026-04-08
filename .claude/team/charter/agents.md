@@ -79,6 +79,18 @@ git worktree add /tmp/{agent-name} origin/{branch-name}
 
 Spawning a code-writing agent without per-repo worktree setup is a **moderate feedback event** for the orchestrator.
 
+### Scaffold Migration Chain Strategy
+
+When a scaffold commit includes Alembic model stubs for parallel feature branches, it MUST also establish a **migration chain base**:
+
+1. **Create a stub migration** in the scaffold that serves as the known chain point (e.g., `0002_phase3_scaffold.py` that adds no schema changes but establishes the revision).
+2. **Document in MIGRATION_RANGES.md** that all feature branch migrations must use `down_revision = "{scaffold_migration_id}"` — not the initial migration.
+3. **Include the chain rule in each agent's prompt** — specify the exact `down_revision` value.
+
+**Why:** In Phase 3 Wave 1, all 4 feature PRs independently set `down_revision = "0001"`, which would create multiple Alembic heads and break `alembic upgrade head`. Reviewers caught this, but it required fix cycles on every PR. A scaffold migration base prevents this class of error entirely.
+
+Omitting migration chain instructions when spawning parallel Alembic-aware agents is a **minor feedback event** for the orchestrator.
+
 ### Worktree Lock Management
 
 Agents working in worktrees MUST manage lockfiles to prevent premature pruning and ghost locks:
