@@ -112,6 +112,16 @@
         ]
       },
       {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/parameterization/code/noorinalabs-main/.claude/hooks/validate_review_comment_format.py",
+            "timeout": 15
+          }
+        ]
+      },
+      {
         "matcher": "Agent",
         "hooks": [
           {
