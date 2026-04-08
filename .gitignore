@@ -8,6 +8,11 @@ noorinalabs-isnad-graph-ingestion/
 # Claude Code project data
 .claude/projects/
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
 # OS files
 .DS_Store
 Thumbs.db
