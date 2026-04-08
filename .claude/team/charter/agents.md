@@ -51,7 +51,8 @@ When starting any work session, the orchestrating Claude instance should:
 5. **Actionable items** become charter updates, process changes, or new issues.
 6. **Trust matrix update** — update scores in `.claude/team/trust_matrix.md` on `main`, add done-well/needs-improvement notes, update roster cards with performance history. All changes go to `main` — no separate branches for trust data.
 7. **Hook/skill audit** — for every failure or friction point from the wave, ask: "Could a hook have prevented this? Could a skill have automated this?" Present candidates to the user. Prefer hooks over skills, skills over LLM generation. Create issues for approved implementations.
-8. **Only then** shut down agents.
+8. **Present full retro summary to the user** — output directly in the conversation (not just written to files). Must include: per-engineer assessments with severity, trust matrix changes, top 3 going well, top 3 pain points, proposed process changes, and any fire/hire actions. The user reviews and approves before proceeding.
+9. **Only then** shut down agents.
 
 Skipping retros is a **moderate feedback event** for the orchestrator.
 

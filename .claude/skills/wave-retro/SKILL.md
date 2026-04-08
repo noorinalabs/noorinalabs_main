@@ -110,9 +110,20 @@ Based on pain points and findings, propose specific charter amendments. Present 
 **Rationale:** {why, based on retro findings}
 ```
 
-### 7. Present to user for approval
+### 7. Present full retro summary to the user
 
-Display all proposed changes. **Do NOT apply any charter changes without explicit user approval.** The user decides which proposals to adopt, modify, or reject.
+**Output the complete retro summary directly in the conversation.** Do not just write to files — the user must see the retro without having to open `feedback_log.md`. Include:
+
+- **Wave metrics:** PRs merged, issues closed, CI health, tech-debt filed
+- **Per-engineer assessments:** each engineer's PRs, must-fix items, CI failures, severity rating
+- **Trust matrix changes:** who went up/down and why
+- **Top 3 going well**
+- **Top 3 pain points**
+- **Proposed process changes** with rationale
+- **Fire/hire actions** (if any)
+- **Proposed charter changes** (if any)
+
+**Do NOT apply any charter changes without explicit user approval.** The user decides which proposals to adopt, modify, or reject.
 
 ## What remains manual
 
