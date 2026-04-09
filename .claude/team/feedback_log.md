@@ -311,3 +311,101 @@ No severe feedback. Team composition stable.
 
 ### Fire/Hire Actions
 None. Idris received moderate feedback — single-wave pattern, will monitor.
+
+---
+
+## 2026-04-09 — User Service Extraction Phase 3 Wave 2 Retrospective
+
+**Scope:** 11 PRs merged across 3 repos (user-service: 4, deploy: 4, isnad-graph: 2, main: 1 issue-only). 6 issues closed (IG #756, #757, #761, #762, US #33, #34). 5 new issues filed (Main #58, #59, Deploy #49, #53, IG #769). Meta-issue: noorinalabs-main#48.
+
+### Per-Engineer Assessments
+
+#### Anya Kowalczyk (Tech Lead)
+- PRs: IG #770 (backend removal + JWKS retry + jwt_secret cleanup)
+- CI failures: 0
+- Must-fix items received: 3 (wrong verification stub URLs, wrong subscription stub URL, dead modules question)
+- Reviews given: 0 (implementation-only this wave)
+- Assessment: Delivered the largest PR (-866 lines) cleanly. All 481 tests passed. Must-fix items were URL path errors — guessed old paths instead of verifying against user-service. Fixed in one cycle. Bundled #761 and #762 correctly.
+- Severity: **Minor** — stub URL errors were avoidable by checking user-service routes first
+
+#### Mateo Salazar (Engineer)
+- PRs: US #37 (router prefix + make dev), US #40 (base64 JWT decode), IG #771 (frontend auth hooks)
+- CI failures: 0
+- Must-fix items received: 1 (logout/logoutAll regression on #771)
+- Reviews given: 0 (implementation-only this wave)
+- Assessment: Three deliveries across 2 repos. Router prefix standardization was clean. Base64 JWT decode was fast and correct. Frontend rewire was thorough — read user-service routes before coding, caught important method/path differences. Logout regression was a behavioral miss but fixed in one cycle.
+- Severity: **Minor** — logout regression was a design oversight caught in review
+
+#### Santiago Ferreira (Release Coordinator)
+- PRs: Deploy #50 (deploy workflow), US #38 (Dockerfile + CI), US #39 (Trivy SHA fix), US #41 (Python 3.12), Deploy #51 (env var fix), Deploy #52 (CORS fix)
+- CI failures: 2 (Trivy SHA truncation, CI lint pre-existing)
+- Must-fix items received: 1 (Dockerfile missing USER directive)
+- Reviews given: 0 (implementation-only this wave)
+- Assessment: Carried the entire Phase B deploy workload — 6 PRs, 5 deploy attempts, systematic debugging. Each failure identified a real issue (missing image, Python 3.14, env var mismatch, CORS format). Persisted methodically. Dockerfile USER regression was caught by Aino and fixed immediately. Trivy SHA was a copy error from isnad-graph template.
+- Severity: **None** — exemplary persistence. Deploy failures were infrastructure gaps, not quality issues.
+
+#### Lucas Ferreira (SRE, deploy team)
+- PRs: Deploy #48 (Caddyfile routes)
+- CI failures: 0
+- Must-fix items received: 1 (/totp → /2fa route fix)
+- Reviews given: 0
+- Assessment: Clean Caddyfile delivery. The /totp vs /2fa mismatch was from Nadia's plan (not Lucas's error) — fixed immediately when flagged. Quick turnaround.
+- Severity: **None** — clean delivery, fast correction
+
+#### Nadia Khoury (Program Director)
+- PRs: None (coordination)
+- Reviews given: 7 (Deploy #48, US #37, Deploy #50, US #38, US #39, Deploy #51, Deploy #52, IG #770, IG #771)
+- Assessment: Strong planning — phased approach (deploy-first, then code changes) was correct. Caught real issues in reviews: verification stub URLs, logout regression, Caddy bare-path gap. The /totp assumption was her error that propagated into Lucas's work, but she owned it transparently. Effective second-reviewer throughout.
+- Severity: **Minor** — /totp→/2fa planning error. Self-identified and acknowledged.
+
+#### Aino Virtanen (Standards & Quality Lead)
+- PRs: None (review-only)
+- Reviews given: 10 (all PRs across 3 repos)
+- Assessment: Fastest reviewer — no PR waited on her. Caught the Dockerfile USER regression (security), flagged the /totp vs /2fa mismatch independently, and identified the cross-repo review hook bug (Main #58). Most impactful single review: US #38 USER directive.
+- Severity: **None** — exemplary quality gate work
+
+#### Orchestrator (self-assessment)
+- Caught /2fa vs /totp mismatch by reading Mateo's PR diff before routing to reviewers
+- Properly gated Phase C on deploy verification
+- Used --admin override for known hook bug (Main #58) — documented, not a bypass
+- Filed 5 issues during wave for tech-debt and process gaps
+- Did NOT skip the retro this time (improvement from prior waves)
+- **Missed:** Should have verified deploy env vars against config.py before spawning Santiago — would have caught the DATABASE_URL/REDIS_URL mismatch and CORS format issue in planning, saving 2 deploy iterations
+- Severity: **Minor** — deploy debugging cost ~30 min that could have been avoided with pre-deploy config audit
+
+### Top 3 Going Well
+1. **Phased execution prevented breakage** — deploy-first (A/B) before code removal (C) ensured user-service was verified running before isnad-graph code was deleted
+2. **Review cycle caught 5 real bugs** — Dockerfile USER, /2fa mismatch, verification stub URLs, logout regression, Caddy bare-path gap
+3. **Retro actually ran** — breaking the pattern of skipped retros from Waves 1/A/B and Phase 2
+
+### Top 3 Pain Points
+1. **5 deploy attempts** — cascade of small config issues (env var names, CORS format, Python version, missing image, Trivy SHA). Each one was a 2+ min cycle. Total ~15 min lost.
+2. **Cross-repo review hook broken** (Main #58) — `validate_review_comment_format.py` doesn't pass `--repo`, forced --admin overrides on every cross-repo merge
+3. **No Dockerfile or CI in user-service** — new repo had zero deploy infrastructure. Should have been scaffolded when the repo was created.
+
+### Agent-Reported Issues
+- Add route-map checklist to agent prompts for 410 stubs and frontend URL changes (Nadia, Anya)
+- Caddy bare-path routing — `handle /path/*` doesn't match bare `/path` (Nadia, filed as Deploy #53)
+- Session ID missing from JWT claims — single-session logout requires extra fetch (Mateo, file as user-service enhancement)
+- Email login, register, providers endpoints don't exist on user-service yet (Mateo)
+- Labels missing on most PRs — auto-apply at wave-kickoff or via PR template (Aino)
+- Local smoke test for deploy PRs before merge (Aino)
+
+### Proposed Process Changes
+1. **Pre-deploy config audit** — before any first-time service deploy, verify docker-compose env vars match the app's config.py field names. Rationale: 2 of 5 deploy failures were env var mismatches.
+2. **New repo scaffold checklist** — Dockerfile, CI workflow, GHCR publish workflow must exist before first deploy is attempted. Rationale: user-service had none of these.
+3. **Route-map table in agent prompts** — when agents write 410 stubs or frontend URL changes, include verified old→new path mapping. Rationale: 100% error rate when agents guessed paths.
+4. **Fix cross-repo review hook** (Main #58) — extract `--repo` from the merge command. Rationale: forced --admin on every cross-repo merge this wave.
+
+### Trust Matrix Changes
+| Member | Old | New | Reason |
+|--------|-----|-----|--------|
+| Santiago Ferreira | 5 | 5 | Exemplary persistence through 5 deploy attempts, 6 PRs. No change — already at max. |
+| Aino Virtanen | 5 | 5 | 10 reviews, caught critical security regression. No change — already at max. |
+| Nadia Khoury | 4 | 4 | Strong coordination, good review catches. /totp planning error offset by transparent ownership. No change. |
+| Anya Kowalczyk | 5 | 5 | -866 lines, clean delivery. Stub URL errors were minor. No change. |
+| Mateo Salazar | 4 | 4 | 3 deliveries across 2 repos, fast fixes. Logout regression was minor. No change. |
+| Lucas Ferreira | 3 | **4** ↑ | Clean Caddyfile delivery, immediate /2fa fix. Reliable. |
+
+### Fire/Hire Actions
+None. All team members performed well. Minor feedback items only.

@@ -211,3 +211,46 @@ The org was restructured in Session 3 with new repo-level teams. The matrix abov
 | **Mateo Salazar** | Clean OAuth, thorough USER node cleanup | DB session placement diverged from team pattern (dependencies.py vs database.py) |
 | **Idris Yusuf** | RBAC implementation, prompt must-fix response | False positive on PR #763 review (grepped wrong tree), HS256 fallback in initial implementation |
 | **Nadia Boukhari** | Timely reviews, no stalling | None this phase (improved) |
+
+---
+
+## Session 6 Trust Updates (2026-04-09) — User Service Extraction Phase 3 Wave 2
+
+### Orchestrator → Org-Level Team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Nadia Khoury (PD) | 4 | 4 | Strong coordination, caught real bugs in reviews (verification stubs, logout regression, Caddy bare-path). /totp planning error offset by transparent ownership. |
+| Santiago Ferreira (RC) | 5 | 5 | Exemplary persistence — 6 PRs, 5 deploy attempts, systematic debugging. Already at max. |
+| Aino Virtanen (SQL) | 5 | 5 | 10 reviews across 3 repos, caught Dockerfile USER security regression. Already at max. |
+
+### Orchestrator → isnad-graph Team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Anya Kowalczyk (Tech Lead) | 5 | 5 | -866 line removal, bundled 3 issues cleanly. Stub URL errors were minor — fixed in one cycle. Already at max. |
+| Mateo Salazar (Engineer) | 4 | 4 | 3 deliveries across 2 repos. Logout regression caught in review, fixed quickly. Solid. |
+
+### Orchestrator → Deploy Team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Lucas Ferreira (SRE) | 3 | **4** ↑ | Clean Caddyfile delivery, immediate /2fa fix when flagged. Reliable first interaction. |
+
+### Orchestrator Self-Assessment
+
+| Issue | Severity | Action |
+|-------|----------|--------|
+| Missed pre-deploy config audit — env var names and CORS format not verified before first deploy | **Minor** | Add pre-deploy config audit step to deploy prompts. |
+| Retro completed before shutdown ✓ | **Positive** | Pattern broken — first wave with retro run on time. |
+
+### Done Well / Needs Improvement (Wave 2)
+
+| Member | Done Well | Needs Improvement |
+|--------|-----------|-------------------|
+| **Nadia Khoury** | Phased execution plan, thorough reviews, transparent error acknowledgment | /totp prefix assumption propagated to Caddyfile |
+| **Santiago Ferreira** | 6 PRs, systematic deploy debugging, fast fix turnaround | Python 3.14 copied from template without checking project target |
+| **Aino Virtanen** | 10 reviews, caught USER regression and /2fa mismatch, identified hook bug | None this wave |
+| **Anya Kowalczyk** | -866 lines clean removal, bundled 3 issues, fast fix cycle | Verification stub URLs guessed instead of verified |
+| **Mateo Salazar** | 3 deliveries, read user-service routes before coding, clean base64 fix | Logout/logoutAll regression — identical behavior not caught before review |
+| **Lucas Ferreira** | Clean Caddyfile delivery, immediate fix when flagged | None this wave |
