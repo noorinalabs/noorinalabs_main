@@ -27,6 +27,38 @@ deployments/phase{N}/wave-{M}
   ```
   Resolve any conflicts before pushing and creating the PR.
 
+## Release Tagging Cadence
+
+**Tags are created at the end of every wave** — after all PRs are merged but before the retro. Missing tags means missing GHCR images and deploy failures.
+
+### Tag Format
+
+| Context | Format | Example |
+|---------|--------|---------|
+| Wave release | `phase{N}-wave{M}` | `phase2-wave1` |
+| Milestone release | `v{major}.{minor}.{patch}` | `v1.2.0` |
+
+### Rules
+
+1. **Every repo that had changes in the wave gets a tag.** Check merged PRs by wave label.
+2. **Tags are created via `gh release create`** — this triggers GHCR publish workflows for repos that have them.
+3. **Santiago Ferreira (Release Coordinator) owns tagging.** If unavailable, the orchestrator delegates.
+4. **The `/wave-wrapup` skill includes tagging as step 12** — it is mandatory, not optional.
+5. **Verify GHCR images were published** after tagging repos with publish-on-tag workflows.
+
+### Repos Requiring Tags
+
+| Repo | Has GHCR Publish? | Notes |
+|------|-------------------|-------|
+| `noorinalabs-isnad-graph` | Yes | Publishes on tag push |
+| `noorinalabs-isnad-graph-ingestion` | No | No container image |
+| `noorinalabs-deploy` | No | Config only, tag for versioning |
+| `noorinalabs-design-system` | No | NPM package, not containerized |
+| `noorinalabs-landing-page` | Yes | Publishes on tag push |
+| `noorinalabs-main` | No | Org config, tag for versioning |
+
+Failing to tag at wave end is a **minor feedback event** for the Release Coordinator.
+
 ## Worktree Cleanup
 
 **After every wave completes** (all PRs merged into the deployments branch), clean up stale worktrees:
