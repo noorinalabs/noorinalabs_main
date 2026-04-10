@@ -46,7 +46,15 @@ def extract_pr_number(command: str) -> str | None:
     return None
 
 
-def get_pr_data(pr_number: str | None) -> dict | None:
+def extract_repo_from_command(command: str) -> str | None:
+    """Extract --repo value from gh pr merge command."""
+    match = re.search(r"--repo\s+(\S+)", command)
+    if match:
+        return match.group(1)
+    return None
+
+
+def get_pr_data(pr_number: str | None, repo: str | None = None) -> dict | None:
     """Fetch all needed PR data in a single gh pr view call.
 
     Returns dict with keys: author (login str), number, reviews, headRefName.
@@ -56,6 +64,8 @@ def get_pr_data(pr_number: str | None) -> dict | None:
         cmd = ["gh", "pr", "view"]
         if pr_number:
             cmd.append(pr_number)
+        if repo:
+            cmd.extend(["--repo", repo])
         cmd.extend(["--json", "author,number,reviews,headRefName"])
         result = subprocess.run(
             cmd, capture_output=True, text=True, timeout=15,
@@ -98,6 +108,7 @@ class CommentReviewResult:
 
 def check_comment_reviews(
     pr_number: str | int, branch_author_lastname: str,
+    repo: str | None = None,
 ) -> CommentReviewResult:
     """Check PR comments for charter-format review comments from different authors.
 
@@ -106,16 +117,19 @@ def check_comment_reviews(
     """
     result = CommentReviewResult()
     try:
-        # Get repo info
-        repo_result = subprocess.run(
-            ["gh", "repo", "view", "--json", "owner,name"],
-            capture_output=True, text=True, timeout=15,
-        )
-        if repo_result.returncode != 0:
-            return result
-        repo_data = json.loads(repo_result.stdout)
-        owner = repo_data.get("owner", {}).get("login", "")
-        repo_name = repo_data.get("name", "")
+        # Get repo info — prefer --repo flag from the merge command
+        if repo and "/" in repo:
+            owner, repo_name = repo.split("/", 1)
+        else:
+            repo_result = subprocess.run(
+                ["gh", "repo", "view", "--json", "owner,name"],
+                capture_output=True, text=True, timeout=15,
+            )
+            if repo_result.returncode != 0:
+                return result
+            repo_data = json.loads(repo_result.stdout)
+            owner = repo_data.get("owner", {}).get("login", "")
+            repo_name = repo_data.get("name", "")
 
         # Fetch PR comments via the issues API with pagination
         comments_result = subprocess.run(
@@ -206,7 +220,8 @@ def main() -> None:
         sys.exit(0)
 
     pr_number = extract_pr_number(command)
-    pr_data = get_pr_data(pr_number)
+    repo = extract_repo_from_command(command)
+    pr_data = get_pr_data(pr_number, repo=repo)
 
     if pr_data is None:
         # Could not fetch PR info — allow with warning
@@ -238,7 +253,7 @@ def main() -> None:
     if head_ref:
         branch_author_lastname = extract_branch_author_lastname(head_ref)
         if branch_author_lastname:
-            comment_review_result = check_comment_reviews(number, branch_author_lastname)
+            comment_review_result = check_comment_reviews(number, branch_author_lastname, repo=repo)
 
     # Total distinct reviewers (formal + comment-based)
     total_distinct = len(formal_reviewers) + len(comment_review_result.reviewers)
@@ -287,19 +302,22 @@ def main() -> None:
     # All checks passed — ensure any referenced tech-debt issues are on the board
     td_issues = comment_review_result.tech_debt_issue_numbers
     if td_issues:
-        # Determine the repo from the PR's head ref or current directory
-        repo_name = ""
-        try:
-            repo_result = subprocess.run(
-                ["gh", "repo", "view", "--json", "name"],
-                capture_output=True, text=True, timeout=10,
-            )
-            if repo_result.returncode == 0:
-                repo_name = json.loads(repo_result.stdout).get("name", "")
-        except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
-            pass
-        if repo_name:
-            ensure_issues_on_board(repo_name, td_issues)
+        # Determine the repo from --repo flag or current directory
+        board_repo_name = ""
+        if repo and "/" in repo:
+            board_repo_name = repo.split("/", 1)[1]
+        else:
+            try:
+                repo_result = subprocess.run(
+                    ["gh", "repo", "view", "--json", "name"],
+                    capture_output=True, text=True, timeout=10,
+                )
+                if repo_result.returncode == 0:
+                    board_repo_name = json.loads(repo_result.stdout).get("name", "")
+            except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
+                pass
+        if board_repo_name:
+            ensure_issues_on_board(board_repo_name, td_issues)
 
     sys.exit(0)
 
