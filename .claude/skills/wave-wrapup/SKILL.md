@@ -123,14 +123,36 @@ For any remaining open issues:
 - If the work was partially done, document what remains
 - Report all unresolved items
 
-### 8. Clean up worktrees
+### 8. Clean up worktrees (mandatory)
+
+**All wave worktrees MUST be removed before the wrapup is considered complete.** Stale worktrees accumulate across waves and cause branch contention.
 
 ```bash
+# Prune any stale worktree metadata
 git worktree prune
+
+# List all worktrees and identify wave-related ones
 git worktree list
+
+# Remove each wave worktree (branches matching wave assignees)
+# Example: git worktree remove .claude/worktrees/W.Mwangi+0063-fix-branch-freshness-worktree --force
 ```
 
-Remove any worktrees created for this wave's PRs. Report what was cleaned.
+For each worktree:
+1. Check if it has uncommitted changes (`git -C <path> status --porcelain`)
+2. If clean, remove with `git worktree remove <path>`
+3. If dirty, report to the user — do NOT force-remove without approval
+4. Delete the remote tracking branch if the PR was merged: `git push origin --delete <branch>`
+
+Report what was cleaned:
+```
+**Worktree Cleanup:**
+- Removed: {count} worktrees
+- Skipped (dirty): {count}
+- Remote branches deleted: {count}
+```
+
+**Why:** Phase 2 Wave 1 left 6 stale worktrees after merge because cleanup wasn't enforced.
 
 ### 9. Update documentation
 

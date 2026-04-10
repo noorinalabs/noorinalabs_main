@@ -151,6 +151,16 @@ Before pushing a branch and creating a PR, every engineer must:
 
 Pushing code that fails lint, formatting, or tests is a **minor feedback event**.
 
+## CI Must Be Green Before Merge
+
+**No PR may be merged while CI is failing, even if failures are pre-existing.** If a new CI workflow is introduced and it catches pre-existing violations, those violations must be fixed before or in the same PR as the workflow addition.
+
+- If CI is red on the target branch due to pre-existing issues, fix forward — create a predecessor PR that resolves the violations, merge it first, then merge the CI workflow PR.
+- If CI is red on a feature branch, the PR author must fix the failures before requesting review.
+- Merging a PR with known CI failures is a **moderate feedback event**.
+
+**Why:** In Phase 2 Wave 1, PR #72 introduced a hook CI workflow that immediately failed on pre-existing ruff I001 lint in other files. CI went red on main because the violations weren't fixed before merge.
+
 ## CI Enforcement After PR Creation
 
 After creating a PR, **every team member** must follow this process:

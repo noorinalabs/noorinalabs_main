@@ -87,6 +87,25 @@ The following charter rules are enforced automatically via Claude Code hooks in 
 - **Manual steps remaining:** Run `/wave-kickoff` to set the wave context. The hook is a warning, not a block.
 - **Emergency override:** Not needed (warning only). Remove the hook entry to suppress.
 
+## Bash Hook Dispatcher Architecture
+
+All Bash-matcher hooks are consolidated into a **single dispatcher** (`bash_dispatcher.py`) that dynamically loads individual hook modules via `importlib.util`. This reduces process spawns from N (one per hook) to 1 per Bash tool call.
+
+**Key design decisions:**
+- Individual hook files remain as standalone modules — testable independently, loaded dynamically by the dispatcher
+- `bash_dispatcher.py` is the **only** Bash-matcher entry in `.claude/settings.json`
+- Hook execution order is preserved (matches the order hooks are registered in the dispatcher)
+- **Fail-open:** If an individual hook crashes, the dispatcher logs a warning and continues — it does not block the command
+- **Short-circuit on block:** If any hook returns a blocking result, subsequent hooks are skipped
+- `sys.exit` calls from individual hooks are intercepted via mock to prevent the dispatcher from terminating
+
+**Adding a new Bash hook:**
+1. Create the hook script in `.claude/hooks/` as a standalone Python module
+2. Register it in `bash_dispatcher.py`'s hook list
+3. Do NOT add a separate entry in `.claude/settings.json` — the dispatcher handles all Bash hooks
+
+**Why:** Phase 2 Wave 1 PR #73 consolidated 12 individual Bash-matcher hooks into this pattern, reducing process spawns from 12 to 1 per Bash call.
+
 ## Hook 13: Auto-Add Issues to Project Board (`auto_add_issue_to_board.py`)
 
 - **What it automates:** After `gh issue create` runs, detects the new issue URL in stdout and runs `gh project item-add` to add it to the Cross-Repo Wave Plan board (project #2).
