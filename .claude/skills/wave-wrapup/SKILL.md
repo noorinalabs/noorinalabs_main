@@ -185,7 +185,51 @@ gh pr create --base main --head "deployments/phase{P}/wave-{M}" \
 
 **Do NOT merge to main without user approval.** This is a significant action that affects all downstream repos.
 
-### 12. Memory-to-automation audit
+### 12. Release tagging (mandatory)
+
+**After all PRs are merged**, create release tags for every repo that had changes in this wave. This is a mandatory step — missing tags means missing GHCR images and deploy failures.
+
+**Tag format:**
+- Wave releases: `phase{P}-wave{M}` (e.g., `phase2-wave1`)
+- Milestone releases: `v{major}.{minor}.{patch}` (semver)
+
+**Process:**
+
+1. **Identify repos with changes** — check which repos had PRs merged in this wave:
+   ```bash
+   # For each repo, check if it had PRs merged with the wave label
+   gh pr list --state merged --label "p{P}-wave-{M}" --repo noorinalabs/{repo} --json number,title
+   ```
+
+2. **Create tags** for each repo with changes:
+   ```bash
+   # Tag from the deployment branch (intermediate waves) or main (final wave)
+   gh release create "phase{P}-wave{M}" --repo noorinalabs/{repo} \
+       --title "Phase {P} Wave {M}" \
+       --notes "Wave release. See merged PRs for details." \
+       --target {branch}
+   ```
+
+3. **Verify GHCR images** — for repos with publish-on-tag workflows, confirm the image was built:
+   ```bash
+   gh api orgs/noorinalabs/packages/container/{repo}/versions --jq '.[0].metadata.container.tags[]'
+   ```
+
+4. **Report tagging results:**
+   ```
+   **Release Tags: Phase {P} Wave {M}**
+
+   | Repo | Tag | GHCR Image | Status |
+   |------|-----|------------|--------|
+   | isnad-graph | phase2-wave1 | ghcr.io/noorinalabs/isnad-graph:phase2-wave1 | Published |
+   | deploy | phase2-wave1 | N/A | Tagged |
+   ```
+
+**Owner:** Santiago Ferreira (Release Coordinator) executes this step. If Santiago is not available, the orchestrator delegates to another team member.
+
+**Why:** In Phase 1, 8 days of work went untagged. No tags means no GHCR images, which blocked the user-service production deploy. This step prevents that failure mode.
+
+### 13. Memory-to-automation audit
 
 Examine all memory files in the project memory directory for entries that describe behaviors, rules, or patterns that could be codified as a **hook**, **skill**, or **charter update** instead of remaining as soft memory.
 
