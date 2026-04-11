@@ -26,21 +26,44 @@ def get_base_branch(command: str) -> str:
     return "main"
 
 
-def is_branch_fresh(base: str) -> bool:
+def get_working_dir(command: str) -> str | None:
+    """Extract the target directory from a leading cd in the command.
+
+    Agent commands in worktrees typically look like:
+        cd /tmp/worktree-path && gh pr create ...
+    The hook process itself runs from the main repo cwd, so we need to
+    detect the worktree path from the command and pass it to git via -C.
+    """
+    match = re.match(r"cd\s+[\"']?([^\s\"';&]+)[\"']?\s*&&", command)
+    if match:
+        path = match.group(1)
+        if os.path.isdir(path):
+            return path
+    return None
+
+
+def _git(
+    args: list[str],
+    working_dir: str | None,
+    timeout: int = 30,
+) -> subprocess.CompletedProcess:
+    """Run a git command, using -C <dir> when a worktree path is provided."""
+    cmd = ["git"]
+    if working_dir:
+        cmd.extend(["-C", working_dir])
+    cmd.extend(args)
+    return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+
+
+def is_branch_fresh(base: str, working_dir: str | None = None) -> bool:
     """Check if HEAD contains the latest commit from origin/base."""
     try:
         # Fetch latest from origin
-        subprocess.run(
-            ["git", "fetch", "origin", base],
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
+        _git(["fetch", "origin", base], working_dir, timeout=30)
         # Check if origin/base is an ancestor of HEAD
-        result = subprocess.run(
-            ["git", "merge-base", "--is-ancestor", f"origin/{base}", "HEAD"],
-            capture_output=True,
-            text=True,
+        result = _git(
+            ["merge-base", "--is-ancestor", f"origin/{base}", "HEAD"],
+            working_dir,
             timeout=10,
         )
         return result.returncode == 0
@@ -65,8 +88,9 @@ def main() -> None:
         sys.exit(0)
 
     base = get_base_branch(command)
+    working_dir = get_working_dir(command)
 
-    if is_branch_fresh(base):
+    if is_branch_fresh(base, working_dir):
         sys.exit(0)
 
     result = {
