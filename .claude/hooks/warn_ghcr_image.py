@@ -14,9 +14,7 @@ import subprocess
 import sys
 
 # Deploy-related workflow names/files
-DEPLOY_PATTERNS = re.compile(
-    r"deploy|release|cd[.-]|deliver", re.IGNORECASE
-)
+DEPLOY_PATTERNS = re.compile(r"deploy|release|cd[.-]|deliver", re.IGNORECASE)
 
 # Map of repo short names to GHCR image paths
 REPO_IMAGE_MAP = {
@@ -41,9 +39,11 @@ def check_ghcr_image(image: str, tag: str = "latest") -> bool:
     try:
         result = subprocess.run(
             [
-                "gh", "api",
+                "gh",
+                "api",
                 f"orgs/{org}/packages/container/{package}/versions",
-                "--jq", ".[0].metadata.container.tags[]",
+                "--jq",
+                ".[0].metadata.container.tags[]",
             ],
             capture_output=True,
             text=True,

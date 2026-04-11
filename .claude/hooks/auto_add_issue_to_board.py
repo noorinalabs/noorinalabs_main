@@ -18,7 +18,6 @@ import re
 import subprocess
 import sys
 
-
 # noorinalabs org project number
 PROJECT_NUMBER = 2
 ORG = "noorinalabs"
@@ -46,9 +45,7 @@ def main() -> None:
         sys.exit(0)
 
     # gh issue create outputs the URL on the last line
-    url_match = re.search(
-        r"(https://github\.com/noorinalabs/[^/]+/issues/\d+)", stdout
-    )
+    url_match = re.search(r"(https://github\.com/noorinalabs/[^/]+/issues/\d+)", stdout)
     if not url_match:
         sys.exit(0)
 
@@ -58,9 +55,14 @@ def main() -> None:
     try:
         subprocess.run(
             [
-                "gh", "project", "item-add", str(PROJECT_NUMBER),
-                "--owner", ORG,
-                "--url", issue_url,
+                "gh",
+                "project",
+                "item-add",
+                str(PROJECT_NUMBER),
+                "--owner",
+                ORG,
+                "--url",
+                issue_url,
             ],
             capture_output=True,
             text=True,

@@ -26,10 +26,7 @@ def get_staged_lockfiles() -> list[str]:
         )
         if result.returncode != 0:
             return []
-        return [
-            f for f in result.stdout.strip().splitlines()
-            if f.endswith("package-lock.json")
-        ]
+        return [f for f in result.stdout.strip().splitlines() if f.endswith("package-lock.json")]
     except (subprocess.TimeoutExpired, FileNotFoundError):
         return []
 

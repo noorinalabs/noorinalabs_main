@@ -146,9 +146,7 @@ def main() -> None:
     command = input_data.get("tool_input", {}).get("command", "")
 
     # Match gh variable set VPS_HOST <value>
-    match = re.search(
-        r"\bgh\s+variable\s+set\s+VPS_HOST\s+[\"']?(\S+)[\"']?", command
-    )
+    match = re.search(r"\bgh\s+variable\s+set\s+VPS_HOST\s+[\"']?(\S+)[\"']?", command)
     if not match:
         sys.exit(0)
 
