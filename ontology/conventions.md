@@ -94,6 +94,34 @@ Updated by `/ontology-rebuild`. Manual edits require `checksums.json` update.
 - Wrapup includes: PR merge sequencing, ontology rebuild, Annunaki attack, memory audit
 - Retro includes: ontology staleness check, per-engineer assessments, trust matrix updates
 
+### Session continuity
+- **Auto-handoff** (`session_handoff.py` Stop hook): Fires on every session exit (throttled to 5 min). Captures git state, open PRs/issues, wave status, ontology staleness. Writes to project memory for next session pickup.
+- **Manual handoff** (`/handoff` skill): Richer version that includes conversational context — what was discussed, decisions made, blockers encountered.
+- **Session start protocol**: Charter-mandated steps — check handoff file, run ontology librarian, orient on wave/phase, check charter freshness.
+
+### Automation hooks (org-level)
+| Hook | Event | Purpose |
+|------|-------|---------|
+| `validate_commit_identity.py` | PreToolUse (Bash) | Block commits without per-commit `-c` identity flags |
+| `block_no_verify.py` | PreToolUse (Bash) | Block `--no-verify` flag on git commands |
+| `block_git_config.py` | PreToolUse (Bash) | Block `git config user.*` commands |
+| `auto_set_env_test.py` | PreToolUse (Bash) | Auto-set `ENV=test` for pytest commands |
+| `validate_labels.py` | PreToolUse (Bash) | Verify labels exist before applying to issues |
+| `validate_lockfile_paths.py` | PreToolUse (Bash) | Block commits with absolute lockfile paths |
+| `validate_pr_review.py` | PreToolUse (Bash) | Enforce charter review comment format |
+| `validate_branch_freshness.py` | PreToolUse (Bash) | Warn if branch is behind origin |
+| `validate_vps_host.py` | PreToolUse (Bash) | Block SSH to non-approved VPS hosts |
+| `warn_ghcr_image.py` | PreToolUse (Bash) | Warn before pushing GHCR images |
+| `block_gh_pr_review.py` | PreToolUse (Bash) | Block `gh pr review` (use comment-based reviews) |
+| `validate_review_comment_format.py` | PreToolUse (Bash) | Enforce review comment charter format |
+| `validate_wave_context.py` | PreToolUse (Agent) | Warn if agent spawned without wave context |
+| `block_shutdown_without_retro.py` | PreToolUse (SendMessage) | Block agent shutdown before retro |
+| `auto_add_issue_to_board.py` | PostToolUse (Bash) | Auto-add new issues to project board |
+| `annunaki_monitor.py` | PostToolUse (Bash) | Capture failed commands to error log |
+| `ontology_tracker.py` | PostToolUse (Edit/Write) | Track file checksums for ontology changes |
+| `suggest_generic_prompt.py` | PostToolUse (Edit/Write) | Suggest generic prompts for `.claude/` changes |
+| `session_handoff.py` | Stop | Auto-generate handoff on session exit |
+
 ## Shared tooling
 
 ### Package management

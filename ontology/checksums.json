@@ -15,10 +15,10 @@
       "resolved_at": "2026-04-11T16:26:02.575946+00:00"
     },
     "CLAUDE.md": {
-      "last_tracked": "9ce50a3d21483907415c0d017c491661030d12ef26046b5e794a3dc4e016c7b2",
-      "last_resolved": "c073be43d196040d8886c64aed5f7fd98dfc4769157b96fb12b8a74793464670",
-      "tracked_at": "2026-04-11T16:55:14.882964+00:00",
-      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+      "last_tracked": "b3c527318dc6314bcca22c68a4686216fdec74d60f554b86bd90fe87a3166038",
+      "last_resolved": "b3c527318dc6314bcca22c68a4686216fdec74d60f554b86bd90fe87a3166038",
+      "tracked_at": "2026-04-11T16:59:01.595963+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     "ontology/domain.yaml": {
       "last_tracked": "47d3e4855f3b9f4f0ae224a26a23f3d3a9cbb9a6008e38690cd2df1be7027d75",
@@ -33,10 +33,10 @@
       "resolved_at": "2026-04-11T16:26:02.575946+00:00"
     },
     "ontology/conventions.md": {
-      "last_tracked": "0f4f32383eb149266bf600606b9736f4dc43319dce6d806f66daf3324b9d6a7a",
-      "last_resolved": "0f4f32383eb149266bf600606b9736f4dc43319dce6d806f66daf3324b9d6a7a",
-      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
-      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+      "last_tracked": "632156ba06a6301a2c8d00d440e06e887cc13bb5300f2a202b18b1b819e797b3",
+      "last_resolved": "632156ba06a6301a2c8d00d440e06e887cc13bb5300f2a202b18b1b819e797b3",
+      "tracked_at": "2026-04-11T18:37:30.535410+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     "ontology/repos/isnad-graph.yaml": {
       "last_tracked": "175ebd6c739a9e336fc3d04a8b549ea0ff5cb8a5c58a1982e33ffe5e2a838c14",
@@ -80,59 +80,83 @@
       "tracked_at": "2026-04-11T16:26:02.575946+00:00",
       "resolved_at": "2026-04-11T16:26:02.575946+00:00"
     },
-    "ontology/ONTOLOGY_SETUP_PROMPT.md": {
-      "last_tracked": "9f8e43636ed9045bacc954381d4b6cad584e02c22d51d55073f0504f7379c579",
-      "last_resolved": "",
-      "tracked_at": "2026-04-11T16:42:12.401563+00:00",
-      "resolved_at": ""
-    },
     "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/project_ontology_system.md": {
       "last_tracked": "aec106ae6261921e5d305a1c58b22062fb150511e64957b47b59907173792b7c",
-      "last_resolved": "",
+      "last_resolved": "aec106ae6261921e5d305a1c58b22062fb150511e64957b47b59907173792b7c",
       "tracked_at": "2026-04-11T16:27:09.722316+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/MEMORY.md": {
-      "last_tracked": "a9654f6c81b16af1a073c0700be8e53c698186e4233b22b98d6eecd41e3f8eb4",
-      "last_resolved": "",
-      "tracked_at": "2026-04-11T16:49:45.114965+00:00",
-      "resolved_at": ""
+      "last_tracked": "00d9252e3021c4d03fdfdf52155d34f46703dbb659fcfaf196ddc7d9142a2c00",
+      "last_resolved": "00d9252e3021c4d03fdfdf52155d34f46703dbb659fcfaf196ddc7d9142a2c00",
+      "tracked_at": "2026-04-11T17:15:41.088951+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     ".claude/team/charter.md": {
       "last_tracked": "b428ad621b0afb6671cd2a68faa4996db0dc0fabece5f23abe2a88623e13d4f3",
-      "last_resolved": "",
+      "last_resolved": "b428ad621b0afb6671cd2a68faa4996db0dc0fabece5f23abe2a88623e13d4f3",
       "tracked_at": "2026-04-11T16:41:49.994510+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     ".claude/team/charter/agents.md": {
       "last_tracked": "3c3185b6eb68ef1c66514c9094fa8de1d996aefd5b8205c93427b20b4a542a00",
-      "last_resolved": "",
+      "last_resolved": "3c3185b6eb68ef1c66514c9094fa8de1d996aefd5b8205c93427b20b4a542a00",
       "tracked_at": "2026-04-11T16:41:56.882270+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/project_bootstrap_repo.md": {
       "last_tracked": "7eca4e527c495274c915623642713fb67c0ef78c138947af77111e0d95b5f738",
-      "last_resolved": "",
+      "last_resolved": "7eca4e527c495274c915623642713fb67c0ef78c138947af77111e0d95b5f738",
       "tracked_at": "2026-04-11T16:49:42.410368+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     ".claude/hooks/suggest_generic_prompt.py": {
       "last_tracked": "777adc43582cd149ce29dc85c1a1ed8f6a5c06e7c32f8f9219cb1e28099ec3d0",
-      "last_resolved": "",
+      "last_resolved": "777adc43582cd149ce29dc85c1a1ed8f6a5c06e7c32f8f9219cb1e28099ec3d0",
       "tracked_at": "2026-04-11T16:54:19.457539+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     ".claude/settings.json": {
-      "last_tracked": "5b5494aa19f7f63e584fa7546589f5d7155045e7990da9dcdcacd52d382898d4",
-      "last_resolved": "",
-      "tracked_at": "2026-04-11T16:52:46.641186+00:00",
-      "resolved_at": ""
+      "last_tracked": "b5bf03978263e2641d087ad55d40e77af038ec911f5b204384a2292ad6274851",
+      "last_resolved": "b5bf03978263e2641d087ad55d40e77af038ec911f5b204384a2292ad6274851",
+      "tracked_at": "2026-04-11T16:58:52.871512+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     ".claude/skills/handoff/SKILL.md": {
       "last_tracked": "9f106c7932f8ef284eadfc61fd824fee46b7514f03cf7a6f0360c6c5a83380f3",
-      "last_resolved": "",
+      "last_resolved": "9f106c7932f8ef284eadfc61fd824fee46b7514f03cf7a6f0360c6c5a83380f3",
       "tracked_at": "2026-04-11T16:55:02.464470+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    ".claude/hooks/session_handoff.py": {
+      "last_tracked": "cf3013361d37cfbdbc3dd6e861f4f95959f1523a359bdb10fa331e0b62769de5",
+      "last_resolved": "cf3013361d37cfbdbc3dd6e861f4f95959f1523a359bdb10fa331e0b62769de5",
+      "tracked_at": "2026-04-11T18:16:33.439430+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "/home/parameterization/code/2real-team-framework/generic_prompts/SESSION_HANDOFF_PROMPT.md": {
+      "last_tracked": "aeb374598fb728a67683e43a8087d045ce2f08e846c87c6991d400355ca6f900",
+      "last_resolved": "aeb374598fb728a67683e43a8087d045ce2f08e846c87c6991d400355ca6f900",
+      "tracked_at": "2026-04-11T17:08:56.398959+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/session_handoff.md": {
+      "last_tracked": "a1a77a214ef86536154c92316fb049b3ad0ca67a68b0436faeb1a0f63bc65046",
+      "last_resolved": "a1a77a214ef86536154c92316fb049b3ad0ca67a68b0436faeb1a0f63bc65046",
+      "tracked_at": "2026-04-11T17:15:29.035906+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "/home/parameterization/.claude/settings.json": {
+      "last_tracked": "51b90238b24ebd778a131029b19c4a993e0f7a473b4007a1ffcc8b7920b3adc3",
+      "last_resolved": "51b90238b24ebd778a131029b19c4a993e0f7a473b4007a1ffcc8b7920b3adc3",
+      "tracked_at": "2026-04-11T18:17:33.240348+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "/home/parameterization/.claude/plans/snazzy-snacking-hickey.md": {
+      "last_tracked": "e0563d9e2139ae290575773b114c36d04683148a8e3fd9036d3271fc88bd8e03",
+      "last_resolved": "e0563d9e2139ae290575773b114c36d04683148a8e3fd9036d3271fc88bd8e03",
+      "tracked_at": "2026-04-11T18:20:51.343996+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     }
   }
 }
