@@ -72,7 +72,10 @@ def get_pr_data(pr_number: str | None, repo: str | None = None) -> dict | None:
             cmd.extend(["--repo", repo])
         cmd.extend(["--json", "author,number,reviews,headRefName"])
         result = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=15,
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=15,
         )
         if result.returncode != 0:
             return None
@@ -111,7 +114,8 @@ class CommentReviewResult:
 
 
 def check_comment_reviews(
-    pr_number: str | int, branch_author_lastname: str,
+    pr_number: str | int,
+    branch_author_lastname: str,
     repo: str | None = None,
 ) -> CommentReviewResult:
     """Check PR comments for charter-format review comments from different authors.
@@ -127,7 +131,9 @@ def check_comment_reviews(
         else:
             repo_result = subprocess.run(
                 ["gh", "repo", "view", "--json", "owner,name"],
-                capture_output=True, text=True, timeout=15,
+                capture_output=True,
+                text=True,
+                timeout=15,
             )
             if repo_result.returncode != 0:
                 return result
@@ -138,7 +144,9 @@ def check_comment_reviews(
         # Fetch PR comments via the issues API with pagination
         comments_result = subprocess.run(
             ["gh", "api", f"repos/{owner}/{repo_name}/issues/{pr_number}/comments?per_page=100"],
-            capture_output=True, text=True, timeout=15,
+            capture_output=True,
+            text=True,
+            timeout=15,
         )
         if comments_result.returncode != 0:
             return result
@@ -192,9 +200,14 @@ def ensure_issues_on_board(repo: str, issue_numbers: list[str]) -> None:
         try:
             subprocess.run(
                 [
-                    "gh", "project", "item-add", str(PROJECT_NUMBER),
-                    "--owner", ORG,
-                    "--url", url,
+                    "gh",
+                    "project",
+                    "item-add",
+                    str(PROJECT_NUMBER),
+                    "--owner",
+                    ORG,
+                    "--url",
+                    url,
                 ],
                 capture_output=True,
                 text=True,
@@ -316,7 +329,9 @@ def main() -> None:
             try:
                 repo_result = subprocess.run(
                     ["gh", "repo", "view", "--json", "name"],
-                    capture_output=True, text=True, timeout=10,
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
                 )
                 if repo_result.returncode == 0:
                     board_repo_name = json.loads(repo_result.stdout).get("name", "")

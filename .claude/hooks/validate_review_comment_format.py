@@ -49,7 +49,9 @@ def extract_comment_body(command: str) -> str | None:
     """
     # Heredoc: capture everything between <<'EOF' (or <<EOF) and the closing EOF
     heredoc_match = re.search(
-        r"<<'?EOF'?\s*\n(.*?)\nEOF", command, re.DOTALL,
+        r"<<'?EOF'?\s*\n(.*?)\nEOF",
+        command,
+        re.DOTALL,
     )
     if heredoc_match:
         return heredoc_match.group(1)
@@ -72,7 +74,9 @@ def get_branch_name(pr_number: str) -> str | None:
     try:
         result = subprocess.run(
             ["gh", "pr", "view", pr_number, "--json", "headRefName"],
-            capture_output=True, text=True, timeout=15,
+            capture_output=True,
+            text=True,
+            timeout=15,
         )
         if result.returncode != 0:
             return None

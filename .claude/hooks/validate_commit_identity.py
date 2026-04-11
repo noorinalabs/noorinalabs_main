@@ -10,9 +10,9 @@ Exit codes:
 """
 
 import json
-from pathlib import Path
 import re
 import sys
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from annunaki_log import log_pretooluse_block
@@ -62,8 +62,8 @@ def _is_git_commit_command(command: str) -> bool:
     return bool(
         re.search(
             r"(?:^|[;&|]\s*|&&\s*|\|\|\s*)\s*git\b"
-            r"(?:\s+-c\s+\S+)*"       # skip -c key=val pairs
-            r"(?:\s+-[A-Za-z]\s+\S+)*" # skip other -X val options
+            r"(?:\s+-c\s+\S+)*"  # skip -c key=val pairs
+            r"(?:\s+-[A-Za-z]\s+\S+)*"  # skip other -X val options
             r"\s+commit(?:\s|$)",
             cleaned,
             re.MULTILINE,
@@ -98,7 +98,8 @@ def main() -> None:
             "reason": (
                 "BLOCKED: git commit missing `-c user.name=` flag. "
                 "Charter § Commit Identity requires per-commit identity via -c flags. "
-                "Example: git -c user.name=\"Kwame Asante\" -c user.email=\"parametrization+Kwame.Asante@gmail.com\" commit -m \"...\""
+                'Example: git -c user.name="Kwame Asante" '
+                '-c user.email="parametrization+Kwame.Asante@gmail.com" commit -m "..."'
             ),
         }
         log_pretooluse_block("validate_commit_identity", command, result["reason"])
@@ -111,7 +112,8 @@ def main() -> None:
             "reason": (
                 "BLOCKED: git commit missing `-c user.email=` flag. "
                 "Charter § Commit Identity requires per-commit identity via -c flags. "
-                "Example: git -c user.name=\"Kwame Asante\" -c user.email=\"parametrization+Kwame.Asante@gmail.com\" commit -m \"...\""
+                'Example: git -c user.name="Kwame Asante" '
+                '-c user.email="parametrization+Kwame.Asante@gmail.com" commit -m "..."'
             ),
         }
         log_pretooluse_block("validate_commit_identity", command, result["reason"])
@@ -126,7 +128,7 @@ def main() -> None:
         result = {
             "decision": "block",
             "reason": (
-                f"BLOCKED: user.name=\"{name}\" is not a recognized roster member. "
+                f'BLOCKED: user.name="{name}" is not a recognized roster member. '
                 f"Valid names: {', '.join(sorted(ROSTER.keys()))}"
             ),
         }
@@ -139,7 +141,7 @@ def main() -> None:
         result = {
             "decision": "block",
             "reason": (
-                f"BLOCKED: user.email=\"{email}\" does not match roster for {name}. "
+                f'BLOCKED: user.email="{email}" does not match roster for {name}. '
                 f"Expected: {expected_email}"
             ),
         }
