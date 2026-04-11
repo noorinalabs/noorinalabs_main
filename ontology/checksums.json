@@ -33,10 +33,10 @@
       "resolved_at": "2026-04-11T16:26:02.575946+00:00"
     },
     "ontology/conventions.md": {
-      "last_tracked": "632156ba06a6301a2c8d00d440e06e887cc13bb5300f2a202b18b1b819e797b3",
-      "last_resolved": "632156ba06a6301a2c8d00d440e06e887cc13bb5300f2a202b18b1b819e797b3",
-      "tracked_at": "2026-04-11T18:37:30.535410+00:00",
-      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+      "last_tracked": "bca3678ff22b173735b2ad582ed93efeb7876faf3b1d3b51c731ffbbe37d3319",
+      "last_resolved": "bca3678ff22b173735b2ad582ed93efeb7876faf3b1d3b51c731ffbbe37d3319",
+      "tracked_at": "2026-04-11T22:09:20.362695+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
     },
     "ontology/repos/isnad-graph.yaml": {
       "last_tracked": "175ebd6c739a9e336fc3d04a8b549ea0ff5cb8a5c58a1982e33ffe5e2a838c14",
@@ -147,16 +147,100 @@
       "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     "/home/parameterization/.claude/settings.json": {
-      "last_tracked": "51b90238b24ebd778a131029b19c4a993e0f7a473b4007a1ffcc8b7920b3adc3",
-      "last_resolved": "51b90238b24ebd778a131029b19c4a993e0f7a473b4007a1ffcc8b7920b3adc3",
-      "tracked_at": "2026-04-11T18:17:33.240348+00:00",
-      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+      "last_tracked": "c47215509d09cfe07d4064401a2ff31d5b351994133e2858788a80103c571f0e",
+      "last_resolved": "c47215509d09cfe07d4064401a2ff31d5b351994133e2858788a80103c571f0e",
+      "tracked_at": "2026-04-11T21:56:53.903638+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
     },
     "/home/parameterization/.claude/plans/snazzy-snacking-hickey.md": {
       "last_tracked": "e0563d9e2139ae290575773b114c36d04683148a8e3fd9036d3271fc88bd8e03",
       "last_resolved": "e0563d9e2139ae290575773b114c36d04683148a8e3fd9036d3271fc88bd8e03",
       "tracked_at": "2026-04-11T18:20:51.343996+00:00",
       "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "/tmp/santiago-isnad-graph/frontend/eslint.config.js": {
+      "last_tracked": "2d938a013d8e6fe1250a979f9825e6a844449cfbb7a357cad4b6c212a8354011",
+      "last_resolved": "2d938a013d8e6fe1250a979f9825e6a844449cfbb7a357cad4b6c212a8354011",
+      "tracked_at": "2026-04-11T21:53:29.012681+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/santiago-isnad-graph/.pre-commit-config.yaml": {
+      "last_tracked": "2f9b1ed93612ed43d91ac0c568222129f113716137e128af2cb3124f313c459b",
+      "last_resolved": "2f9b1ed93612ed43d91ac0c568222129f113716137e128af2cb3124f313c459b",
+      "tracked_at": "2026-04-11T21:54:19.252121+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/wanjiku-main/.claude/hooks/validate_branch_freshness.py": {
+      "last_tracked": "e38b1831a46cbcf6595ee70b27396e8898a050b0ea29d11903ff5b06bdc34f3f",
+      "last_resolved": "e38b1831a46cbcf6595ee70b27396e8898a050b0ea29d11903ff5b06bdc34f3f",
+      "tracked_at": "2026-04-11T21:55:45.328710+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/wanjiku-main/scripts/pre-commit.sh": {
+      "last_tracked": "46867ddda4a1cc922af51492ac4008c883e8c11a4e2823f9949014ec76313237",
+      "last_resolved": "46867ddda4a1cc922af51492ac4008c883e8c11a4e2823f9949014ec76313237",
+      "tracked_at": "2026-04-11T21:57:22.024382+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/santiago-landing-page/tsconfig.json": {
+      "last_tracked": "c7039dabb61ebf919f085428e844b68ff67edab7060d2ede1fce9df99cdf7bf3",
+      "last_resolved": "c7039dabb61ebf919f085428e844b68ff67edab7060d2ede1fce9df99cdf7bf3",
+      "tracked_at": "2026-04-11T21:57:25.358266+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/santiago-landing-page/.pre-commit-config.yaml": {
+      "last_tracked": "e7ab611b3b8fedef0de823a4fcaa96ae5c20a37fadcfeb9294012c8fd6bf8705",
+      "last_resolved": "e7ab611b3b8fedef0de823a4fcaa96ae5c20a37fadcfeb9294012c8fd6bf8705",
+      "tracked_at": "2026-04-11T21:57:53.065828+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/santiago-deploy/compose/.env.example": {
+      "last_tracked": "0a45720545ec406a417e855b0730cfaefc1a899260cd46513babbe3fa2757e41",
+      "last_resolved": "0a45720545ec406a417e855b0730cfaefc1a899260cd46513babbe3fa2757e41",
+      "tracked_at": "2026-04-11T21:58:52.505615+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/santiago-deploy/.pre-commit-config.yaml": {
+      "last_tracked": "4836c9d8b8da3b67d008272ce4b8d939afff5000ff3b7c2ed5a0d9b26543bc8f",
+      "last_resolved": "4836c9d8b8da3b67d008272ce4b8d939afff5000ff3b7c2ed5a0d9b26543bc8f",
+      "tracked_at": "2026-04-11T21:59:18.133167+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/wanjiku-user-service/src/app/services/oauth.py": {
+      "last_tracked": "8daedb2c17bb5aead5233efaad9e7684113cf8550c075771d3dcb869d1c88a7e",
+      "last_resolved": "8daedb2c17bb5aead5233efaad9e7684113cf8550c075771d3dcb869d1c88a7e",
+      "tracked_at": "2026-04-11T21:59:25.065910+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/santiago-design-system/.pre-commit-config.yaml": {
+      "last_tracked": "5b267f3f5de2c51cf5381161d03df4196823eb58098cf73da1a9cbf08ebb508a",
+      "last_resolved": "5b267f3f5de2c51cf5381161d03df4196823eb58098cf73da1a9cbf08ebb508a",
+      "tracked_at": "2026-04-11T22:00:01.512141+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/wanjiku-user-service/scripts/pre-commit.sh": {
+      "last_tracked": "df3d62e6c2c04a0f7d5881da17c8936e0d7c329871d144f018d8cc05d180eccd",
+      "last_resolved": "df3d62e6c2c04a0f7d5881da17c8936e0d7c329871d144f018d8cc05d180eccd",
+      "tracked_at": "2026-04-11T22:00:06.267773+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/santiago-ingestion/.pre-commit-config.yaml": {
+      "last_tracked": "cb9190f7800d402a7a2f099d28e9a3bc0b4dc6ad0d8d3dd613ccfaa9b00fb126",
+      "last_resolved": "cb9190f7800d402a7a2f099d28e9a3bc0b4dc6ad0d8d3dd613ccfaa9b00fb126",
+      "tracked_at": "2026-04-11T22:00:43.538393+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/wanjiku-user-service/.claude/hooks/validate_commit_identity.py": {
+      "last_tracked": "bb64d237ed08d382cb06c1ec0666a75499918eef5401e5af6f8fd75a0f0739bd",
+      "last_resolved": "bb64d237ed08d382cb06c1ec0666a75499918eef5401e5af6f8fd75a0f0739bd",
+      "tracked_at": "2026-04-11T22:02:04.215704+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    "/tmp/wanjiku-user-service/alembic/env.py": {
+      "last_tracked": "b18c4d3c341531e33c433ac3b06d9ee3787f54d0832c08d62bd0a9bce76625a0",
+      "last_resolved": "b18c4d3c341531e33c433ac3b06d9ee3787f54d0832c08d62bd0a9bce76625a0",
+      "tracked_at": "2026-04-11T22:02:09.190463+00:00",
+      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
     }
   }
 }

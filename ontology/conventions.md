@@ -134,6 +134,13 @@ Updated by `/ontology-rebuild`. Manual edits require `checksums.json` update.
 - **Astro frontend:** Vite via Astro (static site generation)
 - **Design system:** Vite library mode (ES + CJS output)
 
+### Pre-commit hooks
+- Every repo has a `.pre-commit-config.yaml` or `scripts/pre-commit.sh` replicating CI checks locally
+- Python repos: ruff lint, ruff format, mypy, unit tests
+- JS/TS repos: ESLint, Prettier, TypeScript type check, unit tests
+- Infrastructure repos: terraform fmt, terraform validate, gitleaks
+- All repos include gitleaks for secret detection
+
 ### Testing
 - **Python:** pytest + pytest-asyncio + testcontainers (Docker-based fixtures)
 - **React:** Vitest + Testing Library
