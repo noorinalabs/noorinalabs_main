@@ -33,7 +33,49 @@ If missing, create it:
 gh label create "p{N}-wave-{M}" --description "Phase {N} Wave {M}" --color "8B5CF6"
 ```
 
-### 3. Collect issue list and assignments
+### 3. Pre-wave CI triage
+
+Before assigning issues, verify CI health across all repos in the wave scope:
+
+```bash
+gh run list --repo noorinalabs/{repo} --branch main --limit 1 --json conclusion
+```
+
+For each repo:
+- If `conclusion` is `"success"`, mark it green.
+- If `conclusion` is `"failure"` or missing, create a GitHub issue in that repo:
+  ```bash
+  gh issue create --repo noorinalabs/{repo} --title "CI red on main — triage before p{N}-wave-{M}" \
+    --label "bug" --label "p{N}-wave-{M}" \
+    --body "CI is failing on main. This must be triaged before wave work begins on this repo."
+  ```
+- Present a summary table to the user:
+  | Repo | CI Status | Issue |
+  |------|-----------|-------|
+  | `noorinalabs-isnad-graph` | pass / **FAIL** | — / #NNN |
+
+Flag repos with known-red CI so engineers are not confused by pre-existing failures.
+
+### 4. Cross-reference wave issues against recent merges
+
+Before posting kickoff comments, check if any wave issues were already resolved:
+
+```bash
+gh pr list --repo noorinalabs/{repo} --state merged --limit 20 --json number,title,body
+```
+
+For each merged PR:
+1. Extract `Closes #N`, `Fixes #N`, or `Resolves #N` references from the PR body and title.
+2. Compare those issue numbers against the wave issue list.
+3. If a match is found, flag it to the user:
+   ```
+   ⚠ Issue #{N} ("{title}") may already be resolved by PR #{M} ("{pr_title}").
+   Verify before assigning — remove from wave if confirmed fixed.
+   ```
+
+Wait for user confirmation before proceeding with assignment. Remove any confirmed-resolved issues from the wave list.
+
+### 5. Collect issue list and assignments
 
 Prompt the user for:
 - List of issue numbers for this wave
@@ -48,7 +90,7 @@ gh label list --search "FIRSTNAME"
 
 Create any missing labels before applying.
 
-### 4. Label all issues
+### 6. Label all issues
 
 For each issue, apply the wave label and assignee label:
 
@@ -56,7 +98,7 @@ For each issue, apply the wave label and assignee label:
 gh issue edit {NUMBER} --add-label "p{N}-wave-{M}" --add-label "{FIRSTNAME_LASTNAME}"
 ```
 
-### 5. Post kickoff comments
+### 7. Post kickoff comments
 
 Post a kickoff comment on each issue using charter format:
 
@@ -76,7 +118,7 @@ This issue is assigned to you for p{N}-wave-{M}.
 Please begin implementation.
 ```
 
-### 6. Output execution plan
+### 8. Output execution plan
 
 Generate and display a structured execution plan with:
 - **Priority ordering:** hotfixes first, then security fixes, then bugs, then features (per charter § Wave Planning & Priority)
@@ -84,7 +126,7 @@ Generate and display a structured execution plan with:
 - **Dependencies:** any cross-PR dependencies identified
 - **Estimated parallelism:** which issues can run concurrently
 
-### 7. Report
+### 9. Report
 
 Present the full plan to the user. Do NOT begin implementation until the user approves.
 
