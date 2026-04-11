@@ -211,6 +211,25 @@ def main() -> None:
     except OSError:
         pass
 
+    # Build a compact display version for the conversation
+    display_lines = [
+        f"[Session Handoff — {date_str}]",
+        f"Branch: {git['branch']} | Uncommitted: {'Yes' if git['uncommitted'] else 'No'}",
+        f"Wave: {wave} | Ontology: {ontology}",
+    ]
+    if prs:
+        display_lines.append(f"Open PRs: {len(prs)}")
+        display_lines.extend(prs[:5])
+    if issues:
+        display_lines.append(f"Open issues (main): {len(issues)}")
+        display_lines.extend(issues[:5])
+    display_lines.append("Handoff saved to project memory — next session will auto-load it.")
+
+    result = {
+        "decision": "allow",
+        "systemMessage": "\n".join(display_lines),
+    }
+    print(json.dumps(result))
     sys.exit(0)
 
 
