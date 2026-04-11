@@ -15,9 +15,9 @@
       "resolved_at": "2026-04-11T16:26:02.575946+00:00"
     },
     "CLAUDE.md": {
-      "last_tracked": "78b1c29ad0d8a859a4a500e0c9fa5aa8604292874f9f24d309800db6bfb447e8",
+      "last_tracked": "9ce50a3d21483907415c0d017c491661030d12ef26046b5e794a3dc4e016c7b2",
       "last_resolved": "c073be43d196040d8886c64aed5f7fd98dfc4769157b96fb12b8a74793464670",
-      "tracked_at": "2026-04-11T16:42:03.649513+00:00",
+      "tracked_at": "2026-04-11T16:55:14.882964+00:00",
       "resolved_at": "2026-04-11T16:26:02.575946+00:00"
     },
     "ontology/domain.yaml": {
@@ -93,9 +93,9 @@
       "resolved_at": ""
     },
     "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/MEMORY.md": {
-      "last_tracked": "7bfad02b46539a660682242b4f2aad69a2d9e1c5f29600435bbff0f3c42a3500",
+      "last_tracked": "a9654f6c81b16af1a073c0700be8e53c698186e4233b22b98d6eecd41e3f8eb4",
       "last_resolved": "",
-      "tracked_at": "2026-04-11T16:27:15.012884+00:00",
+      "tracked_at": "2026-04-11T16:49:45.114965+00:00",
       "resolved_at": ""
     },
     ".claude/team/charter.md": {
@@ -108,6 +108,30 @@
       "last_tracked": "3c3185b6eb68ef1c66514c9094fa8de1d996aefd5b8205c93427b20b4a542a00",
       "last_resolved": "",
       "tracked_at": "2026-04-11T16:41:56.882270+00:00",
+      "resolved_at": ""
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/project_bootstrap_repo.md": {
+      "last_tracked": "7eca4e527c495274c915623642713fb67c0ef78c138947af77111e0d95b5f738",
+      "last_resolved": "",
+      "tracked_at": "2026-04-11T16:49:42.410368+00:00",
+      "resolved_at": ""
+    },
+    ".claude/hooks/suggest_generic_prompt.py": {
+      "last_tracked": "777adc43582cd149ce29dc85c1a1ed8f6a5c06e7c32f8f9219cb1e28099ec3d0",
+      "last_resolved": "",
+      "tracked_at": "2026-04-11T16:54:19.457539+00:00",
+      "resolved_at": ""
+    },
+    ".claude/settings.json": {
+      "last_tracked": "5b5494aa19f7f63e584fa7546589f5d7155045e7990da9dcdcacd52d382898d4",
+      "last_resolved": "",
+      "tracked_at": "2026-04-11T16:52:46.641186+00:00",
+      "resolved_at": ""
+    },
+    ".claude/skills/handoff/SKILL.md": {
+      "last_tracked": "9f106c7932f8ef284eadfc61fd824fee46b7514f03cf7a6f0360c6c5a83380f3",
+      "last_resolved": "",
+      "tracked_at": "2026-04-11T16:55:02.464470+00:00",
       "resolved_at": ""
     }
   }
