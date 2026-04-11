@@ -1,0 +1,84 @@
+# noorinalabs-deploy — Repo Ontology
+# Updated by /ontology-rebuild.
+
+repo: noorinalabs-deploy
+description: Deployment orchestration — Terraform, Docker Compose, CI/CD workflows, observability
+
+terraform_modules:
+  hetzner:
+    path: terraform/hetzner/
+    provider: hetznercloud/hcloud ~> 1.49
+    resources:
+      server: { name: noorinalabs-isnad-graph-prod, type: CPX41, location: ash, image: ubuntu-24.04 }
+      ssh_key: { name: noorinalabs-isnad-graph-prod-deploy }
+      firewall: { name: noorinalabs-isnad-graph-prod-firewall, rules: [SSH/22, HTTP/80, HTTPS/443] }
+    state_backend: { type: s3, bucket: noorinalabs-terraform-state, endpoint: backblaze-b2 }
+
+  cloudflare:
+    path: terraform/cloudflare/
+    provider: cloudflare/cloudflare ~> 4.43
+    resources:
+      zone_settings: { ssl: strict, min_tls: "1.2", always_https: true }
+      dns_records:
+        - { name: "@", type: A, target: VPS IP, proxied: false }
+        - { name: www, type: CNAME, target: noorinalabs.com, proxied: false }
+        - { name: isnad-graph, type: CNAME, target: noorinalabs.com, proxied: false }
+
+docker_services:
+  compose_file: compose/docker-compose.prod.yml
+  networks:
+    backend: { internal: true, description: "Databases, API, observability" }
+    frontend: { internal: false, description: "Public-facing via Caddy" }
+    user-backend: { internal: true, description: "User service + dedicated DBs" }
+
+  application:
+    api: { image: "ghcr.io/noorinalabs/noorinalabs-isnad-graph", port: 8000, memory: 2G, cpus: 2.0 }
+    frontend: { image: "ghcr.io/noorinalabs/noorinalabs-isnad-graph-frontend", port: 80, memory: 512M }
+    landing: { image: "ghcr.io/noorinalabs/noorinalabs-landing-page", port: 80, memory: 256M }
+    user-service: { image: "ghcr.io/noorinalabs/noorinalabs-user-service", port: 8000, memory: 1G }
+    caddy: { image: "caddy:2-alpine", ports: [80, 443], config: caddy/Caddyfile }
+
+  databases:
+    neo4j: { image: "neo4j:5-community", ports: [7474, 7687], memory: 8G, plugins: [apoc, gds] }
+    postgres: { image: "pgvector/pgvector:pg16", port: 5432, memory: 4G }
+    redis: { image: "redis:7-alpine", port: 6379, memory: 1G }
+    user-postgres: { image: "postgres:16-alpine", port: 5433, memory: 2G }
+    user-redis: { image: "redis:7-alpine", port: 6380, memory: 512M }
+
+  observability:
+    prometheus: { image: "prom/prometheus:v3.4.0", port: 9090, retention: 30d }
+    grafana: { image: "grafana/grafana:11.6.0", port: 3000, path: /grafana }
+    loki: { image: "grafana/loki:2.9.10", port: 3100, retention: 7d }
+    promtail: { image: "grafana/promtail:2.9.10", scrape: docker_socket }
+    alertmanager: { image: "prom/alertmanager:v0.28.1", port: 9093 }
+    node-exporter: { image: "prom/node-exporter:v1.9.1", port: 9100 }
+    postgres-exporter: { image: "quay.io/prometheuscommunity/postgres-exporter:v0.16.0", port: 9187 }
+
+workflows:
+  deploy_isnad_graph: { trigger: repository_dispatch, target: [api, frontend], health_check: 120s }
+  deploy_landing: { trigger: workflow_dispatch, target: [landing], health_check: 60s }
+  deploy_all: { trigger: workflow_dispatch, target: all, health_check: 120s }
+  verify_deploy: { trigger: workflow_run, checks: [HTTPS, health, TLS] }
+  terraform: { trigger: "push to main (terraform/**)", jobs: [validate, plan, apply] }
+  rollback: { trigger: workflow_dispatch, inputs: [image_tag, service] }
+
+environments:
+  production:
+    vps: { provider: Hetzner, spec: "CPX41 (8 vCPU, 16GB)", location: Ashburn }
+    domains: [noorinalabs.com, www.noorinalabs.com, isnad-graph.noorinalabs.com]
+    tls: "Caddy auto-provisioned Let's Encrypt"
+    deploy_user: deploy
+    deploy_method: "SSH via appleboy/ssh-action"
+
+local_patterns:
+  rolling_update: "docker compose up -d --force-recreate + health poll"
+  image_fallback: "GHCR pull with fallback to local build"
+  env_injection: "GitHub Actions writes .env on VPS via SSH"
+  read_only_containers: "All app containers use read_only + tmpfs"
+  network_isolation: "Backend networks are internal (not exposed)"
+
+scripts:
+  bootstrap_vps: scripts/bootstrap-vps.sh
+  verify_deployment: scripts/verify_deployment.sh
+  backup: scripts/backup.sh
+  restore: scripts/restore.sh

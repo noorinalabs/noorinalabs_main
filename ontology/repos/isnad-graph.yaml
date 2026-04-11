@@ -1,0 +1,90 @@
+# noorinalabs-isnad-graph — Repo Ontology
+# Updated by /ontology-rebuild.
+
+repo: noorinalabs-isnad-graph
+description: Computational hadith analysis platform (FastAPI + React + Neo4j)
+tech_stack:
+  backend: { language: Python 3.14, framework: FastAPI 0.115+, package_manager: uv }
+  frontend: { language: TypeScript 5.9, framework: React 19.2, build_tool: Vite 6.4, package_manager: npm }
+  databases: [Neo4j 5.x, PostgreSQL 16 (pgvector), Redis 5+]
+
+modules:
+  backend:
+    api:
+      path: src/api/
+      description: FastAPI application — routes, middleware, auth, dependencies
+      sub_modules:
+        app: { path: src/api/app.py, description: "App factory, lifespan, middleware stack, router registration" }
+        auth: { path: src/api/auth.py, description: "JWT validation via user-service JWKS, User model" }
+        middleware: { path: src/api/middleware.py, description: "CORS, rate limit, request logging, security headers, size limit" }
+        deps: { path: src/api/deps.py, description: "FastAPI dependency injection (get_neo4j, get_pg)" }
+        routes: { path: src/api/routes/, description: "Endpoint handlers by domain" }
+    models:
+      path: src/models/
+      description: Frozen Pydantic v2 domain models and enums
+    utils:
+      path: src/utils/
+      description: Neo4j client, PG client, Redis client, Arabic text processing, structured logging
+    config:
+      path: src/config.py
+      description: Pydantic Settings — Neo4j, PostgreSQL, Redis, Auth, Security, CORS, rate limiting
+
+  frontend:
+    pages:
+      path: frontend/src/pages/
+      description: Route-mapped page components
+    components:
+      path: frontend/src/components/
+      description: Layout, Sidebar, ForceGraph, ProtectedRoute, AdminRoute, ThemeToggle, UI wrappers
+    hooks:
+      path: frontend/src/hooks/
+      description: useAuth (JWT session), useTheme (dark/light), useSubscription
+    api_client:
+      path: frontend/src/api/client.ts
+      description: Fetch wrappers for all API endpoints with auth header injection
+
+api_surface:
+  middleware_stack:
+    - SecurityHeadersMiddleware (OWASP headers)
+    - RequestSizeLimitMiddleware (1MB max)
+    - RateLimitMiddleware (120 req/min, Redis sliding window)
+    - RequestLoggingMiddleware (structlog)
+    - CORSMiddleware
+
+  route_groups:
+    health: { prefix: /, endpoints: [/health, /health/ready] }
+    narrators: { prefix: /narrators, auth: required }
+    hadiths: { prefix: /hadiths, auth: required }
+    collections: { prefix: /collections, auth: required }
+    graph: { prefix: /graph, auth: required, description: "Chain traversal, network, shortest path, subgraph" }
+    search: { prefix: /search, auth: required }
+    parallels: { prefix: /parallels, auth: required }
+    timeline: { prefix: /timeline, auth: required }
+    admin: { prefix: /admin, auth: admin_role }
+
+data_models:
+  neo4j_indexes:
+    - { type: fulltext, label: Narrator, fields: [name_ar, name_en] }
+    - { type: fulltext, label: Hadith, fields: [matn_ar, matn_en] }
+    - { type: btree, label: Narrator, fields: [id] }
+
+local_patterns:
+  auth_delegation: "All auth endpoints return 501 — delegated to user-service via Caddy routing"
+  graph_traversal: "Cypher queries with parameterized depth limits and result caps"
+  force_graph: "D3 + react-force-graph-2d for interactive isnad visualization"
+  tanstack_query: "All API calls via useQuery with cache invalidation"
+  session_expiry: "Custom SESSION_EXPIRED_EVENT emitted on 401, caught by SessionExpiredModal"
+
+build_commands:
+  backend:
+    dev: "uvicorn src.api.app:create_app --factory --reload --port 8000"
+    test: "make test"
+    lint: "make lint"
+    typecheck: "make typecheck"
+    check: "make check"
+  frontend:
+    dev: "npm run dev"
+    build: "npm run build"
+    test: "npm run test"
+    lint: "npm run lint"
+    e2e: "npm run test:e2e"

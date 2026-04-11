@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "description": "Tracks file checksums for ontology change detection. last_tracked = current file hash (updated by tracker hook). last_resolved = hash when ontology was last rebuilt from this file (updated by resolver). When last_tracked != last_resolved, the file is dirty.",
+  "files": {
+    ".claude/skills/wave-wrapup/SKILL.md": {
+      "last_tracked": "942ee78e1af0066f6aac71bdcca00793808f6c3f9a04ab729ba0f8cc6ab5e4de",
+      "last_resolved": "942ee78e1af0066f6aac71bdcca00793808f6c3f9a04ab729ba0f8cc6ab5e4de",
+      "tracked_at": "2026-04-11T16:16:53.008874+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    ".claude/skills/wave-retro/SKILL.md": {
+      "last_tracked": "674d9dee3f7aa20511e7dfd5fff1db591ab979a64578ff2e91e8f962fb81346a",
+      "last_resolved": "674d9dee3f7aa20511e7dfd5fff1db591ab979a64578ff2e91e8f962fb81346a",
+      "tracked_at": "2026-04-11T16:17:33.817632+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "CLAUDE.md": {
+      "last_tracked": "78b1c29ad0d8a859a4a500e0c9fa5aa8604292874f9f24d309800db6bfb447e8",
+      "last_resolved": "c073be43d196040d8886c64aed5f7fd98dfc4769157b96fb12b8a74793464670",
+      "tracked_at": "2026-04-11T16:42:03.649513+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/domain.yaml": {
+      "last_tracked": "47d3e4855f3b9f4f0ae224a26a23f3d3a9cbb9a6008e38690cd2df1be7027d75",
+      "last_resolved": "47d3e4855f3b9f4f0ae224a26a23f3d3a9cbb9a6008e38690cd2df1be7027d75",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/services.yaml": {
+      "last_tracked": "69f182d5200a367ecd2cf477ae08f9c36776bfcf152db36616a4447c4c36fad7",
+      "last_resolved": "69f182d5200a367ecd2cf477ae08f9c36776bfcf152db36616a4447c4c36fad7",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/conventions.md": {
+      "last_tracked": "0f4f32383eb149266bf600606b9736f4dc43319dce6d806f66daf3324b9d6a7a",
+      "last_resolved": "0f4f32383eb149266bf600606b9736f4dc43319dce6d806f66daf3324b9d6a7a",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/repos/isnad-graph.yaml": {
+      "last_tracked": "175ebd6c739a9e336fc3d04a8b549ea0ff5cb8a5c58a1982e33ffe5e2a838c14",
+      "last_resolved": "175ebd6c739a9e336fc3d04a8b549ea0ff5cb8a5c58a1982e33ffe5e2a838c14",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/repos/user-service.yaml": {
+      "last_tracked": "2c8de13acfc8a899291c4241ae8a8787f8b32710ddc7a23c8737b00c091a2ad9",
+      "last_resolved": "2c8de13acfc8a899291c4241ae8a8787f8b32710ddc7a23c8737b00c091a2ad9",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/repos/landing-page.yaml": {
+      "last_tracked": "e16ba4b3b13528559b1e11ef8ce5d4ac3e9a0827c697bc02db921465bfbf5b7a",
+      "last_resolved": "e16ba4b3b13528559b1e11ef8ce5d4ac3e9a0827c697bc02db921465bfbf5b7a",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/repos/design-system.yaml": {
+      "last_tracked": "64f1eb7a16e3c9284f92d018eed4ce2a0da2aa761f60353c98117f3b2319a1a8",
+      "last_resolved": "64f1eb7a16e3c9284f92d018eed4ce2a0da2aa761f60353c98117f3b2319a1a8",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/repos/deploy.yaml": {
+      "last_tracked": "9282ce2e8926f072f41589f93e95750ca085c4aca9b0bfd105390c1da2b0a144",
+      "last_resolved": "9282ce2e8926f072f41589f93e95750ca085c4aca9b0bfd105390c1da2b0a144",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/repos/ingestion.yaml": {
+      "last_tracked": "417289b4f7b4d55f3c0a3f9407c3fbb3f5d6fbfd9785430cdbf9ec0806dda44b",
+      "last_resolved": "417289b4f7b4d55f3c0a3f9407c3fbb3f5d6fbfd9785430cdbf9ec0806dda44b",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/checksums.json": {
+      "last_tracked": "6a9401098e6ee4d47819b711d1fcca0abd389263d7fcd2f39b498867bdb62d31",
+      "last_resolved": "6a9401098e6ee4d47819b711d1fcca0abd389263d7fcd2f39b498867bdb62d31",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/ONTOLOGY_SETUP_PROMPT.md": {
+      "last_tracked": "9f8e43636ed9045bacc954381d4b6cad584e02c22d51d55073f0504f7379c579",
+      "last_resolved": "",
+      "tracked_at": "2026-04-11T16:42:12.401563+00:00",
+      "resolved_at": ""
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/project_ontology_system.md": {
+      "last_tracked": "aec106ae6261921e5d305a1c58b22062fb150511e64957b47b59907173792b7c",
+      "last_resolved": "",
+      "tracked_at": "2026-04-11T16:27:09.722316+00:00",
+      "resolved_at": ""
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/MEMORY.md": {
+      "last_tracked": "7bfad02b46539a660682242b4f2aad69a2d9e1c5f29600435bbff0f3c42a3500",
+      "last_resolved": "",
+      "tracked_at": "2026-04-11T16:27:15.012884+00:00",
+      "resolved_at": ""
+    },
+    ".claude/team/charter.md": {
+      "last_tracked": "b428ad621b0afb6671cd2a68faa4996db0dc0fabece5f23abe2a88623e13d4f3",
+      "last_resolved": "",
+      "tracked_at": "2026-04-11T16:41:49.994510+00:00",
+      "resolved_at": ""
+    },
+    ".claude/team/charter/agents.md": {
+      "last_tracked": "3c3185b6eb68ef1c66514c9094fa8de1d996aefd5b8205c93427b20b4a542a00",
+      "last_resolved": "",
+      "tracked_at": "2026-04-11T16:41:56.882270+00:00",
+      "resolved_at": ""
+    }
+  }
+}

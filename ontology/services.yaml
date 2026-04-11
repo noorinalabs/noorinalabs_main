@@ -1,0 +1,269 @@
+# NoorinALabs — Service Map
+# Cross-repo service topology, APIs, data stores, and integration points.
+# Updated by /ontology-rebuild. Manual edits require checksums.json update.
+
+version: 1
+
+# --- Services ---
+services:
+  isnad-graph-api:
+    repo: noorinalabs-isnad-graph
+    type: backend
+    framework: FastAPI
+    language: Python 3.14
+    port: 8000
+    image: ghcr.io/noorinalabs/noorinalabs-isnad-graph
+    base_url: https://isnad-graph.noorinalabs.com/api
+    auth: JWT (RS256 via user-service JWKS)
+    rate_limit: 120 req/min per IP
+    health_endpoint: /health
+    api_prefix: /api/v1
+    routes:
+      narrators: { path: /narrators, methods: [GET] }
+      narrator_detail: { path: "/narrators/{id}", methods: [GET] }
+      hadiths: { path: /hadiths, methods: [GET] }
+      hadith_detail: { path: "/hadiths/{id}", methods: [GET] }
+      hadith_facets: { path: /hadiths/facets, methods: [GET] }
+      collections: { path: /collections, methods: [GET] }
+      collection_detail: { path: "/collections/{id}", methods: [GET] }
+      graph_chains: { path: "/graph/narrator/{id}/chains", methods: [GET] }
+      graph_network: { path: "/graph/narrator/{id}/network", methods: [GET] }
+      graph_shortest_path: { path: /graph/shortest-path, methods: [GET] }
+      graph_subgraph: { path: /graph/subgraph, methods: [GET] }
+      search: { path: /search, methods: [GET] }
+      parallels: { path: /parallels, methods: [GET] }
+      parallel_detail: { path: "/parallels/{id}", methods: [GET] }
+      timeline: { path: /timeline, methods: [GET] }
+      timeline_range: { path: /timeline/range, methods: [GET] }
+      admin_health: { path: /admin/health, methods: [GET], auth: admin }
+      admin_stats: { path: /admin/stats, methods: [GET], auth: admin }
+      admin_analytics: { path: /admin/analytics/usage, methods: [GET], auth: admin }
+      admin_moderation: { path: /admin/moderation, methods: [GET, PATCH], auth: admin }
+
+  isnad-graph-frontend:
+    repo: noorinalabs-isnad-graph
+    type: frontend
+    framework: React 19
+    language: TypeScript 5.9
+    build_tool: Vite 6.4
+    port: 80
+    image: ghcr.io/noorinalabs/noorinalabs-isnad-graph-frontend
+    base_url: https://isnad-graph.noorinalabs.com
+    state_management: TanStack Query + Context API
+    visualization: D3 + react-force-graph-2d
+    design_system: "@noorinalabs/design-system"
+    pages:
+      public: [/login, /auth/callback/:provider, /pricing, /verify]
+      protected: [/, /narrators, /hadiths, /collections, /search, /timeline, /compare, /graph, /profile]
+      admin: [/admin, /admin/users, /admin/health, /admin/stats, /admin/analytics, /admin/moderation, /admin/reports, /admin/config, /admin/audit]
+
+  user-service:
+    repo: noorinalabs-user-service
+    type: backend
+    framework: FastAPI
+    language: Python 3.12+
+    port: 8000
+    image: ghcr.io/noorinalabs/noorinalabs-user-service
+    auth: RS256 JWT (self-issued)
+    health_endpoint: /health
+    jwks_endpoint: /.well-known/jwks.json
+    api_prefix: /api/v1
+    routes:
+      token_issue: { path: /auth/token, methods: [POST] }
+      token_refresh: { path: /auth/token/refresh, methods: [POST] }
+      token_revoke: { path: /auth/token/revoke, methods: [POST] }
+      token_validate: { path: /auth/token/validate, methods: [GET] }
+      oauth_login: { path: "/auth/oauth/{provider}/login", methods: [GET] }
+      oauth_callback: { path: "/auth/oauth/{provider}/callback", methods: [POST] }
+      user_me: { path: /api/v1/users/me, methods: [GET, PATCH] }
+      user_detail: { path: "/api/v1/users/{id}", methods: [GET], auth: admin }
+      user_list: { path: /api/v1/users, methods: [GET], auth: admin }
+      roles: { path: /api/v1/roles, methods: [GET] }
+      sessions: { path: /api/v1/sessions, methods: [GET, POST, DELETE] }
+      verification: { path: /api/v1/verification, methods: [POST, GET] }
+      subscriptions: { path: /api/v1/subscriptions, methods: [GET, POST, DELETE] }
+      trial: { path: /api/v1/subscriptions/trial, methods: [POST] }
+      totp: { path: /api/v1/2fa, methods: [GET, POST] }
+
+  landing-page:
+    repo: noorinalabs-landing-page
+    type: frontend
+    framework: Astro 6.1
+    language: TypeScript
+    build_tool: Vite (via Astro)
+    port: 80
+    image: ghcr.io/noorinalabs/noorinalabs-landing-page
+    base_url: https://noorinalabs.com
+    design_system: "@noorinalabs/design-system@^0.0.2"
+    pages:
+      - { route: /, source: index.astro }
+      - { route: /about, source: about.astro, collection: pages }
+      - { route: /projects/isnad-graph, source: projects/isnad-graph.astro, collection: projects }
+
+  ingestion-pipeline:
+    repo: noorinalabs-isnad-graph-ingestion
+    type: data_pipeline
+    language: Python 3.14
+    cli_command: isnad-ingest
+    stages:
+      acquire: { description: "Download from APIs, CSVs, Git repos, Kaggle" }
+      parse: { description: "Raw → Parquet (staging)" }
+      resolve: { description: "Entity resolution — NER, disambiguation, dedup" }
+      load: { description: "Parquet → Neo4j (MERGE nodes, CREATE edges)" }
+      enrich: { description: "Graph metrics, topic classification, historical linking" }
+
+  design-system:
+    repo: noorinalabs-design-system
+    type: library
+    framework: React 18-19
+    language: TypeScript 5.9
+    build_tool: Vite 6.4
+    package: "@noorinalabs/design-system"
+    exports:
+      components: [Button, Badge, Input, Card, Dialog, Select, Table, Tabs]
+      icons: [NarratorsIcon, HadithsIcon, CollectionsIcon, SearchIcon, TimelineIcon, CompareIcon, GraphExplorerIcon, AdminIcon, SignOutIcon]
+      illustrations: [NoResultsIllustration, EmptyGraphIllustration, NoDataIllustration, GeometricBorder, OctagonalFrame, PageHeaderAccent]
+      tokens: [colors (OKLCH), typography, spacing, shadows, z-index, motion, border-radii]
+    consumers: [isnad-graph-frontend, landing-page]
+
+  caddy-reverse-proxy:
+    repo: noorinalabs-deploy
+    type: reverse_proxy
+    image: caddy:2-alpine
+    ports: [80, 443]
+    tls: Let's Encrypt (auto-provisioned)
+    routing:
+      noorinalabs.com: landing-page:80
+      www.noorinalabs.com: redirect → noorinalabs.com
+      isnad-graph.noorinalabs.com:
+        /auth/*: user-service:8000
+        /.well-known/jwks.json: user-service:8000
+        /api/v1/users*: user-service:8000
+        /api/v1/sessions*: user-service:8000
+        /api/v1/subscriptions*: user-service:8000
+        /api/v1/verification*: user-service:8000
+        /api/v1/roles*: user-service:8000
+        /api/v1/2fa*: user-service:8000
+        /api/*: isnad-graph-api:8000
+        /health: isnad-graph-api:8000
+        /metrics: isnad-graph-api:8000
+        /grafana/*: grafana:3000
+        /*: isnad-graph-frontend:80
+
+# --- Data stores ---
+data_stores:
+  neo4j:
+    type: graph_database
+    image: neo4j:5-community
+    plugins: [APOC, Graph Data Science 2.13.8]
+    consumers: [isnad-graph-api, ingestion-pipeline]
+    node_labels: [Narrator, Hadith, Chain, Collection, Grading, HistoricalEvent, Location]
+    relationship_types: [TRANSMITTED_TO, NARRATED, APPEARS_IN, PARALLEL_OF, STUDIED_UNDER, ACTIVE_DURING, BASED_IN]
+    resources: { memory_limit: 8G, heap_max: 4G, pagecache: 2G }
+
+  postgres-isnad:
+    type: relational_database
+    image: pgvector/pgvector:pg16
+    port: 5432
+    extensions: [pgvector]
+    consumers: [isnad-graph-api]
+    description: Relational metadata and vector embeddings for semantic search
+
+  postgres-user:
+    type: relational_database
+    image: postgres:16-alpine
+    port: 5433
+    consumers: [user-service]
+    tables: [users, roles, user_roles, sessions, verification_tokens, oauth_accounts, subscriptions, totp_secrets]
+
+  redis-isnad:
+    type: cache
+    image: redis:7-alpine
+    port: 6379
+    consumers: [isnad-graph-api]
+    purpose: [session_store, api_cache, rate_limiting]
+
+  redis-user:
+    type: cache
+    image: redis:7-alpine
+    port: 6380
+    consumers: [user-service]
+    purpose: [session_state, rate_limiting, verification_tracking]
+
+# --- Integration points ---
+integrations:
+  - name: jwt_validation
+    from: isnad-graph-api
+    to: user-service
+    mechanism: "JWKS fetch from /.well-known/jwks.json"
+    description: isnad-graph validates JWTs by fetching user-service public keys
+
+  - name: oauth_flow
+    from: isnad-graph-frontend
+    to: user-service
+    mechanism: "HTTP redirect → OAuth provider → callback to user-service"
+    providers: [google, github, apple, facebook]
+
+  - name: design_system_consumption
+    from: [isnad-graph-frontend, landing-page]
+    to: design-system
+    mechanism: "npm package @noorinalabs/design-system"
+
+  - name: ingestion_to_graph
+    from: ingestion-pipeline
+    to: neo4j
+    mechanism: "Cypher MERGE/CREATE via neo4j Python driver (batch 1000)"
+
+  - name: caddy_routing
+    from: caddy-reverse-proxy
+    to: [isnad-graph-api, isnad-graph-frontend, user-service, landing-page]
+    mechanism: "Reverse proxy with path-based routing"
+
+# --- Infrastructure ---
+infrastructure:
+  compute:
+    provider: Hetzner Cloud
+    server: noorinalabs-isnad-graph-prod
+    type: CPX41
+    specs: { vcpu: 8, ram_gb: 16 }
+    location: Ashburn (ash)
+    os: Ubuntu 24.04
+
+  dns:
+    provider: Cloudflare
+    zone: noorinalabs.com
+    ssl: strict
+    min_tls: "1.2"
+    proxied: false (DNS only — TLS terminated at Caddy)
+
+  state_backend:
+    type: Backblaze B2 (S3-compatible)
+    bucket: noorinalabs-terraform-state
+    used_by: [terraform/hetzner, terraform/cloudflare]
+
+  container_registry:
+    type: GitHub Container Registry (GHCR)
+    images:
+      - ghcr.io/noorinalabs/noorinalabs-isnad-graph
+      - ghcr.io/noorinalabs/noorinalabs-isnad-graph-frontend
+      - ghcr.io/noorinalabs/noorinalabs-landing-page
+      - ghcr.io/noorinalabs/noorinalabs-user-service
+
+  observability:
+    metrics: { tool: Prometheus v3.4.0, retention: 30d }
+    dashboards: { tool: Grafana 11.6.0, path: /grafana }
+    logs: { tool: Loki 2.9.10, shipper: Promtail 2.9.10, retention: 7d }
+    alerting: { tool: Alertmanager v0.28.1 }
+    exporters: [node-exporter v1.9.1, postgres-exporter v0.16.0]
+
+  ci_cd:
+    platform: GitHub Actions
+    deploy_method: SSH to VPS via appleboy/ssh-action
+    terraform: hashicorp/setup-terraform@v3
+    workflows:
+      deploy_isnad_graph: { trigger: repository_dispatch, target: [api, frontend] }
+      deploy_landing: { trigger: workflow_dispatch, target: [landing] }
+      deploy_all: { trigger: workflow_dispatch, target: all }
+      verify_deploy: { trigger: workflow_run, checks: [https, health, tls] }
+      terraform: { trigger: "push to main (terraform/**)", actions: [validate, plan, apply] }
+      rollback: { trigger: workflow_dispatch, inputs: [image_tag, service] }

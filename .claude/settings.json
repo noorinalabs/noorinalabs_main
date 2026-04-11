@@ -162,6 +162,26 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/parameterization/code/noorinalabs-main/.claude/hooks/ontology_tracker.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/parameterization/code/noorinalabs-main/.claude/hooks/ontology_tracker.py",
+            "timeout": 10
+          }
+        ]
       }
     ]
   }

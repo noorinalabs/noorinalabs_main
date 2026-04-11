@@ -8,7 +8,11 @@ Run a retrospective for a completed wave of the `{team_name}` team.
 
 ## Instructions
 
-### 1. Gather merged PRs
+### 1. Ontology check
+
+Run `/ontology-librarian` to check ontology staleness before the retro. If the ontology is significantly behind, note it in the retro findings — the wrapup should have run `/ontology-rebuild`, so staleness here indicates a process gap.
+
+### 2. Gather merged PRs
 
 List all PRs merged to the wave's deployments branch:
 
@@ -16,7 +20,7 @@ List all PRs merged to the wave's deployments branch:
 gh pr list --state merged --base "deployments/phase{N}/wave-{M}" --json number,title,author,body,mergedAt,reviews
 ```
 
-### 2. Gather review comments and CI data
+### 3. Gather review comments and CI data
 
 For each merged PR:
 
@@ -30,7 +34,7 @@ Collect:
 - CI pass/fail counts per PR
 - Time from PR creation to merge
 
-### 3. Per-engineer assessment
+### 4. Per-engineer assessment
 
 For each engineer who had PRs in this wave, assess:
 
@@ -50,7 +54,7 @@ Structure as:
 - Severity: {minor|moderate|severe|none}
 ```
 
-### 4. Update trust matrix
+### 5. Update trust matrix
 
 Use a temporary worktree to update the trust matrix (avoids conflicts with the current working tree). Use `mktemp -d` to generate a unique path, preventing collisions when multiple agents run trust updates concurrently:
 
@@ -72,7 +76,7 @@ Add change log entries with date and reason. Commit as the Manager (see `.claude
 git worktree remove "$TRUST_WORKTREE"
 ```
 
-### 5. Append to feedback log
+### 6. Append to feedback log
 
 Append a retro entry to `.claude/team/feedback_log.md`:
 
@@ -100,7 +104,7 @@ Append a retro entry to `.claude/team/feedback_log.md`:
 2. {change} — Rationale: {why}
 ```
 
-### 6. Propose charter changes
+### 7. Propose charter changes
 
 Based on pain points and findings, propose specific charter amendments. Present each as:
 
@@ -110,7 +114,7 @@ Based on pain points and findings, propose specific charter amendments. Present 
 **Rationale:** {why, based on retro findings}
 ```
 
-### 7. Present full retro summary to the user
+### 8. Present full retro summary to the user
 
 **Output the complete retro summary directly in the conversation.** Do not just write to files — the user must see the retro without having to open `feedback_log.md`. Include:
 
