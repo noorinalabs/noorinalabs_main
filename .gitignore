@@ -7,9 +7,6 @@ noorinalabs-isnad-graph-ingestion/
 noorinalabs-isnad-ingest-platform/
 noorinalabs-user-service/
 
-# Claude Code project data
-.claude/projects/
-
 # Python
 __pycache__/
 *.pyc
@@ -21,10 +18,6 @@ Thumbs.db
 
 # Logs
 *.log
-
-# Annunaki error monitor (session-local, not committed)
-.claude/annunaki/errors.jsonl
-.claude/annunaki/errors.jsonl.bak.*
 
 # Temp / Cache
 tmp/
