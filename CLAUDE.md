@@ -107,9 +107,11 @@ The project maintains a structured knowledge base in `ontology/` that captures d
 2. **Wave/phase orientation** — read `cross-repo-status.json` and the project board to identify the active wave, open issues, and blockers. Report current state.
 3. **Charter freshness check** — check `feedback_log.md` for unapplied retro proposals. If new hooks or skills were introduced since the last charter update, flag them.
 
-### Session end
+### Session end (automatic)
 
-Before ending a session, run `/handoff` (optionally with notes) to save a pickup prompt for the next session. This is especially important for long-running work that spans multiple sessions.
+A `Stop` hook automatically writes a handoff file to project memory after every response (throttled to once per 5 minutes). It captures git state, open PRs, issues, wave status, and ontology staleness. The next session auto-loads this file at step 0.
+
+For a richer handoff that includes conversational context (what was discussed, decisions made), manually run `/handoff` before exiting — but the automatic version covers the essentials.
 
 ### Before any code changes (mandatory)
 

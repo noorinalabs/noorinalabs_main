@@ -193,6 +193,18 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/parameterization/code/noorinalabs-main/.claude/hooks/session_handoff.py",
+            "timeout": 30
+          }
+        ]
+      }
     ]
   }
 }
