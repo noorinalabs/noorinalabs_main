@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "description": "Tracks file checksums for ontology change detection. last_tracked = current file hash (updated by tracker hook). last_resolved = hash when ontology was last rebuilt from this file (updated by resolver). When last_tracked != last_resolved, the file is dirty.",
+  "files": {
+    ".claude/skills/wave-wrapup/SKILL.md": {
+      "last_tracked": "942ee78e1af0066f6aac71bdcca00793808f6c3f9a04ab729ba0f8cc6ab5e4de",
+      "last_resolved": "942ee78e1af0066f6aac71bdcca00793808f6c3f9a04ab729ba0f8cc6ab5e4de",
+      "tracked_at": "2026-04-11T16:16:53.008874+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    ".claude/skills/wave-retro/SKILL.md": {
+      "last_tracked": "674d9dee3f7aa20511e7dfd5fff1db591ab979a64578ff2e91e8f962fb81346a",
+      "last_resolved": "674d9dee3f7aa20511e7dfd5fff1db591ab979a64578ff2e91e8f962fb81346a",
+      "tracked_at": "2026-04-11T16:17:33.817632+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "CLAUDE.md": {
+      "last_tracked": "b3c527318dc6314bcca22c68a4686216fdec74d60f554b86bd90fe87a3166038",
+      "last_resolved": "b3c527318dc6314bcca22c68a4686216fdec74d60f554b86bd90fe87a3166038",
+      "tracked_at": "2026-04-11T16:59:01.595963+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "ontology/domain.yaml": {
+      "last_tracked": "47d3e4855f3b9f4f0ae224a26a23f3d3a9cbb9a6008e38690cd2df1be7027d75",
+      "last_resolved": "47d3e4855f3b9f4f0ae224a26a23f3d3a9cbb9a6008e38690cd2df1be7027d75",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/services.yaml": {
+      "last_tracked": "69f182d5200a367ecd2cf477ae08f9c36776bfcf152db36616a4447c4c36fad7",
+      "last_resolved": "69f182d5200a367ecd2cf477ae08f9c36776bfcf152db36616a4447c4c36fad7",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/conventions.md": {
+      "last_tracked": "632156ba06a6301a2c8d00d440e06e887cc13bb5300f2a202b18b1b819e797b3",
+      "last_resolved": "632156ba06a6301a2c8d00d440e06e887cc13bb5300f2a202b18b1b819e797b3",
+      "tracked_at": "2026-04-11T18:37:30.535410+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "ontology/repos/isnad-graph.yaml": {
+      "last_tracked": "175ebd6c739a9e336fc3d04a8b549ea0ff5cb8a5c58a1982e33ffe5e2a838c14",
+      "last_resolved": "175ebd6c739a9e336fc3d04a8b549ea0ff5cb8a5c58a1982e33ffe5e2a838c14",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/repos/user-service.yaml": {
+      "last_tracked": "2c8de13acfc8a899291c4241ae8a8787f8b32710ddc7a23c8737b00c091a2ad9",
+      "last_resolved": "2c8de13acfc8a899291c4241ae8a8787f8b32710ddc7a23c8737b00c091a2ad9",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/repos/landing-page.yaml": {
+      "last_tracked": "e16ba4b3b13528559b1e11ef8ce5d4ac3e9a0827c697bc02db921465bfbf5b7a",
+      "last_resolved": "e16ba4b3b13528559b1e11ef8ce5d4ac3e9a0827c697bc02db921465bfbf5b7a",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/repos/design-system.yaml": {
+      "last_tracked": "64f1eb7a16e3c9284f92d018eed4ce2a0da2aa761f60353c98117f3b2319a1a8",
+      "last_resolved": "64f1eb7a16e3c9284f92d018eed4ce2a0da2aa761f60353c98117f3b2319a1a8",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/repos/deploy.yaml": {
+      "last_tracked": "9282ce2e8926f072f41589f93e95750ca085c4aca9b0bfd105390c1da2b0a144",
+      "last_resolved": "9282ce2e8926f072f41589f93e95750ca085c4aca9b0bfd105390c1da2b0a144",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/repos/ingestion.yaml": {
+      "last_tracked": "417289b4f7b4d55f3c0a3f9407c3fbb3f5d6fbfd9785430cdbf9ec0806dda44b",
+      "last_resolved": "417289b4f7b4d55f3c0a3f9407c3fbb3f5d6fbfd9785430cdbf9ec0806dda44b",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "ontology/checksums.json": {
+      "last_tracked": "6a9401098e6ee4d47819b711d1fcca0abd389263d7fcd2f39b498867bdb62d31",
+      "last_resolved": "6a9401098e6ee4d47819b711d1fcca0abd389263d7fcd2f39b498867bdb62d31",
+      "tracked_at": "2026-04-11T16:26:02.575946+00:00",
+      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/project_ontology_system.md": {
+      "last_tracked": "aec106ae6261921e5d305a1c58b22062fb150511e64957b47b59907173792b7c",
+      "last_resolved": "aec106ae6261921e5d305a1c58b22062fb150511e64957b47b59907173792b7c",
+      "tracked_at": "2026-04-11T16:27:09.722316+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/MEMORY.md": {
+      "last_tracked": "00d9252e3021c4d03fdfdf52155d34f46703dbb659fcfaf196ddc7d9142a2c00",
+      "last_resolved": "00d9252e3021c4d03fdfdf52155d34f46703dbb659fcfaf196ddc7d9142a2c00",
+      "tracked_at": "2026-04-11T17:15:41.088951+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    ".claude/team/charter.md": {
+      "last_tracked": "b428ad621b0afb6671cd2a68faa4996db0dc0fabece5f23abe2a88623e13d4f3",
+      "last_resolved": "b428ad621b0afb6671cd2a68faa4996db0dc0fabece5f23abe2a88623e13d4f3",
+      "tracked_at": "2026-04-11T16:41:49.994510+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    ".claude/team/charter/agents.md": {
+      "last_tracked": "3c3185b6eb68ef1c66514c9094fa8de1d996aefd5b8205c93427b20b4a542a00",
+      "last_resolved": "3c3185b6eb68ef1c66514c9094fa8de1d996aefd5b8205c93427b20b4a542a00",
+      "tracked_at": "2026-04-11T16:41:56.882270+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/project_bootstrap_repo.md": {
+      "last_tracked": "7eca4e527c495274c915623642713fb67c0ef78c138947af77111e0d95b5f738",
+      "last_resolved": "7eca4e527c495274c915623642713fb67c0ef78c138947af77111e0d95b5f738",
+      "tracked_at": "2026-04-11T16:49:42.410368+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    ".claude/hooks/suggest_generic_prompt.py": {
+      "last_tracked": "777adc43582cd149ce29dc85c1a1ed8f6a5c06e7c32f8f9219cb1e28099ec3d0",
+      "last_resolved": "777adc43582cd149ce29dc85c1a1ed8f6a5c06e7c32f8f9219cb1e28099ec3d0",
+      "tracked_at": "2026-04-11T16:54:19.457539+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    ".claude/settings.json": {
+      "last_tracked": "b5bf03978263e2641d087ad55d40e77af038ec911f5b204384a2292ad6274851",
+      "last_resolved": "b5bf03978263e2641d087ad55d40e77af038ec911f5b204384a2292ad6274851",
+      "tracked_at": "2026-04-11T16:58:52.871512+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    ".claude/skills/handoff/SKILL.md": {
+      "last_tracked": "9f106c7932f8ef284eadfc61fd824fee46b7514f03cf7a6f0360c6c5a83380f3",
+      "last_resolved": "9f106c7932f8ef284eadfc61fd824fee46b7514f03cf7a6f0360c6c5a83380f3",
+      "tracked_at": "2026-04-11T16:55:02.464470+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    ".claude/hooks/session_handoff.py": {
+      "last_tracked": "cf3013361d37cfbdbc3dd6e861f4f95959f1523a359bdb10fa331e0b62769de5",
+      "last_resolved": "cf3013361d37cfbdbc3dd6e861f4f95959f1523a359bdb10fa331e0b62769de5",
+      "tracked_at": "2026-04-11T18:16:33.439430+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "/home/parameterization/code/2real-team-framework/generic_prompts/SESSION_HANDOFF_PROMPT.md": {
+      "last_tracked": "aeb374598fb728a67683e43a8087d045ce2f08e846c87c6991d400355ca6f900",
+      "last_resolved": "aeb374598fb728a67683e43a8087d045ce2f08e846c87c6991d400355ca6f900",
+      "tracked_at": "2026-04-11T17:08:56.398959+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/session_handoff.md": {
+      "last_tracked": "a1a77a214ef86536154c92316fb049b3ad0ca67a68b0436faeb1a0f63bc65046",
+      "last_resolved": "a1a77a214ef86536154c92316fb049b3ad0ca67a68b0436faeb1a0f63bc65046",
+      "tracked_at": "2026-04-11T17:15:29.035906+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "/home/parameterization/.claude/settings.json": {
+      "last_tracked": "51b90238b24ebd778a131029b19c4a993e0f7a473b4007a1ffcc8b7920b3adc3",
+      "last_resolved": "51b90238b24ebd778a131029b19c4a993e0f7a473b4007a1ffcc8b7920b3adc3",
+      "tracked_at": "2026-04-11T18:17:33.240348+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    },
+    "/home/parameterization/.claude/plans/snazzy-snacking-hickey.md": {
+      "last_tracked": "e0563d9e2139ae290575773b114c36d04683148a8e3fd9036d3271fc88bd8e03",
+      "last_resolved": "e0563d9e2139ae290575773b114c36d04683148a8e3fd9036d3271fc88bd8e03",
+      "tracked_at": "2026-04-11T18:20:51.343996+00:00",
+      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+    }
+  }
+}

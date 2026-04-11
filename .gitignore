@@ -7,8 +7,8 @@ noorinalabs-isnad-graph-ingestion/
 noorinalabs-isnad-ingest-platform/
 noorinalabs-user-service/
 
-# Claude Code project data
-.claude/projects/
+# Documentation (local only)
+high-level-docs/
 
 # Python
 __pycache__/
@@ -26,6 +26,9 @@ Thumbs.db
 tmp/
 temp/
 .cache/
+
+# Claude Code local state (machine-specific)
+.claude/projects/
 
 # Editor files
 *.swp

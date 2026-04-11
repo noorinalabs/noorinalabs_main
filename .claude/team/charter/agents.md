@@ -70,10 +70,11 @@ git worktree add /tmp/{agent-name} origin/{branch-name}
 ```
 
 **Orchestrator checklist for code-writing agent prompts:**
-1. Include `git worktree add /tmp/{agent-name} {base}` as the first setup step
-2. Tell the agent to `cd /tmp/{agent-name}` and work exclusively there
-3. Tell the agent to `git worktree remove /tmp/{agent-name}` on completion (or the orchestrator cleans up)
-4. **Never** instruct two agents to work in the same child repo directory
+1. **Run `/ontology-librarian {topic}` first** — before any code changes, consult the ontology for domain context on the area being modified. Include the librarian's output in the agent's prompt so the agent starts with full context. If the librarian flags stale references, note them.
+2. Include `git worktree add /tmp/{agent-name} {base}` as the first setup step
+3. Tell the agent to `cd /tmp/{agent-name}` and work exclusively there
+4. Tell the agent to `git worktree remove /tmp/{agent-name}` on completion (or the orchestrator cleans up)
+5. **Never** instruct two agents to work in the same child repo directory
 
 **Why:** In Wave C Phase 2, two agents sharing the isnad-graph directory cross-contaminated commits — session management code mixed with email verification code, requiring multiple cleanup pushes and blocking CI. This rule prevents that failure mode.
 

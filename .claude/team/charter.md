@@ -10,6 +10,7 @@ All cross-repo coordination, org-wide standards, release management, and program
 
 - All team members are spawned as Claude Code agents (via the Agent tool)
 - **Worktrees are REQUIRED for all code-writing agents** — each agent working on code MUST use `isolation: "worktree"`. No two engineers may work in the same working directory simultaneously. This prevents branch contention and accidental cross-branch commits.
+- **Ontology consultation is REQUIRED before code changes** — any agent (orchestrator, team member, or one-off) MUST run `/ontology-librarian {topic}` before making code changes. This front-loads domain context, surfaces stale references, and prevents changes that conflict with the existing architecture. The librarian query should describe the area being modified (e.g., `/ontology-librarian narrator API endpoints`).
 - Each team member has a persistent name and personality (see `roster/` directory)
 - Team members communicate via the SendMessage tool when named and running concurrently
 
@@ -89,6 +90,28 @@ Each team member maintains a directional trust score (1-5) for every other team 
 ## Steady-State Goal
 
 The team should evolve through feedback cycles toward a steady state of little to no negative feedback. Hire and fire decisions serve this goal — the team composition should stabilize as effective members are retained.
+
+## Session Start Protocol
+
+At the start of every session, establish situational awareness before taking any action:
+
+### 1. Ontology check
+Run `/ontology-librarian` to check ontology staleness. If significantly behind, recommend running `/ontology-rebuild` before starting work.
+
+### 2. Wave/phase orientation
+Determine the current state of work:
+- Read `cross-repo-status.json` for active wave, phase, and per-repo status
+- Check the project board for the current wave's open issues: `gh project item-list 2 --owner noorinalabs --format json`
+- Check which wave label is active on open issues
+- Report to the user: current wave/phase, how many issues open vs closed, any blockers
+
+### 3. Charter freshness check
+The charter evolves through wave retros (proposed changes in `/wave-retro` step 7). At session start:
+- Check `feedback_log.md` for the most recent retro entry — were any charter changes proposed?
+- If proposed changes exist and haven't been applied, flag them to the user
+- If the most recent wave introduced new hooks or skills (via `/annunaki-attack` or memory-to-automation audit), verify they're documented in the charter sub-documents
+
+This ensures the charter reflects the current state of the project's process, not a stale snapshot from several waves ago. The charter should be a living document that evolves with every milestone.
 
 ## Cross-Repo Wave Plan
 

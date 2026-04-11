@@ -86,6 +86,65 @@ When the user reports a bug, broken behavior, or missing feature in conversation
 
 This is the default behavior for all bug reports. Filing alone is never sufficient.
 
+## Ontology
+
+The project maintains a structured knowledge base in `ontology/` that captures domain entities, service topology, and conventions across all repos.
+
+### Three roles
+
+| Role | Type | What it does |
+|------|------|-------------|
+| **Change Tracker** | PostToolUse hook (Edit/Write) | Auto-updates `ontology/checksums.json` with file hashes on every edit |
+| **Change Resolver** | Skill (`/ontology-rebuild`) | Reads dirty checksums, updates ontology files and auto-updatable docs |
+| **Librarian** | Skill (`/ontology-librarian`) | Read-only reference — staleness check, context lookup |
+
+### Session start behavior
+
+**At the start of every session**, establish situational awareness (see also charter § Session Start Protocol):
+
+0. **Handoff check** — check project memory for a `session_handoff.md` file. If one exists, read it first — it contains the pickup context from the previous session. Summarize it briefly to the user so they know you have context.
+1. **Ontology check** — run `/ontology-librarian` to check staleness. If files are dirty, report the count and let the user decide whether to run `/ontology-rebuild` before starting work.
+2. **Wave/phase orientation** — read `cross-repo-status.json` and the project board to identify the active wave, open issues, and blockers. Report current state.
+3. **Charter freshness check** — check `feedback_log.md` for unapplied retro proposals. If new hooks or skills were introduced since the last charter update, flag them.
+
+### Session end (automatic)
+
+A `Stop` hook automatically writes a handoff file to project memory after every response (throttled to once per 5 minutes). It captures git state, open PRs, issues, wave status, and ontology staleness. The next session auto-loads this file at step 0.
+
+For a richer handoff that includes conversational context (what was discussed, decisions made), manually run `/handoff` before exiting — but the automatic version covers the essentials.
+
+### Before any code changes (mandatory)
+
+**Every agent — orchestrator, team member, or one-off — MUST run `/ontology-librarian {topic}` before making code changes.** This applies to:
+- The orchestrator working directly on code
+- Team agents spawned for implementation work (orchestrator runs the librarian and includes output in the agent's prompt)
+- One-off fixes or changes outside of planned wave work
+
+The query should describe the area being modified (e.g., `/ontology-librarian narrator API endpoints`, `/ontology-librarian design system tokens`).
+
+### Ontology structure
+
+```
+ontology/
+  checksums.json          # Change tracking (version-controlled)
+  domain.yaml             # Org-wide entities & relationships
+  services.yaml           # Org-wide service map
+  conventions.md          # Org-wide conventions & patterns
+  repos/
+    isnad-graph.yaml      # Per-repo internals
+    user-service.yaml
+    landing-page.yaml
+    design-system.yaml
+    deploy.yaml
+    ingestion.yaml
+```
+
+### Integration
+
+- `/wave-wrapup` runs `/ontology-rebuild` before closing a wave (step 12)
+- `/wave-retro` runs `/ontology-librarian` as a staleness check (step 1)
+- The change tracker hook fires on all Edit/Write operations across all repos
+
 ## Shared Conventions
 
 - All repos use **GitHub Flow** (feature branches off `main`, PRs for merge)
