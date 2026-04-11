@@ -626,3 +626,48 @@ None. All team members performed well. Zero must-fix items across 7 PRs.
 
 ### Fire/Hire Actions
 None. All team members performed well.
+
+---
+
+## 2026-04-11 — Phase 2 Wave 3 Retrospective
+
+**Scope:** 7 PRs merged across 3 repos (main, isnad-graph, user-service). 12 issues closed (including 10 stale issues from user-service extraction). Theme: Tech Debt + Process Improvements.
+
+### Wave Highlights
+- **Stale issue cleanup:** 10 issues closed as stale — referenced code extracted during user-service extraction
+- **Hook dispatcher:** Consolidated 12 PreToolUse subprocess invocations into 1 in-process dispatcher (#75)
+- **Wave-kickoff improvements:** Added CI triage (#92) and issue cross-reference (#93) steps
+- **auto_set_env_test.py fix:** Narrowed regex to actual test commands only (#91)
+
+### Per-Engineer Assessments
+
+#### Wanjiku Mwangi (via Nadia) — Severity: None
+- PRs: main #94 (hook fix), user-service #49 (Dockerfile CMD + JWT ADR)
+- Hook regex precise with 20 automated checks. JWT ADR thorough. Dockerfile CMD correct.
+
+#### Santiago Ferreira — Severity: None
+- PRs: isnad-graph #781 (auth cleanup), #782 (CI expansion), #783 (lockfile validation)
+- Auth cleanup adds cross-tab polling. CI expansion covers 3 directories. Lockfile two-layer defense.
+
+#### Aino Virtanen — Severity: None
+- PRs: main #95 (wave-kickoff), #96 (dispatcher). 5 PR reviews as charter enforcer.
+- Dispatcher well-architected. Wave-kickoff steps have user confirmation gates.
+
+#### Orchestrator — Severity: Minor
+- Identified 10 stale issues before assignment. Merge conflict on wave→main (avoidable).
+
+### Top 3 Going Well
+1. Stale issue cleanup — ontology librarian prevented assigning 10 dead issues
+2. Hook dispatcher — 12→1 subprocess reduction per Bash call
+3. Second consecutive single-session wave completion
+
+### Top 3 Pain Points
+1. Merge conflict on wave→main (auto_set_env_test.py modified on both branches)
+2. Nadia bypassed PD role boundary (implemented instead of coordinating)
+3. No other significant friction
+
+### Trust Updates
+No changes. All scores remain at current levels.
+
+### Fire/Hire Actions
+None.
