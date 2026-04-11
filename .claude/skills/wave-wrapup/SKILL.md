@@ -207,7 +207,16 @@ gh pr create --base main --head "deployments/phase{P}/wave-{M}" \
 
 **Do NOT merge to main without user approval.** This is a significant action that affects all downstream repos.
 
-### 12. Memory-to-automation audit
+### 12. Annunaki error attack
+
+Run `/annunaki-attack` to process any errors captured by the Annunaki monitor during this wave. This converts observed errors into preventative automation (hooks, skills, charter updates) before the wave closes.
+
+- If `.claude/annunaki/errors.jsonl` is empty or missing, report "Annunaki: No errors captured this wave" and skip
+- Use the current wave label for any issues created
+- Include Annunaki-created issues and PRs in the final wave report totals
+- This step runs **before** the memory-to-automation audit so that new hooks/skills from error analysis are visible to the memory audit
+
+### 13. Memory-to-automation audit
 
 Examine all memory files in the project memory directory for entries that describe behaviors, rules, or patterns that could be codified as a **hook**, **skill**, or **charter update** instead of remaining as soft memory.
 
