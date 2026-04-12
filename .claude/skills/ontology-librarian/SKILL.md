@@ -27,8 +27,9 @@ cat ontology/checksums.json
 
 Report staleness status:
 - **0 dirty files**: "Ontology is current."
-- **1–5 dirty files**: "Ontology has {N} files pending resolution: {list}. References from these files may be stale."
-- **6+ dirty files**: "Ontology is significantly behind ({N} dirty files). Consider running `/ontology-rebuild` before starting work."
+- **1–5 dirty files**: "{N} files pending — ontology is slightly behind."
+- **6–15 dirty files**: "{N} files pending — consider running `/ontology-rebuild`."
+- **16+ dirty files**: "{N} files pending — strongly recommend `/ontology-rebuild` before starting work."
 
 **Important:** The librarian does NOT trigger the resolver. It reports staleness so the user can decide. If the user asks you to update, tell them to run `/ontology-rebuild`.
 

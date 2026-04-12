@@ -1,6 +1,6 @@
 ---
 name: session-start
-description: "MANDATORY first action in every session — runs full startup protocol (handoff, team, ontology, annunaki, wave, charter)"
+description: "MANDATORY first action in every session — runs full startup protocol (worktree, team, handoff, ontology, annunaki, wave, charter)"
 ---
 
 # Session Start Protocol
@@ -9,9 +9,27 @@ description: "MANDATORY first action in every session — runs full startup prot
 
 ## Instructions
 
-Execute all 6 steps below. Steps that are independent of each other SHOULD run in parallel. Present results in a single concise status table at the end.
+Execute all 7 steps below. Steps that are independent of each other SHOULD run in parallel. Present results in a single concise status table at the end.
 
-### Step 0 — Handoff check
+### Step 0 — Worktree cleanup
+
+```bash
+git worktree prune
+git worktree list
+```
+
+Verify only the main repo root is listed. Remove any stale worktrees.
+
+### Step 1 — Team cleanup
+
+Stale team state from prior sessions causes "does not exist" / "already leading" errors. Always start fresh:
+
+1. Run `TeamDelete` (will succeed even if no team exists)
+2. Run `TeamCreate` with `team_name: "noorinalabs"` and `description: "Org-level coordination team for noorinalabs-main"`
+
+Never try to reuse an existing team. Never skip this step.
+
+### Step 2 — Handoff check
 
 Read the session handoff file from project memory:
 
@@ -27,16 +45,7 @@ If it exists, extract:
 
 Summarize in 2-3 sentences. If the file doesn't exist, note "No handoff from previous session."
 
-### Step 1 — Team cleanup
-
-Stale team state from prior sessions causes "does not exist" / "already leading" errors. Always start fresh:
-
-1. Run `TeamDelete` (will succeed even if no team exists)
-2. Run `TeamCreate` with `team_name: "noorinalabs"` and `description: "Org-level coordination team for noorinalabs-main"`
-
-Never try to reuse an existing team. Never skip this step.
-
-### Step 2 — Ontology rebuild
+### Step 3 — Ontology rebuild
 
 Run `/ontology-rebuild` to resolve any dirty files from the previous session.
 
@@ -44,7 +53,7 @@ Run `/ontology-rebuild` to resolve any dirty files from the previous session.
 - If dirty files exist, process them and commit the result
 - This ensures the ontology reflects all changes before any new work begins
 
-### Step 3 — Annunaki error check
+### Step 4 — Annunaki error check
 
 Run `/annunaki` to check the error monitor.
 
@@ -52,7 +61,7 @@ Run `/annunaki` to check the error monitor.
 - If 5+ unprocessed errors, flag for `/annunaki-attack`
 - If 0 errors or all are resolved PreToolUse blocks, report "No action needed"
 
-### Step 4 — Wave/phase orientation
+### Step 5 — Wave/phase orientation
 
 Read the current project state:
 
@@ -67,7 +76,7 @@ Report:
 - Open issue count and any blockers
 - Open PRs across repos
 
-### Step 5 — Charter freshness check
+### Step 6 — Charter freshness check
 
 Read the tail of the feedback log:
 
@@ -91,12 +100,13 @@ After all steps complete, present a single status block:
 
 | Step | Status |
 |------|--------|
-| 0. Handoff | {summary} |
+| 0. Worktree | {clean / N stale removed} |
 | 1. Team | {created fresh / error} |
-| 2. Ontology | {N dirty resolved / current} |
-| 3. Annunaki | {N errors, action needed? / clear} |
-| 4. Wave | {active wave, stale?, issues} |
-| 5. Charter | {current / proposals pending} |
+| 2. Handoff | {summary} |
+| 3. Ontology | {N dirty resolved / current} |
+| 4. Annunaki | {N errors, action needed? / clear} |
+| 5. Wave | {active wave, stale?, issues} |
+| 6. Charter | {current / proposals pending} |
 
 {Then address the user's actual message/request}
 ```
