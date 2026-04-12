@@ -98,16 +98,23 @@ The project maintains a structured knowledge base in `ontology/` that captures d
 | **Change Resolver** | Skill (`/ontology-rebuild`) | Reads dirty checksums, updates ontology files and auto-updatable docs |
 | **Librarian** | Skill (`/ontology-librarian`) | Read-only reference — staleness check, context lookup |
 
-### Session start behavior
+### Session start — MANDATORY, NON-NEGOTIABLE
 
-**At the start of every session**, establish situational awareness AUTOMATICALLY on the first user message — never wait to be asked:
+> **CRITICAL: Run `/session-start` as your VERY FIRST action in every new session.**
+> Do NOT read the user's message first. Do NOT respond with text first. Do NOT run any other tool first.
+> The literal first thing you do is invoke the `/session-start` skill. No exceptions. No "let me just..." first.
+> This has been a recurring failure — if you skip this, the user WILL notice and WILL call it out.
 
-0. **Handoff check** — check project memory for a `session_handoff.md` file. If one exists, read it first — it contains the pickup context from the previous session. Summarize it briefly to the user so they know you have context.
-1. **Team cleanup** — always run `TeamDelete` then `TeamCreate` for the `noorinalabs` team. Stale team state from prior sessions causes "does not exist" / "already leading" errors. Starting fresh prevents this. Never try to reuse an existing team.
-2. **Ontology rebuild** — run `/ontology-rebuild` to resolve any dirty files from the previous session. If 0 dirty files, skip and report "Ontology is current."
-3. **Annunaki check** — run `/annunaki` to check for captured errors from hooks/scripts. Report any new errors and whether they need attention.
-4. **Wave/phase orientation** — read `cross-repo-status.json` and the project board to identify the active wave, open issues, and blockers. Report current state.
-5. **Charter freshness check** — check `feedback_log.md` for unapplied retro proposals. If new hooks or skills were introduced since the last charter update, flag them.
+The `/session-start` skill executes all 6 steps automatically:
+
+0. **Handoff check** — read `session_handoff.md` from project memory
+1. **Team cleanup** — `TeamDelete` then `TeamCreate` for `noorinalabs` (prevents stale state errors)
+2. **Ontology rebuild** — `/ontology-rebuild` to resolve dirty files
+3. **Annunaki check** — `/annunaki` to check for captured errors
+4. **Wave/phase orientation** — read `cross-repo-status.json` and project board
+5. **Charter freshness** — check `feedback_log.md` for unapplied proposals
+
+After the skill completes and reports the status table, THEN address whatever the user asked.
 
 ### Session end (automatic)
 

@@ -15,9 +15,9 @@
       "resolved_at": "2026-04-11T16:26:02.575946+00:00"
     },
     "CLAUDE.md": {
-      "last_tracked": "a11a938b9114ef29cad72f4f6e5ebb10fd466387b9d1566585fa2cc01580bf54",
+      "last_tracked": "98651ad7d732e3cebc8f823a0f28bc9334b434cecb1a11489968466c932b6635",
       "last_resolved": "a11a938b9114ef29cad72f4f6e5ebb10fd466387b9d1566585fa2cc01580bf54",
-      "tracked_at": "2026-04-12T17:39:03.186381+00:00",
+      "tracked_at": "2026-04-12T19:54:55.077259+00:00",
       "resolved_at": "2026-04-12T19:47:22.393968+00:00"
     },
     "ontology/domain.yaml": {
@@ -147,9 +147,9 @@
       "resolved_at": "2026-04-12T19:47:22.393968+00:00"
     },
     "/home/parameterization/.claude/settings.json": {
-      "last_tracked": "c47215509d09cfe07d4064401a2ff31d5b351994133e2858788a80103c571f0e",
+      "last_tracked": "65f4092dc920b636ef7bb88dfe437c7fff27317326badeccfecc3f21012ce7fe",
       "last_resolved": "c47215509d09cfe07d4064401a2ff31d5b351994133e2858788a80103c571f0e",
-      "tracked_at": "2026-04-11T21:56:53.903638+00:00",
+      "tracked_at": "2026-04-12T19:56:07.315066+00:00",
       "resolved_at": "2026-04-11T22:09:20.362695+00:00"
     },
     "/home/parameterization/.claude/plans/snazzy-snacking-hickey.md": {
@@ -481,6 +481,18 @@
       "last_resolved": "cb5f30304ee1b370cddfaafc0fcbc8c97432ecb04ff8b02d8a0a8e7f7aff911d",
       "tracked_at": "2026-04-12T17:56:24.843186+00:00",
       "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    ".claude/skills/session-start/SKILL.md": {
+      "last_tracked": "7e5d7f9b14806aa8e4b0d2f710b1e6760568d4fe2232145e03fb4c5466abfe3a",
+      "last_resolved": "",
+      "tracked_at": "2026-04-12T19:54:41.571590+00:00",
+      "resolved_at": ""
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/settings.json": {
+      "last_tracked": "83bdcd01383638104f672cf2c802e234c50300bd23c40adf60512dea33a57b15",
+      "last_resolved": "",
+      "tracked_at": "2026-04-12T19:55:53.884411+00:00",
+      "resolved_at": ""
     }
   }
 }
