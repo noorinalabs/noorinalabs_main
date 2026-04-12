@@ -146,7 +146,7 @@ services:
         /api/v1/2fa*: user-service:8000
         /api/*: isnad-graph-api:8000
         /health: isnad-graph-api:8000
-        /metrics: isnad-graph-api:8000
+        /metrics: respond 403 (blocked — Prometheus scrapes via Docker network)
         /grafana/*: grafana:3000
         /*: isnad-graph-frontend:80
 
