@@ -99,7 +99,7 @@ def main() -> None:
         f"{framework_note}"
     )
 
-    result = {"decision": "allow", "systemMessage": message}
+    result = {"systemMessage": message}
     print(json.dumps(result))
     sys.exit(0)
 
