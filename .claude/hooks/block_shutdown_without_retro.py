@@ -92,7 +92,9 @@ def main() -> None:
             "Run /wave-retro or /retro first, then retry shutdown."
         ),
     }
-    log_pretooluse_block("block_shutdown_without_retro", message, result["reason"], tool_name="SendMessage")
+    log_pretooluse_block(
+        "block_shutdown_without_retro", message, result["reason"], tool_name="SendMessage"
+    )
     print(json.dumps(result))
     sys.exit(2)
 

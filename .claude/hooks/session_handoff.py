@@ -13,9 +13,7 @@ Exit codes:
   0 — always (advisory, never blocks)
 """
 
-import hashlib
 import json
-import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -24,7 +22,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Project memory path — Claude auto-loads this at session start
-MEMORY_DIR = Path.home() / ".claude" / "projects" / "-home-parameterization-code-noorinalabs-main" / "memory"
+MEMORY_DIR = (
+    Path.home() / ".claude" / "projects" / "-home-parameterization-code-noorinalabs-main" / "memory"
+)
 HANDOFF_FILE = MEMORY_DIR / "session_handoff.md"
 MEMORY_INDEX = MEMORY_DIR / "MEMORY.md"
 
@@ -33,8 +33,12 @@ def _run(cmd: str, cwd: str | None = None, timeout: int = 10) -> str:
     """Run a shell command and return stdout, or empty string on failure."""
     try:
         result = subprocess.run(
-            cmd, shell=True, capture_output=True, text=True,
-            timeout=timeout, cwd=cwd or str(REPO_ROOT),
+            cmd,
+            shell=True,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            cwd=cwd or str(REPO_ROOT),
         )
         return result.stdout.strip()
     except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
@@ -54,13 +58,20 @@ def _get_git_state() -> dict:
 def _get_open_prs() -> list[str]:
     """Get open PRs across all repos."""
     repos = [
-        "noorinalabs-main", "noorinalabs-isnad-graph", "noorinalabs-user-service",
-        "noorinalabs-deploy", "noorinalabs-design-system", "noorinalabs-landing-page",
+        "noorinalabs-main",
+        "noorinalabs-isnad-graph",
+        "noorinalabs-user-service",
+        "noorinalabs-deploy",
+        "noorinalabs-design-system",
+        "noorinalabs-landing-page",
         "noorinalabs-isnad-graph-ingestion",
     ]
     prs = []
     for repo in repos:
-        raw = _run(f"gh pr list --repo noorinalabs/{repo} --state open --json number,title --limit 5", timeout=15)
+        raw = _run(
+            f"gh pr list --repo noorinalabs/{repo} --state open --json number,title --limit 5",
+            timeout=15,
+        )
         if raw:
             try:
                 items = json.loads(raw)
@@ -73,13 +84,17 @@ def _get_open_prs() -> list[str]:
 
 def _get_open_issues() -> list[str]:
     """Get open issues on main repo."""
-    raw = _run("gh issue list --repo noorinalabs/noorinalabs-main --state open --limit 10 --json number,title,labels", timeout=15)
+    raw = _run(
+        "gh issue list --repo noorinalabs/noorinalabs-main"
+        " --state open --limit 10 --json number,title,labels",
+        timeout=15,
+    )
     issues = []
     if raw:
         try:
             items = json.loads(raw)
             for item in items:
-                label_names = [l["name"] for l in item.get("labels", [])]
+                label_names = [lb["name"] for lb in item.get("labels", [])]
                 label_str = f" [{', '.join(label_names)}]" if label_names else ""
                 issues.append(f"  - #{item['number']}: {item['title']}{label_str}")
         except (json.JSONDecodeError, KeyError):
@@ -99,7 +114,8 @@ def _get_ontology_staleness() -> str:
         dirty = [k for k, v in files.items() if v.get("last_tracked") != v.get("last_resolved")]
         if not dirty:
             return "Ontology is current (0 dirty files)"
-        return f"Ontology has {len(dirty)} dirty files: {', '.join(dirty[:5])}{'...' if len(dirty) > 5 else ''}"
+        suffix = "..." if len(dirty) > 5 else ""
+        return f"Ontology has {len(dirty)} dirty files: {', '.join(dirty[:5])}{suffix}"
     except (json.JSONDecodeError, OSError):
         return "Could not read checksums"
 
@@ -143,7 +159,7 @@ def main() -> None:
     lines = [
         "---",
         "name: Session handoff",
-        "description: Auto-generated pickup prompt from previous session — read this first to resume work",
+        "description: Auto-generated pickup prompt — read this first to resume work",
         "type: project",
         "---",
         "",
@@ -176,11 +192,13 @@ def main() -> None:
     else:
         lines.extend(["### Open issues (noorinalabs-main)", "  - None", ""])
 
-    lines.extend([
-        "### Notes",
-        "This handoff was auto-generated on session exit. For conversational context,",
-        "check the git log above — commit messages capture what was done.",
-    ])
+    lines.extend(
+        [
+            "### Notes",
+            "This handoff was auto-generated on session exit. For conversational context,",
+            "check the git log above — commit messages capture what was done.",
+        ]
+    )
 
     content = "\n".join(lines) + "\n"
 
@@ -193,6 +211,10 @@ def main() -> None:
         sys.exit(0)
 
     # Update memory index — replace existing handoff entry or add new one
+    handoff_entry = (
+        f"- [Session handoff](session_handoff.md)"
+        f" — Pickup from {date_short}: auto-generated project state snapshot"
+    )
     try:
         if MEMORY_INDEX.exists():
             index_content = MEMORY_INDEX.read_text(encoding="utf-8")
@@ -201,12 +223,12 @@ def main() -> None:
             found = False
             for line in index_lines:
                 if "session_handoff.md" in line.lower() or "Session handoff" in line:
-                    new_lines.append(f"- [Session handoff](session_handoff.md) — Pickup from {date_short}: auto-generated project state snapshot")
+                    new_lines.append(handoff_entry)
                     found = True
                 else:
                     new_lines.append(line)
             if not found:
-                new_lines.append(f"- [Session handoff](session_handoff.md) — Pickup from {date_short}: auto-generated project state snapshot")
+                new_lines.append(handoff_entry)
             MEMORY_INDEX.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
     except OSError:
         pass

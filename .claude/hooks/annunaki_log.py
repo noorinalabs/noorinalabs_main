@@ -17,7 +17,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 ERRORS_FILE = REPO_ROOT / ".claude" / "annunaki" / "errors.jsonl"
 
 
-def log_pretooluse_block(hook_name: str, command: str, reason: str, tool_name: str = "Bash") -> None:
+def log_pretooluse_block(
+    hook_name: str, command: str, reason: str, tool_name: str = "Bash"
+) -> None:
     """Append a PreToolUse block event to the Annunaki error log."""
     record = {
         "timestamp": datetime.now(timezone.utc).isoformat(),

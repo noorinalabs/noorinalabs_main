@@ -11,7 +11,6 @@ Exit codes:
 """
 
 import json
-import os
 import re
 import sys
 from datetime import datetime, timezone
@@ -68,7 +67,6 @@ def _extract_error_lines(text: str, max_lines: int = 10) -> list[str]:
 
 def _should_ignore(command: str, output: str) -> bool:
     """Return True if this looks like a false positive."""
-    combined = command + " " + output
     for pattern in IGNORE_PATTERNS:
         if pattern.search(command):
             return True

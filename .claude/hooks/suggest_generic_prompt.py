@@ -90,6 +90,7 @@ def main() -> None:
             f"{GENERIC_PROMPTS_DIR} and offer to commit it."
         )
 
+    assert category is not None
     message = (
         f"[Generic Prompt Suggestion] You just modified `.claude/{rel_path}` — "
         f"a {category['prompt_type']}. Consider whether this change could be "

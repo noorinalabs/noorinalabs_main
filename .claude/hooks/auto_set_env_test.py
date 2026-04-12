@@ -15,7 +15,10 @@ import sys
 
 
 def check(input_data: dict) -> dict | None:
-    """Check for ENVIRONMENT=test on test commands. Returns result dict if blocking, None if allowed."""
+    """Check for ENVIRONMENT=test on test commands.
+
+    Returns result dict if blocking, None if allowed.
+    """
     tool_name = input_data.get("tool_name", "")
     if tool_name != "Bash":
         return None
