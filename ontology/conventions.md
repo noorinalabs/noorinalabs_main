@@ -114,7 +114,7 @@ Updated by `/ontology-rebuild`. Manual edits require `checksums.json` update.
 | `warn_ghcr_image.py` | PreToolUse (Bash) | Warn before pushing GHCR images |
 | `block_gh_pr_review.py` | PreToolUse (Bash) | Block `gh pr review` (use comment-based reviews) |
 | `validate_review_comment_format.py` | PreToolUse (Bash) | Enforce review comment charter format |
-| `validate_wave_context.py` | PreToolUse (Agent) | Warn if agent spawned without wave context |
+| `validate_wave_context.py` | PreToolUse (Agent) | Warn if agent spawned without wave context or ontology context in prompt |
 | `block_shutdown_without_retro.py` | PreToolUse (SendMessage) | Block agent shutdown before retro |
 | `auto_add_issue_to_board.py` | PostToolUse (Bash) | Auto-add new issues to project board |
 | `annunaki_monitor.py` | PostToolUse (Bash) | Capture failed commands to error log |

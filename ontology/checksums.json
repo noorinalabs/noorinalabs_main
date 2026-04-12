@@ -33,10 +33,10 @@
       "resolved_at": "2026-04-11T16:26:02.575946+00:00"
     },
     "ontology/conventions.md": {
-      "last_tracked": "bca3678ff22b173735b2ad582ed93efeb7876faf3b1d3b51c731ffbbe37d3319",
-      "last_resolved": "bca3678ff22b173735b2ad582ed93efeb7876faf3b1d3b51c731ffbbe37d3319",
-      "tracked_at": "2026-04-11T22:09:20.362695+00:00",
-      "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+      "last_tracked": "bda1e5a46844f894c9452996836c6abda61361f8b30c66ee6ac12a06248dcb96",
+      "last_resolved": "bda1e5a46844f894c9452996836c6abda61361f8b30c66ee6ac12a06248dcb96",
+      "tracked_at": "2026-04-12T03:32:34.047264+00:00",
+      "resolved_at": "2026-04-12T03:32:34.047264+00:00"
     },
     "ontology/repos/isnad-graph.yaml": {
       "last_tracked": "175ebd6c739a9e336fc3d04a8b549ea0ff5cb8a5c58a1982e33ffe5e2a838c14",
@@ -241,6 +241,42 @@
       "last_resolved": "b18c4d3c341531e33c433ac3b06d9ee3787f54d0832c08d62bd0a9bce76625a0",
       "tracked_at": "2026-04-11T22:02:09.190463+00:00",
       "resolved_at": "2026-04-11T22:09:20.362695+00:00"
+    },
+    ".claude/team/feedback_log.md": {
+      "last_tracked": "f66f71bd52aea08b662009700786bb60c88cfd7da00ee3c5375beb56df12efe3",
+      "last_resolved": "f66f71bd52aea08b662009700786bb60c88cfd7da00ee3c5375beb56df12efe3",
+      "tracked_at": "2026-04-11T22:57:19.282988+00:00",
+      "resolved_at": "2026-04-12T03:32:34.047264+00:00"
+    },
+    ".claude/skills/wave-kickoff/SKILL.md": {
+      "last_tracked": "3272e3bb7dabc24374820e3b6ae23b5a71f9f0461ce5f7e6793206d72a283956",
+      "last_resolved": "3272e3bb7dabc24374820e3b6ae23b5a71f9f0461ce5f7e6793206d72a283956",
+      "tracked_at": "2026-04-11T23:17:54.541953+00:00",
+      "resolved_at": "2026-04-12T03:32:34.047264+00:00"
+    },
+    ".claude/hooks/validate_wave_context.py": {
+      "last_tracked": "0bc6d58ee64caa5eaffd97ccacd9a5ee03f94f3e0dd2baf2b2a213b5b9c054f6",
+      "last_resolved": "0bc6d58ee64caa5eaffd97ccacd9a5ee03f94f3e0dd2baf2b2a213b5b9c054f6",
+      "tracked_at": "2026-04-11T23:18:18.397254+00:00",
+      "resolved_at": "2026-04-12T03:32:34.047264+00:00"
+    },
+    "/home/parameterization/code/other-brain/.claude/skills/annunaki/SKILL.md": {
+      "last_tracked": "ef2e58f30be0780ec38c387f83b71f76e038779ff04a76cd2514ca8fffc4e736",
+      "last_resolved": "ef2e58f30be0780ec38c387f83b71f76e038779ff04a76cd2514ca8fffc4e736",
+      "tracked_at": "2026-04-12T00:43:37.620016+00:00",
+      "resolved_at": "2026-04-12T03:32:34.047264+00:00"
+    },
+    "/home/parameterization/code/other-brain/.claude/skills/annunaki-attack/SKILL.md": {
+      "last_tracked": "22792ea58cb447feff1e8665dcaa879a240a3000501a17a9fec7875c79b05a63",
+      "last_resolved": "22792ea58cb447feff1e8665dcaa879a240a3000501a17a9fec7875c79b05a63",
+      "tracked_at": "2026-04-12T00:43:40.278242+00:00",
+      "resolved_at": "2026-04-12T03:32:34.047264+00:00"
+    },
+    "/home/parameterization/code/other-brain/CLAUDE.md": {
+      "last_tracked": "7b1dec13199537a5c70c2d5acbcd9c86fda7900f7a66e7d87d83d0cf28888ad0",
+      "last_resolved": "7b1dec13199537a5c70c2d5acbcd9c86fda7900f7a66e7d87d83d0cf28888ad0",
+      "tracked_at": "2026-04-12T00:44:04.429186+00:00",
+      "resolved_at": "2026-04-12T03:32:34.047264+00:00"
     }
   }
 }
