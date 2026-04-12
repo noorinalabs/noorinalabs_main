@@ -100,12 +100,14 @@ The project maintains a structured knowledge base in `ontology/` that captures d
 
 ### Session start behavior
 
-**At the start of every session**, establish situational awareness (see also charter § Session Start Protocol):
+**At the start of every session**, establish situational awareness AUTOMATICALLY on the first user message — never wait to be asked:
 
 0. **Handoff check** — check project memory for a `session_handoff.md` file. If one exists, read it first — it contains the pickup context from the previous session. Summarize it briefly to the user so they know you have context.
-1. **Ontology check** — run `/ontology-librarian` to check staleness. If files are dirty, report the count and let the user decide whether to run `/ontology-rebuild` before starting work.
-2. **Wave/phase orientation** — read `cross-repo-status.json` and the project board to identify the active wave, open issues, and blockers. Report current state.
-3. **Charter freshness check** — check `feedback_log.md` for unapplied retro proposals. If new hooks or skills were introduced since the last charter update, flag them.
+1. **Team cleanup** — always run `TeamDelete` then `TeamCreate` for the `noorinalabs` team. Stale team state from prior sessions causes "does not exist" / "already leading" errors. Starting fresh prevents this. Never try to reuse an existing team.
+2. **Ontology rebuild** — run `/ontology-rebuild` to resolve any dirty files from the previous session. If 0 dirty files, skip and report "Ontology is current."
+3. **Annunaki check** — run `/annunaki` to check for captured errors from hooks/scripts. Report any new errors and whether they need attention.
+4. **Wave/phase orientation** — read `cross-repo-status.json` and the project board to identify the active wave, open issues, and blockers. Report current state.
+5. **Charter freshness check** — check `feedback_log.md` for unapplied retro proposals. If new hooks or skills were introduced since the last charter update, flag them.
 
 ### Session end (automatic)
 
