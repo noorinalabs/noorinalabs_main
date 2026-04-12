@@ -97,7 +97,7 @@ Updated by `/ontology-rebuild`. Manual edits require `checksums.json` update.
 ### Session continuity
 - **Auto-handoff** (`session_handoff.py` Stop hook): Fires on every session exit (throttled to 5 min). Captures git state, open PRs/issues, wave status, ontology staleness. Writes to project memory for next session pickup.
 - **Manual handoff** (`/handoff` skill): Richer version that includes conversational context — what was discussed, decisions made, blockers encountered.
-- **Session start protocol**: Charter-mandated steps — check handoff file, run ontology librarian, orient on wave/phase, check charter freshness.
+- **Session start protocol**: Charter-mandated automatic steps — (0) check handoff file, (1) team cleanup (TeamDelete + TeamCreate), (2) ontology rebuild, (3) Annunaki check, (4) wave/phase orientation, (5) charter freshness check.
 
 ### Automation hooks (org-level)
 | Hook | Event | Purpose |
@@ -117,6 +117,7 @@ Updated by `/ontology-rebuild`. Manual edits require `checksums.json` update.
 | `validate_wave_context.py` | PreToolUse (Agent) | Warn if agent spawned without wave context or ontology context in prompt |
 | `block_shutdown_without_retro.py` | PreToolUse (SendMessage) | Block agent shutdown before retro |
 | `auto_add_issue_to_board.py` | PostToolUse (Bash) | Auto-add new issues to project board |
+| `annunaki_log.py` | Utility (imported by hooks) | Shared logging for PreToolUse block events to Annunaki error log |
 | `annunaki_monitor.py` | PostToolUse (Bash) | Capture failed commands to error log |
 | `ontology_tracker.py` | PostToolUse (Edit/Write) | Track file checksums for ontology changes |
 | `suggest_generic_prompt.py` | PostToolUse (Edit/Write) | Suggest generic prompts for `.claude/` changes |

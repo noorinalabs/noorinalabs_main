@@ -15,10 +15,10 @@
       "resolved_at": "2026-04-11T16:26:02.575946+00:00"
     },
     "CLAUDE.md": {
-      "last_tracked": "b3c527318dc6314bcca22c68a4686216fdec74d60f554b86bd90fe87a3166038",
-      "last_resolved": "b3c527318dc6314bcca22c68a4686216fdec74d60f554b86bd90fe87a3166038",
-      "tracked_at": "2026-04-11T16:59:01.595963+00:00",
-      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+      "last_tracked": "a11a938b9114ef29cad72f4f6e5ebb10fd466387b9d1566585fa2cc01580bf54",
+      "last_resolved": "a11a938b9114ef29cad72f4f6e5ebb10fd466387b9d1566585fa2cc01580bf54",
+      "tracked_at": "2026-04-12T17:39:03.186381+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
     },
     "ontology/domain.yaml": {
       "last_tracked": "47d3e4855f3b9f4f0ae224a26a23f3d3a9cbb9a6008e38690cd2df1be7027d75",
@@ -27,16 +27,16 @@
       "resolved_at": "2026-04-11T16:26:02.575946+00:00"
     },
     "ontology/services.yaml": {
-      "last_tracked": "880568af26a3865820c81eb7ed120297292c41db6a7417ca3afdd4e054fa37a3",
-      "last_resolved": "880568af26a3865820c81eb7ed120297292c41db6a7417ca3afdd4e054fa37a3",
-      "tracked_at": "2026-04-12T03:46:50.471864+00:00",
-      "resolved_at": "2026-04-12T03:46:50.471864+00:00"
+      "last_tracked": "367726644103a4849f94b53c3abf394f938ce3dc1142446426d67b66a8b04d3b",
+      "last_resolved": "367726644103a4849f94b53c3abf394f938ce3dc1142446426d67b66a8b04d3b",
+      "tracked_at": "2026-04-12T19:47:02.746684+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
     },
     "ontology/conventions.md": {
-      "last_tracked": "bda1e5a46844f894c9452996836c6abda61361f8b30c66ee6ac12a06248dcb96",
-      "last_resolved": "bda1e5a46844f894c9452996836c6abda61361f8b30c66ee6ac12a06248dcb96",
-      "tracked_at": "2026-04-12T03:32:34.047264+00:00",
-      "resolved_at": "2026-04-12T03:32:34.047264+00:00"
+      "last_tracked": "b26367f6b14dab8e9d7aa030c5ea55fe080d0b3b9167089dfdf846acaf8f7b90",
+      "last_resolved": "b26367f6b14dab8e9d7aa030c5ea55fe080d0b3b9167089dfdf846acaf8f7b90",
+      "tracked_at": "2026-04-12T19:47:15.844307+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
     },
     "ontology/repos/isnad-graph.yaml": {
       "last_tracked": "175ebd6c739a9e336fc3d04a8b549ea0ff5cb8a5c58a1982e33ffe5e2a838c14",
@@ -87,10 +87,10 @@
       "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/MEMORY.md": {
-      "last_tracked": "8185f852614c1e9e3fa447b766d99b00dc38fe40ba2f078dc608a228931bcb40",
-      "last_resolved": "00d9252e3021c4d03fdfdf52155d34f46703dbb659fcfaf196ddc7d9142a2c00",
-      "tracked_at": "2026-04-12T04:04:11.102622+00:00",
-      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+      "last_tracked": "d1df3ee4352507d112ca88e92dc2387a02e683e747c969970471f0bc3bd16c63",
+      "last_resolved": "d1df3ee4352507d112ca88e92dc2387a02e683e747c969970471f0bc3bd16c63",
+      "tracked_at": "2026-04-12T19:44:10.917156+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
     },
     ".claude/team/charter.md": {
       "last_tracked": "b428ad621b0afb6671cd2a68faa4996db0dc0fabece5f23abe2a88623e13d4f3",
@@ -111,10 +111,10 @@
       "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     ".claude/hooks/suggest_generic_prompt.py": {
-      "last_tracked": "5b3784219612a83ee1f9a9558893ea37d39fbc20afb4995e4cb7ae5799a11f92",
-      "last_resolved": "777adc43582cd149ce29dc85c1a1ed8f6a5c06e7c32f8f9219cb1e28099ec3d0",
-      "tracked_at": "2026-04-12T04:00:36.726660+00:00",
-      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+      "last_tracked": "b32325333219200d17ccb647aca4ecf408c37c2e0b1fbdedf7e698337592518b",
+      "last_resolved": "b32325333219200d17ccb647aca4ecf408c37c2e0b1fbdedf7e698337592518b",
+      "tracked_at": "2026-04-12T17:23:28.557008+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
     },
     ".claude/settings.json": {
       "last_tracked": "b5bf03978263e2641d087ad55d40e77af038ec911f5b204384a2292ad6274851",
@@ -129,10 +129,10 @@
       "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     ".claude/hooks/session_handoff.py": {
-      "last_tracked": "cf3013361d37cfbdbc3dd6e861f4f95959f1523a359bdb10fa331e0b62769de5",
-      "last_resolved": "cf3013361d37cfbdbc3dd6e861f4f95959f1523a359bdb10fa331e0b62769de5",
-      "tracked_at": "2026-04-11T18:16:33.439430+00:00",
-      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+      "last_tracked": "d08e3c0956615cc16d94af1cbc64e4eec3fd254df32dfb33411d9269f335227a",
+      "last_resolved": "d08e3c0956615cc16d94af1cbc64e4eec3fd254df32dfb33411d9269f335227a",
+      "tracked_at": "2026-04-12T17:24:34.329146+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
     },
     "/home/parameterization/code/2real-team-framework/generic_prompts/SESSION_HANDOFF_PROMPT.md": {
       "last_tracked": "aeb374598fb728a67683e43a8087d045ce2f08e846c87c6991d400355ca6f900",
@@ -141,10 +141,10 @@
       "resolved_at": "2026-04-11T18:37:30.535410+00:00"
     },
     "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/session_handoff.md": {
-      "last_tracked": "f68d22c4a741cb34a6cda5e82a17050efb5a842025a41f9424b1de79327322ac",
-      "last_resolved": "a1a77a214ef86536154c92316fb049b3ad0ca67a68b0436faeb1a0f63bc65046",
-      "tracked_at": "2026-04-12T04:04:04.043313+00:00",
-      "resolved_at": "2026-04-11T18:37:30.535410+00:00"
+      "last_tracked": "2b54d48741b3b1417c91ff465170c8e3599396de648c4ec16c790c51cdd583a9",
+      "last_resolved": "2b54d48741b3b1417c91ff465170c8e3599396de648c4ec16c790c51cdd583a9",
+      "tracked_at": "2026-04-12T19:44:02.000193+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
     },
     "/home/parameterization/.claude/settings.json": {
       "last_tracked": "c47215509d09cfe07d4064401a2ff31d5b351994133e2858788a80103c571f0e",
@@ -283,6 +283,204 @@
       "last_resolved": "0346ac81731b50ecdbbeb1ccd0d57ad68c0fed666de5a09e4039f9f03d7f0013",
       "tracked_at": "2026-04-12T03:45:38.456055+00:00",
       "resolved_at": "2026-04-12T03:46:50.471864+00:00"
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/feedback_session_start.md": {
+      "last_tracked": "c7bf1308f1297a2c400eba9daa122e22b8b2f5c10ef1a328aeb468e2d630478a",
+      "last_resolved": "c7bf1308f1297a2c400eba9daa122e22b8b2f5c10ef1a328aeb468e2d630478a",
+      "tracked_at": "2026-04-12T17:38:47.293926+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    ".claude/hooks/annunaki_log.py": {
+      "last_tracked": "b53c9238fcc9aa5fba804437a17cc8551626e7ec024e6bb63e3f8cd728115cf8",
+      "last_resolved": "b53c9238fcc9aa5fba804437a17cc8551626e7ec024e6bb63e3f8cd728115cf8",
+      "tracked_at": "2026-04-12T17:23:28.725413+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    ".claude/hooks/annunaki_monitor.py": {
+      "last_tracked": "676b784a58a0f7975903a70270806c17f3c8c6f0f1d2ced6f12493fd49d713e2",
+      "last_resolved": "676b784a58a0f7975903a70270806c17f3c8c6f0f1d2ced6f12493fd49d713e2",
+      "tracked_at": "2026-04-12T17:24:04.980866+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    ".claude/hooks/auto_set_env_test.py": {
+      "last_tracked": "30754073eb66886cd2e7cac70d5b667a0dba80f91f66a976f01c417bb97f5a8e",
+      "last_resolved": "30754073eb66886cd2e7cac70d5b667a0dba80f91f66a976f01c417bb97f5a8e",
+      "tracked_at": "2026-04-12T17:24:06.271591+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/feedback_settings_permission.md": {
+      "last_tracked": "1baa25c81249ca26d33d8a3ad5ab37464aba2fc6978a2ec35d3d2118287a2b90",
+      "last_resolved": "1baa25c81249ca26d33d8a3ad5ab37464aba2fc6978a2ec35d3d2118287a2b90",
+      "tracked_at": "2026-04-12T17:25:42.694564+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/package.json": {
+      "last_tracked": "9fda2ac719850d8b0fc9750a5ef10abc024ca15b6ed841ed51a689285f4f89a9",
+      "last_resolved": "9fda2ac719850d8b0fc9750a5ef10abc024ca15b6ed841ed51a689285f4f89a9",
+      "tracked_at": "2026-04-12T17:42:07.382082+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/badge.tsx": {
+      "last_tracked": "3d8a76a991bd30da42d57a1b48cae0491ceb8db97079ac8d0d2a4a3da42ec32f",
+      "last_resolved": "3d8a76a991bd30da42d57a1b48cae0491ceb8db97079ac8d0d2a4a3da42ec32f",
+      "tracked_at": "2026-04-12T17:39:34.395779+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/badge.stories.tsx": {
+      "last_tracked": "080f7527cf364e8909b6742a2c08fe5c52d9eac53ff9ff3414013f2ca0e26480",
+      "last_resolved": "080f7527cf364e8909b6742a2c08fe5c52d9eac53ff9ff3414013f2ca0e26480",
+      "tracked_at": "2026-04-12T17:44:31.363888+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/card.tsx": {
+      "last_tracked": "ac926781997132625e3690a8feb001f778569a8faf8e037eddddf1652a52206c",
+      "last_resolved": "ac926781997132625e3690a8feb001f778569a8faf8e037eddddf1652a52206c",
+      "tracked_at": "2026-04-12T17:39:59.130616+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/styles/components.css": {
+      "last_tracked": "c2c6ac3f2138424ad523f70b1cb6d5bfa7212c3b559dc7576d07edbc94971882",
+      "last_resolved": "c2c6ac3f2138424ad523f70b1cb6d5bfa7212c3b559dc7576d07edbc94971882",
+      "tracked_at": "2026-04-12T17:40:34.102266+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/tokens/index.ts": {
+      "last_tracked": "8ffc11224f735eac1e7637cf4b9220da7ea406400c074ae15f4d2a3784ac475b",
+      "last_resolved": "8ffc11224f735eac1e7637cf4b9220da7ea406400c074ae15f4d2a3784ac475b",
+      "tracked_at": "2026-04-12T17:41:43.631756+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/tokens/colors.css": {
+      "last_tracked": "2a99f1703b3423d33f30d0e42a09c1acdb978bb09a35f83f2f69e6be59f4907c",
+      "last_resolved": "2a99f1703b3423d33f30d0e42a09c1acdb978bb09a35f83f2f69e6be59f4907c",
+      "tracked_at": "2026-04-12T17:41:27.418058+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/tooltip.tsx": {
+      "last_tracked": "79edc732ce0a316803e34de0fadcbc34f38f872da965ba4f2d387d9d3ab4ec11",
+      "last_resolved": "79edc732ce0a316803e34de0fadcbc34f38f872da965ba4f2d387d9d3ab4ec11",
+      "tracked_at": "2026-04-12T17:42:24.115111+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/toast.tsx": {
+      "last_tracked": "7c43f0607cf7f668297348399648dce1799fda9c89293acd027a3a7ae43c2c64",
+      "last_resolved": "7c43f0607cf7f668297348399648dce1799fda9c89293acd027a3a7ae43c2c64",
+      "tracked_at": "2026-04-12T17:42:41.760565+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/dropdown-menu.tsx": {
+      "last_tracked": "8d42507fdf7a9fbffaad6a64cfe86d6b0d9b2807dc60e9f44d8081ca7acb6983",
+      "last_resolved": "8d42507fdf7a9fbffaad6a64cfe86d6b0d9b2807dc60e9f44d8081ca7acb6983",
+      "tracked_at": "2026-04-12T17:43:06.420032+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/index.ts": {
+      "last_tracked": "240ddaf7158b8252650d82ed2010c7c3b368494f5e8604ca86e22fa1d015a302",
+      "last_resolved": "240ddaf7158b8252650d82ed2010c7c3b368494f5e8604ca86e22fa1d015a302",
+      "tracked_at": "2026-04-12T17:43:12.624755+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/__tests__/dialog.test.tsx": {
+      "last_tracked": "ced83d24ec2cd0ccba273cc9f58a280805ffc6110dfda9ee922697342ce6633f",
+      "last_resolved": "ced83d24ec2cd0ccba273cc9f58a280805ffc6110dfda9ee922697342ce6633f",
+      "tracked_at": "2026-04-12T17:45:14.352329+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/__tests__/select.test.tsx": {
+      "last_tracked": "7e4279b6322aee74dbd748a0199a712e3612af2582a0fb0ece1edc95d0dd1be3",
+      "last_resolved": "7e4279b6322aee74dbd748a0199a712e3612af2582a0fb0ece1edc95d0dd1be3",
+      "tracked_at": "2026-04-12T17:45:23.693085+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/__tests__/tooltip.test.tsx": {
+      "last_tracked": "8dd93034ce6ff98f45de14c7dd3c22848a2a7ac42da19784c2d02a04a0e390bd",
+      "last_resolved": "8dd93034ce6ff98f45de14c7dd3c22848a2a7ac42da19784c2d02a04a0e390bd",
+      "tracked_at": "2026-04-12T17:45:46.779102+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/__tests__/toast.test.tsx": {
+      "last_tracked": "dd5e06a65afc0521d2fc7824f278191030c2d91b383628457b9b76deb4b951a7",
+      "last_resolved": "dd5e06a65afc0521d2fc7824f278191030c2d91b383628457b9b76deb4b951a7",
+      "tracked_at": "2026-04-12T17:45:52.574946+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/__tests__/dropdown-menu.test.tsx": {
+      "last_tracked": "4f553db85fc804cfc8fabf7bcced77eca5f6726d7702987e4bbd40a5c1289ab7",
+      "last_resolved": "4f553db85fc804cfc8fabf7bcced77eca5f6726d7702987e4bbd40a5c1289ab7",
+      "tracked_at": "2026-04-12T17:45:31.016700+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/tooltip.stories.tsx": {
+      "last_tracked": "50ec3332d85e8c10b829a0af989edc59122f13d216f17c67fa1591e11d29adba",
+      "last_resolved": "50ec3332d85e8c10b829a0af989edc59122f13d216f17c67fa1591e11d29adba",
+      "tracked_at": "2026-04-12T17:44:04.220761+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/toast.stories.tsx": {
+      "last_tracked": "ddb1d560ade6efcbd37b579cde734b3f2f997d099566df6ea133cd47a9157472",
+      "last_resolved": "ddb1d560ade6efcbd37b579cde734b3f2f997d099566df6ea133cd47a9157472",
+      "tracked_at": "2026-04-12T17:44:10.036061+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/dropdown-menu.stories.tsx": {
+      "last_tracked": "de0070b1b897ddb17099f3d4eb35343b62464a064e6104dbcb277c3951895034",
+      "last_resolved": "de0070b1b897ddb17099f3d4eb35343b62464a064e6104dbcb277c3951895034",
+      "tracked_at": "2026-04-12T17:44:14.424686+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/button.stories.tsx": {
+      "last_tracked": "7290de1be68f3407c9599752f9eec7447c5e16c04f91d587d5c0c650634d9fbf",
+      "last_resolved": "7290de1be68f3407c9599752f9eec7447c5e16c04f91d587d5c0c650634d9fbf",
+      "tracked_at": "2026-04-12T17:44:26.178546+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/card.stories.tsx": {
+      "last_tracked": "870949612e168811264636191bfdd86aeac7e6f077d89a1205592c6781ad73b3",
+      "last_resolved": "870949612e168811264636191bfdd86aeac7e6f077d89a1205592c6781ad73b3",
+      "tracked_at": "2026-04-12T17:44:36.234226+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-design-system/src/components/input.stories.tsx": {
+      "last_tracked": "27995c7c1fb2b05cd1f08cf6a2b12622dc7e99aa7632fa9a50ebaa04d11ccf1c",
+      "last_resolved": "27995c7c1fb2b05cd1f08cf6a2b12622dc7e99aa7632fa9a50ebaa04d11ccf1c",
+      "tracked_at": "2026-04-12T17:44:42.264236+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-landing-page/src/styles/global.css": {
+      "last_tracked": "6d35fcab293b3f3eeefb016b9f31dfcf88fc2de08c266a5433b987ed3b8a7554",
+      "last_resolved": "6d35fcab293b3f3eeefb016b9f31dfcf88fc2de08c266a5433b987ed3b8a7554",
+      "tracked_at": "2026-04-12T17:55:39.301179+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/wanjiku-isnad-graph/frontend/src/styles/theme.css": {
+      "last_tracked": "6289d8640e40752462b86063a8c1d78ab00ce10e85db3736315e5ce49d11c229",
+      "last_resolved": "6289d8640e40752462b86063a8c1d78ab00ce10e85db3736315e5ce49d11c229",
+      "tracked_at": "2026-04-12T17:55:44.324665+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-landing-page/src/layouts/BaseLayout.astro": {
+      "last_tracked": "b2419d9433e7c9965d3e5336023c10c6c3659bae5ca6d55f9080f0e5d839b34b",
+      "last_resolved": "b2419d9433e7c9965d3e5336023c10c6c3659bae5ca6d55f9080f0e5d839b34b",
+      "tracked_at": "2026-04-12T17:55:44.820801+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/wanjiku-isnad-graph/frontend/src/pages/GraphExplorerPage.tsx": {
+      "last_tracked": "af9cd3d520a0ba9b9176e8ebff20c62b73d8a25507632613cb1784515f7cddb2",
+      "last_resolved": "af9cd3d520a0ba9b9176e8ebff20c62b73d8a25507632613cb1784515f7cddb2",
+      "tracked_at": "2026-04-12T17:57:35.929663+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/santiago-landing-page/src/pages/index.astro": {
+      "last_tracked": "ffe0cb8f11e7fa2165cd9e3f196e1315216c778b540366d025d6f30330995385",
+      "last_resolved": "ffe0cb8f11e7fa2165cd9e3f196e1315216c778b540366d025d6f30330995385",
+      "tracked_at": "2026-04-12T17:55:58.620550+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
+    },
+    "/tmp/wanjiku-isnad-graph/frontend/src/pages/LoginPage.tsx": {
+      "last_tracked": "cb5f30304ee1b370cddfaafc0fcbc8c97432ecb04ff8b02d8a0a8e7f7aff911d",
+      "last_resolved": "cb5f30304ee1b370cddfaafc0fcbc8c97432ecb04ff8b02d8a0a8e7f7aff911d",
+      "tracked_at": "2026-04-12T17:56:24.843186+00:00",
+      "resolved_at": "2026-04-12T19:47:22.393968+00:00"
     }
   }
 }
