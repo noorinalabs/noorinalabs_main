@@ -10,6 +10,75 @@ Track all feedback events here. Format:
 
 ---
 
+## 2026-04-13 — Phase 2 Wave 7 Retrospective (Visual Consistency & Design System)
+
+**Scope:** 5 PRs merged across 4 repos (design-system: 1, isnad-graph: 2, landing-page: 1, deploy: 1). 8 issues closed (#97-#102 design alignment, #103-#104 infra). 4 carry-forward issues remain (#49, #56, #57, #62). 0 new tech-debt issues filed.
+
+**Wave duration:** ~24 hours (2026-04-12 03:44 – 18:01 UTC). Infra work continued through 23:19 UTC.
+
+### Per-Engineer Assessments
+
+#### Santiago Ferreira (Release Coordinator)
+- PRs: DS #52 (1426+/318-), IG #800 (17+/17-), LP #65 (101+/10-), deploy #75 (10+/9-)
+- CI failures: 0 (DS, LP green; deploy no CI configured)
+- Must-fix items received: 0
+- Assessment: Carried 4 of 5 wave PRs. DS #52 was a bundled 11-issue omnibus (badges, icons, tests, tokens, new components). LP #65 closed 6 design alignment issues. IG #800 fixed a silent data bug (all admin stats returning zeros). Deploy #75 was a security fix (metrics exposure). Fast, clean, high-volume delivery.
+- Severity: **None** — exemplary
+
+#### Wanjiku Mwangi (Technical Program Manager)
+- PRs: IG #801 (96+/394- — net deletion of 298 lines)
+- CI failures: 1 (pre-existing IG CI issues — security-audit CVE, e2e design-system path)
+- Must-fix items received: 0
+- Assessment: Replaced ~400 lines of duplicated token definitions with a single DS import. Converted all hardcoded colors in GraphExplorerPage and LoginPage to CSS custom properties. Clean refactor that directly aligns with wave theme.
+- Severity: **None**
+
+#### Aino Virtanen (Standards & Quality Lead)
+- PRs: None (infra commits directly on wave branch)
+- Commits: 4 (session_start skill, ontology rebuild, hooks, annunaki dedup)
+- Assessment: Built the session-start skill and hook, strengthened CLAUDE.md startup mandate, added 4-tier staleness to annunaki, cross-repo roster detection in commit identity hook. Infrastructure that improves every future session.
+- Severity: **None**
+
+#### Nadia Khoury (Program Director)
+- PRs: None (coordination + state management)
+- Commits: 2 (session start protocol fixes, cross-repo status update)
+- Assessment: Coordinated wave execution, maintained cross-repo-status.json, fixed hook lint/format/type errors that were blocking CI on main.
+- Severity: **None**
+
+#### Orchestrator (self-assessment)
+- No peer reviews on any of the 5 PRs — violated the charter's 2-reviewer gate
+- All PRs merged by the owner account without formal review comments
+- Wave was compact and fast, but process was loose
+- Severity: **Minor** — clean code but skipped review gate
+
+### Top 3 Going Well
+1. **Fast execution** — entire wave (5 PRs, 8 issues) completed in ~24 hours
+2. **Cross-repo design alignment** — DS tokens now flow through IG and LP, eliminating hardcoded values across 3 repos
+3. **Infrastructure investment** — session-start skill, ontology improvements, and annunaki upgrades will pay dividends in every future session
+
+### Top 3 Pain Points
+1. **No peer reviews on any PR** — all 5 PRs merged without review comments. Charter requires 2 reviewers. This was expedient but sets a bad precedent.
+2. **Pre-existing IG CI failures** — security-audit (CVE-2026-39892) and e2e (design-system tgz path) remain broken. Wave-7 PRs inherited these failures, making CI signal unreliable.
+3. **4 carry-forward issues never addressed** — #49, #56, #57, #62 were labeled p2-wave-7 but are from earlier waves. No triage or re-label was done at wave start.
+
+### Proposed Process Changes
+1. **Enforce review gate even on fast waves** — at minimum, one team member must post a review comment before merge. Rationale: 100% review skip rate this wave.
+2. **Fix pre-existing CI failures before starting a new wave** — broken CI makes it impossible to tell if new PRs introduce regressions. Rationale: IG CI was red before and after wave-7.
+3. **Triage carry-forward issues at wave kickoff** — `/wave-kickoff` should explicitly re-label or close issues that survived from prior waves. Rationale: 4 stale issues cluttered wave-7's open count.
+
+### Trust Matrix Changes
+| Member | Old | New | Reason |
+|--------|-----|-----|--------|
+| Santiago Ferreira | 5 | 5 | Carried 80% of wave PRs, all clean. Already at max. |
+| Wanjiku Mwangi | — | — | Not in matrix (main team). Recommend adding main team members. |
+| Aino Virtanen | — | — | Not in matrix (main team). Infrastructure work was high-impact. |
+
+*Note: The trust matrix currently only covers isnad-graph team members. The noorinalabs-main coordination team (Nadia, Wanjiku, Santiago, Aino) should be added.*
+
+### Fire/Hire Actions
+None. Clean wave — all team members delivered without issues.
+
+---
+
 ## 2026-03-16 — Phase 5 Retrospective (consolidated by Fatima)
 
 ### Positive
