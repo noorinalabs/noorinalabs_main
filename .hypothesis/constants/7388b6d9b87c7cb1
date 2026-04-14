@@ -1,4 +1,0 @@
-# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/acquire/muhaddithat.py
-# hypothesis_version: 6.151.11
-
-['*.csv', 'hadiths.csv', 'muhaddithat', 'muhaddithat_acquired']

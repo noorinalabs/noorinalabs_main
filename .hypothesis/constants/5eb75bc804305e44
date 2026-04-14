@@ -1,4 +1,0 @@
-# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/models/historical.py
-# hypothesis_version: 6.151.11
-
-['HistoricalEvent', 'Location', 'type']

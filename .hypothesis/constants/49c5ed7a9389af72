@@ -1,4 +1,0 @@
-# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/acquire/lk_corpus.py
-# hypothesis_version: 6.151.11
-
-['*.csv', 'lk', 'lk_acquired']

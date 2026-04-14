@@ -1,4 +1,0 @@
-# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/config.py
-# hypothesis_version: 6.151.11
-
-['./data/curated', './data/raw', './data/staging', '.env', 'INFO', 'NEO4J_', 'PG_', 'commerce/trade', 'console', 'dreams/visions', 'end_times', 'eschatology', 'ethics/conduct', 'family_law', 'food/drink', 'history/sira', 'ignore', 'isnad_graph_dev', 'jurisprudence', 'medicine', 'neo4j', 'ritual/worship', 'succession/imamate', 'theology', 'utf-8', 'warfare/jihad']

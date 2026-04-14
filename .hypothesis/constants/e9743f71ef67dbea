@@ -1,4 +1,0 @@
-# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/parse/enrich_metadata.py
-# hypothesis_version: 6.151.11
-
-[0.0, 100.0, '*.json', 'abudawud', 'adab', 'bookNumber', 'book_number', 'bukhari', 'bulugh', 'chapterNameAr', 'chapterNameEn', 'chapterNumber', 'chapter_name_ar', 'chapter_name_en', 'chapter_number', 'collection', 'collection_name', 'enrichment_complete', 'enrichment_skipped', 'hadithNumber', 'hadith_number', 'ibnmajah', 'malik', 'matched', 'muslim', 'nasai', 'nawawi40', 'qudsi40', 'riyadussalihin', 'scraped_file_error', 'scraped_index_built', 'sunnah_scraped', 'tirmidhi', 'total', 'utf-8']

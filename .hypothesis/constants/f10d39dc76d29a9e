@@ -1,4 +1,0 @@
-# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/acquire/sanadset.py
-# hypothesis_version: 6.151.11
-
-[600.0, 600, 600000, '*.csv', '--unzip', '-d', '-p', '.kaggle', '5xth87zwb5', 'books.csv', 'cli', 'csv_files_exist', 'datasets', 'download', 'download_sanadset', 'download_skipped', 'falling back to CLI', 'id', 'kaggle', 'kaggle.json', 'key', 'low_row_count', 'mendeley', 'narrators', 'narrators_skipped', 'python_api', 'replace', 'sanadset', 'sanadset.csv', 'sha256', 'url', 'username', 'utf-8']
