@@ -120,7 +120,7 @@ services:
     build_tool: Vite 6.4
     package: "@noorinalabs/design-system"
     exports:
-      components: [Button, Badge, Input, Card, Dialog, Select, Table, Tabs]
+      components: [Button, Badge, Input, Card, Dialog, Select, Table, Tabs, Tooltip, Toast, DropdownMenu]
       icons: [NarratorsIcon, HadithsIcon, CollectionsIcon, SearchIcon, TimelineIcon, CompareIcon, GraphExplorerIcon, AdminIcon, SignOutIcon]
       illustrations: [NoResultsIllustration, EmptyGraphIllustration, NoDataIllustration, GeometricBorder, OctagonalFrame, PageHeaderAccent]
       tokens: [colors (OKLCH), typography, spacing, shadows, z-index, motion, border-radii]

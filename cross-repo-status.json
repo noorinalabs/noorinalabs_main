@@ -1,100 +1,57 @@
 {
   "wave_active": true,
-  "current_wave": "wave-c",
-  "wave_started": "2026-04-07T21:45:00Z",
-  "deployments_branch": "deployments/wave-c",
-  "phase_tracking": {
-    "phase_1": {
-      "name": "Foundation PRs",
-      "status": "complete",
-      "merged": ["IG #736", "IG #735", "IG #733", "LP #48", "ingest #5"],
-      "open": ["IG #734 (e2e Playwright fix needed — #740/#741)", "deploy #22 (rebase onto fixed main)"],
-      "closed_issues": ["IG #708", "IG #709", "IG #714", "IG #729", "LP #44", "LP #45", "LP #47", "ingest #1"]
-    },
-    "phase_2": {
-      "name": "Auth Hardening",
-      "status": "ready",
-      "blocked_by": [],
-      "issues": ["IG #727", "IG #728", "IG #731"],
-      "notes": "Unblocked — IG #733 merged"
-    },
-    "phase_3": {
-      "name": "Org Tech-Debt",
-      "status": "in_progress",
-      "blocked_by": [],
-      "completed": ["#23", "#24", "#25", "#29", "#30", "#31", "#42", "#44"],
-      "remaining": ["#21 (Tier 3 — hook dispatcher, subsumes #22)", "#41 (PD persistence)"],
-      "merged_prs": ["#43 (Tier 1+2)", "#45 (spawn delegation)"],
-      "notes": "Tier 1+2 merged. Tier 3 deferred to separate PR."
-    },
-    "phase_4": {
-      "name": "Revenue + Polish",
-      "status": "blocked",
-      "blocked_by": ["Phase 2 completion", "deploy #22 merge"],
-      "issues": ["IG #716", "IG #722", "LP #43", "deploy #20"],
-      "notes": "Depends on auth hardening and TF deployment fix"
-    }
+  "current_wave": "wave-7",
+  "phase": "phase-2",
+  "wave_started": "2026-04-11T00:00:00Z",
+  "deployments_branch": "deployments/phase2/wave-7",
+  "wave_branch_status": "4 commits ahead of main, not yet merged",
+  "open_prs_total": 0,
+  "historical_phases": {
+    "note": "wave-c phase tracking (phases 1-4) is superseded by phase-2 wave numbering",
+    "wave_c_status": "complete — all tracked work merged or superseded"
+  },
+  "wave_7_work": {
+    "merged": [
+      "DS #52: P2W7 design system — tokens, components, tests, exports",
+      "IG #801: P2W7 theme alignment with design system tokens",
+      "IG #800: Fix Neo4j label casing in admin queries",
+      "LP #65: P2W7 landing page design system alignment",
+      "deploy #75: Restrict metrics/observability service exposure",
+      "main: Session-start hook, worktree cleanup, annunaki dedup, 4-tier staleness (on wave-7 branch)"
+    ],
+    "open": [],
+    "remaining": "Wave-7 branch needs merge to main after triage/retro"
   },
   "design-system": {
     "latest_version": "0.0.1",
     "status": "published",
-    "deployments_branch": null,
-    "wave_status": "no_wave_c_items",
-    "blocked_by": [],
-    "last_updated": "2026-04-07T23:40:00Z"
+    "open_prs": 0,
+    "last_updated": "2026-04-12T23:20:00Z"
   },
   "isnad-graph": {
-    "latest_deploy": null,
     "status": "active",
-    "deployments_branch": null,
-    "wave_status": "phase_1_complete",
-    "blocked_by": [],
-    "open_prs": [734],
-    "merged_prs": [736, 735, 733],
-    "ci_status": {
-      "734": "e2e_fail — Playwright navigation element not found (issue #740/#741)"
-    },
-    "closed_issues": [708, 709, 714, 729],
-    "last_updated": "2026-04-07T23:40:00Z"
+    "open_prs": 0,
+    "last_updated": "2026-04-12T23:20:00Z"
   },
   "landing-page": {
     "status": "active",
-    "deployments_branch": null,
-    "wave_status": "phase_1_complete",
-    "blocked_by": [],
+    "open_prs": 0,
     "deploy_status": "live",
-    "merged_prs": [48],
-    "closed_issues": [44, 45, 47],
-    "last_updated": "2026-04-07T23:40:00Z"
+    "last_updated": "2026-04-12T23:20:00Z"
   },
   "deploy": {
     "status": "active",
-    "deployments_branch": null,
-    "wave_status": "in_progress",
-    "blocked_by": [],
-    "open_prs": [22],
-    "merged_prs": [25],
-    "ci_status": {
-      "22": "needs rebase onto fixed main (PR #25 merged — TF backend + secrets fixed)",
-      "25": "merged — TF backend syntax + workflow secrets + job-level env"
-    },
-    "new_issues": [26],
-    "last_updated": "2026-04-07T23:40:00Z"
+    "open_prs": 0,
+    "last_updated": "2026-04-12T23:20:00Z"
   },
   "isnad-graph-ingestion": {
     "status": "active",
-    "deployments_branch": null,
-    "wave_status": "phase_1_complete",
-    "blocked_by": [],
-    "merged_prs": [5],
-    "closed_issues": [1],
-    "last_updated": "2026-04-07T23:40:00Z"
+    "open_prs": 0,
+    "last_updated": "2026-04-12T23:20:00Z"
   },
   "isnad-ingest-platform": {
     "status": "active",
-    "deployments_branch": null,
-    "wave_status": "phase_1_complete",
-    "blocked_by": [],
-    "last_updated": "2026-04-07T23:40:00Z"
+    "open_prs": 0,
+    "last_updated": "2026-04-12T23:20:00Z"
   }
 }

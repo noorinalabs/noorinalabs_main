@@ -10,6 +10,7 @@ Exit codes:
   0 — always (advisory hook, never blocks)
 """
 
+import hashlib
 import json
 import re
 import sys
@@ -19,6 +20,9 @@ from pathlib import Path
 # Where we log errors — JSONL for easy dedup and processing
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 ERRORS_FILE = REPO_ROOT / ".claude" / "annunaki" / "errors.jsonl"
+
+# Session-level dedup: skip errors we've already logged this session
+_seen_hashes: set = set()
 
 # Patterns that indicate errors even when exit code is 0
 ERROR_PATTERNS = [
@@ -130,6 +134,14 @@ def main() -> None:
 
     # Build error record
     error_lines = _extract_error_lines(combined_output)
+
+    # Session-level dedup
+    dedup_input = command[:200] + "|||" + "\n".join(error_lines)[:500]
+    dedup_hash = hashlib.md5(dedup_input.encode("utf-8")).hexdigest()
+    if dedup_hash in _seen_hashes:
+        sys.exit(0)
+    _seen_hashes.add(dedup_hash)
+
     record = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "command": command[:500],  # Truncate very long commands
@@ -137,6 +149,7 @@ def main() -> None:
         "matched_patterns": matched_patterns[:5],
         "error_lines": error_lines,
         "stderr_excerpt": stderr[:300] if stderr else "",
+        "_dedup_hash": dedup_hash,
     }
 
     # Ensure directory exists and append
