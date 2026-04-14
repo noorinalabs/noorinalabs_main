@@ -1,0 +1,4 @@
+# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/parse/muhaddithat.py
+# hypothesis_version: 6.151.11
+
+['*narrator*.csv', ',', 'arabic_name', 'arabicname', 'bio', 'bio_id', 'bio_text', 'biography', 'birth_location', 'birth_year_ah', 'chain', 'death_location', 'death_year_ah', 'display_name', 'displayname', 'external_id', 'from_external_id', 'from_narrator_name', 'fullname', 'gender', 'generation', 'hadith_id', 'hadiths.csv', 'id', 'isnad', 'kunya', 'laqab', 'latin-1', 'muhaddithat', 'name', 'name_ar', 'name_ar_normalized', 'name_en', 'name_en_normalized', 'narrator*.csv', 'narrator_id', 'narrator_ids', 'narrators', 'narrators.csv', 'nisba', 'scholars.csv', 'source', 'to_external_id', 'to_narrator_name', 'trustworthiness', 'utf-8', 'utf-8-sig']

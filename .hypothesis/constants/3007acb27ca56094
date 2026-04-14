@@ -1,0 +1,4 @@
+# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/acquire/thaqalayn.py
+# hypothesis_version: 6.151.11
+
+['*.json', '.json', 'already_acquired', 'book_*.json', 'github_clone', 'thaqalayn', 'thaqalayn_acquired', 'thaqalayn_skipped']

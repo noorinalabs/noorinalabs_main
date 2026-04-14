@@ -1,0 +1,4 @@
+# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/utils/logging.py
+# hypothesis_version: 6.151.11
+
+['INFO', 'LOG_FORMAT', 'LOG_LEVEL', 'SERVICE_NAME', 'configure_logging', 'console', 'get_logger', 'iso', 'json', 'service']

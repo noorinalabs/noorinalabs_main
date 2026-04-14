@@ -1,0 +1,4 @@
+# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/pipeline/manifest.py
+# hypothesis_version: 6.151.11
+
+[8192, '*.parquet', '.manifest.json', 'ChangedFiles', 'compare_manifests', 'curated', 'generate_manifest', 'last_modified', 'load_manifest', 'md5', 'rb', 'rows', 'save_manifest', 'size_bytes', 'staging']

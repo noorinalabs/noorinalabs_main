@@ -1,0 +1,4 @@
+# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/enrich/historical.py
+# hypothesis_version: 6.151.11
+
+[120, 'birth_year_ah', 'cnt', 'compilation_year_ah', 'compiler', 'compiler_id', 'death_year_ah', 'event_id', 'id', 'narrator', 'narrator_id', 'year_end_ah', 'year_start_ah']

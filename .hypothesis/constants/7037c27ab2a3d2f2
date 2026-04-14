@@ -1,0 +1,4 @@
+# file: /home/parameterization/code/noorinalabs-main/noorinalabs-isnad-graph-ingestion/src/acquire/sunnah_scraper.py
+# hypothesis_version: 6.151.11
+
+[0.5, 30.0, 100, 404, '.arabic_hadith_full', '.arabicchapter', '.english_hadith_full', '.englishchapter', '.hadith', '.hadith-grade', '.hadithNar498', '.hadith_grade', '/', ':', 'User-Agent', 'a[href]', 'achapter', 'adab', 'book_number', 'bulugh', 'chapter', 'chapter_name_ar', 'chapter_name_en', 'chapter_number', 'grade', 'hadith_number', 'hisn', 'href', 'html.parser', 'https://sunnah.com', 'mishkat', 'musnad-ahmad', 'riyadussalihin', 'shamail', 'sunan-darimi', 'sunnah_scraped', 'text_ar', 'text_en', 'utf-8', 'w']
