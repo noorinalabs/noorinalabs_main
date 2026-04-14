@@ -134,7 +134,9 @@ All cross-repo work is tracked on the **[Cross-Repo Wave Plan](https://github.co
 **Wave kickoff:**
 - Verify all blockers from previous wave are resolved (Status = Done)
 - Confirm all new wave issues are on the board with correct Wave tag
+- **Triage carry-forward issues** — any issues labeled with a prior wave that were never addressed must be explicitly re-labeled to the new wave or closed with a rationale. Do NOT let stale-labeled issues accumulate across waves.
 - Set in-progress issues to "In Progress" status
+- **Verify CI is green on main for all affected repos** — if pre-existing CI failures exist, file issues and prioritize fixing them before starting feature work. Broken CI makes it impossible to tell if new PRs introduce regressions.
 - New issues created during a wave must be added to the board immediately (enforced by `auto_add_issue_to_board.py` PostToolUse hook)
 
 **Wave wrapup:**
