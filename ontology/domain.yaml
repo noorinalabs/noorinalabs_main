@@ -9,6 +9,9 @@ contexts:
   hadith_scholarship:
     description: Core domain — hadith texts, chains of transmission, narrator criticism
     repos: [isnad-graph, data-acquisition, isnad-ingest-platform]
+    pipeline_split:
+      data-acquisition: "Acquire stage only — scrapers, downloaders. Output → B2 raw/"
+      isnad-ingest-platform: "Processing pipeline (dedup → enrich → normalize → graph-load). Kafka workers in Docker. Planned P2W8."
 
   user_management:
     description: Authentication, authorization, subscriptions, RBAC

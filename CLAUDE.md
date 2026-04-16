@@ -11,10 +11,12 @@ This file provides guidance to Claude Code when working from the parent `noorina
 | Repository | Description | Path |
 |-----------|-------------|------|
 | `noorinalabs-isnad-graph` | Computational hadith analysis platform (FastAPI, React, Neo4j) | `noorinalabs-isnad-graph/` |
+| `noorinalabs-user-service` | User/auth/RBAC service — JWT issuer, OAuth, sessions (FastAPI, Postgres) | `noorinalabs-user-service/` |
 | `noorinalabs-deploy` | Deployment orchestration (Terraform, Docker Compose, workflows) | `noorinalabs-deploy/` |
 | `noorinalabs-design-system` | Shared design system (tokens, components, icons, brand assets) | `noorinalabs-design-system/` |
 | `noorinalabs-data-acquisition` | Data source acquisition — scrapers, API connectors, downloaders (Python, PyArrow) | `noorinalabs-data-acquisition/` |
-| `noorinalabs-landing-page` | Organization landing page | `noorinalabs-landing-page/` |
+| `noorinalabs-isnad-ingest-platform` | Pipeline processing — Kafka workers for dedup/enrich/normalize/graph-load (planned P2W8) | `noorinalabs-isnad-ingest-platform/` |
+| `noorinalabs-landing-page` | Organization landing page (Astro) | `noorinalabs-landing-page/` |
 
 Each child repo has its own `CLAUDE.md` with repo-specific build commands, architecture, and conventions. Refer to those for repo-specific work.
 

@@ -100,17 +100,30 @@ services:
       - { route: /about, source: about.astro, collection: pages }
       - { route: /projects/isnad-graph, source: projects/isnad-graph.astro, collection: projects }
 
-  ingestion-pipeline:
+  data-acquisition:
     repo: noorinalabs-data-acquisition
-    type: data_pipeline
+    type: data_pipeline_acquire_stage
     language: Python 3.14
     cli_command: isnad-ingest
+    output_target: "B2 noorinalabs-pipeline/raw/{source}/{date}/"
     stages:
-      acquire: { description: "Download from APIs, CSVs, Git repos, Kaggle" }
-      parse: { description: "Raw → Parquet (staging)" }
-      resolve: { description: "Entity resolution — NER, disambiguation, dedup" }
-      load: { description: "Parquet → Neo4j (MERGE nodes, CREATE edges)" }
-      enrich: { description: "Graph metrics, topic classification, historical linking" }
+      acquire: { description: "Download from APIs, CSVs, Git repos, Kaggle. Output → B2 raw/." }
+    note: "Processing stages (parse/resolve/enrich/load) will migrate to isnad-ingest-platform per P2W8 split."
+
+  isnad-ingest-platform:
+    repo: noorinalabs-isnad-ingest-platform
+    type: data_pipeline_processing
+    status: planned (P2W8)
+    language: Python 3.14
+    runtime: Kafka workers (KRaft mode, no ZooKeeper) in Docker containers
+    storage_root: "B2 noorinalabs-pipeline/ — prefixes raw → dedup → enriched → normalized → staged"
+    local_dev: MinIO (S3-compatible, same code path as B2)
+    workers:
+      dedup: { description: "Cross-source dedup → enriched/" }
+      enrich: { description: "Topic classification, historical linking" }
+      normalize: { description: "Schema normalization → normalized/" }
+      graph_load: { description: "Load into Neo4j" }
+    reset_levels: [stage, source, full]
 
   design-system:
     repo: noorinalabs-design-system
