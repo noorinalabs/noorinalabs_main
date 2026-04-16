@@ -30,7 +30,8 @@ def _ontology_staleness() -> tuple[int, int]:
         # Nested format: {version, description, files: {...}}
         data = data.get("files", data)
         dirty = sum(
-            1 for v in data.values()
+            1
+            for v in data.values()
             if isinstance(v, dict) and v.get("last_tracked") != v.get("last_resolved")
         )
         return dirty, len(data)
@@ -123,7 +124,7 @@ def main() -> None:
         lines.append(f"  Current ({dirty}/{total} dirty). No action needed.")
     else:
         lines.append(f"  DIRTY: {dirty}/{total} files need rebuild.")
-        lines.append(f"  ACTION: Run /ontology-rebuild NOW.")
+        lines.append("  ACTION: Run /ontology-rebuild NOW.")
     lines.append("")
 
     # Step 4: Annunaki errors
@@ -146,7 +147,10 @@ def main() -> None:
         lines.append(f"  Status from cross-repo-status.json: {wave_info}")
     else:
         lines.append("  cross-repo-status.json not found or unreadable.")
-    lines.append("  Run: gh issue list --repo noorinalabs/noorinalabs-main --state open --limit 10 --json number,title,labels")
+    lines.append(
+        "  Run: gh issue list --repo noorinalabs/noorinalabs-main --state open"
+        " --limit 10 --json number,title,labels"
+    )
     lines.append("  Establish current phase and open work items.")
     lines.append("")
 
