@@ -87,10 +87,10 @@
       "resolved_at": "2026-04-16T21:36:05.052302+00:00"
     },
     "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/MEMORY.md": {
-      "last_tracked": "a5cc67344777a77e98ee63a8ff8fa8a7641e7db0017064cd1335da2ddfe4593e",
-      "last_resolved": "a5cc67344777a77e98ee63a8ff8fa8a7641e7db0017064cd1335da2ddfe4593e",
-      "tracked_at": "2026-04-18T14:40:55.431489+00:00",
-      "resolved_at": "2026-04-18T17:14:01.044194+00:00"
+      "last_tracked": "2b8b00adc1b53e9fe363a41ff931659fdcdee30ec76b14d775922eb2a99dd295",
+      "last_resolved": "2b8b00adc1b53e9fe363a41ff931659fdcdee30ec76b14d775922eb2a99dd295",
+      "tracked_at": "2026-04-18T17:20:31.607962+00:00",
+      "resolved_at": "2026-04-18T17:22:28.117995Z"
     },
     ".claude/team/charter.md": {
       "last_tracked": "a79e60476eb72af6689a5af1c3a09e0d5878c67b26ab8f5ab3516ee26ff717d3",
@@ -141,10 +141,10 @@
       "resolved_at": "2026-04-16T21:36:05.052302+00:00"
     },
     "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/session_handoff.md": {
-      "last_tracked": "79e5224663b8eed4ec9d44191bce6a2e42870e71ea9965bbbbcc0dfafba0c3cc",
-      "last_resolved": "79e5224663b8eed4ec9d44191bce6a2e42870e71ea9965bbbbcc0dfafba0c3cc",
-      "tracked_at": "2026-04-17T03:13:02.311730+00:00",
-      "resolved_at": "2026-04-17T23:47:22.092415+00:00"
+      "last_tracked": "d1ba97068ee666a7918142b950d3cb012084276cc80f974a1827ec4b0b940aec",
+      "last_resolved": "d1ba97068ee666a7918142b950d3cb012084276cc80f974a1827ec4b0b940aec",
+      "tracked_at": "2026-04-18T17:20:26.402561+00:00",
+      "resolved_at": "2026-04-18T17:22:28.117995Z"
     },
     "/home/parameterization/.claude/settings.json": {
       "last_tracked": "d526f085b8e99a4e8f28511674bd42f55b9703e24d5d428d81cf41ef5239728a",
@@ -943,6 +943,12 @@
       "last_resolved": "2f90099b94c1caed112a9c6dbe654760ec605fe3fdbf53a5fc5d43989c933c66",
       "tracked_at": "2026-04-18T16:55:58.487040+00:00",
       "resolved_at": "2026-04-18T17:14:01.044194+00:00"
+    },
+    "/tmp/tracker_overtrack_body.md": {
+      "last_tracked": "5f27d4d3755ec92ce6ff50cf24c2d2fd58f64f66aac15cc49103c7e10e5e9324",
+      "last_resolved": "5f27d4d3755ec92ce6ff50cf24c2d2fd58f64f66aac15cc49103c7e10e5e9324",
+      "tracked_at": "2026-04-18T17:18:18.040684+00:00",
+      "resolved_at": "2026-04-18T17:22:28.117995Z"
     }
   }
 }
