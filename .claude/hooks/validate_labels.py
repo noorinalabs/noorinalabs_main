@@ -6,7 +6,10 @@ label exists in the target repository. Blocks execution if any label is missing.
 
 Input Language:
   Fires on:      PreToolUse Bash
-  Matches:       gh issue create [--repo {OWNER/REPO}] [--label {L} | -l {L} | --label={L}]... [--body {TEXT}] [...]
+  Matches:       gh issue create
+                   [--repo {OWNER/REPO}]
+                   [--label {L} | -l {L} | --label={L}]...
+                   [--body {TEXT}] [...]
   Does NOT match:
     - gh issue list / view / edit / close
     - Commands where `--label foo` appears only inside a `--body "..."` argument value

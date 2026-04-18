@@ -80,9 +80,7 @@ class TestExtractLabels(unittest.TestCase):
         self.assertEqual(vl.extract_labels(cmd), ["p2-wave-9"])
 
     def test_negative_body_equals_form(self):
-        cmd = (
-            'gh issue create --title t --body="mentions --label prose-label" --label real'
-        )
+        cmd = 'gh issue create --title t --body="mentions --label prose-label" --label real'
         self.assertEqual(vl.extract_labels(cmd), ["real"])
 
     def test_negative_body_file_flag(self):
@@ -101,9 +99,7 @@ class TestExtractLabels(unittest.TestCase):
 class TestExtractRepo(unittest.TestCase):
     def test_repo_space_form(self):
         self.assertEqual(
-            vl.extract_repo(
-                "gh issue create --repo noorinalabs/noorinalabs-main --label bug"
-            ),
+            vl.extract_repo("gh issue create --repo noorinalabs/noorinalabs-main --label bug"),
             "noorinalabs/noorinalabs-main",
         )
 
@@ -125,7 +121,7 @@ class TestExtractRepo(unittest.TestCase):
     def test_repo_inside_body_not_extracted(self):
         """--repo inside a body value must NOT be treated as the real repo flag."""
         cmd = (
-            'gh issue create --title t '
+            "gh issue create --title t "
             '--body "example: gh issue create --repo wrong/repo" '
             "--repo right/repo --label bug"
         )
@@ -187,9 +183,7 @@ class TestCheckIntegration(unittest.TestCase):
 
     def test_missing_label_blocks(self):
         with patch.object(vl, "get_existing_labels", return_value={"bug"}):
-            result = vl.check(
-                self._input("gh issue create --title t --label does-not-exist")
-            )
+            result = vl.check(self._input("gh issue create --title t --label does-not-exist"))
         self.assertIsNotNone(result)
         self.assertEqual(result["decision"], "block")
         self.assertIn("does-not-exist", result["reason"])
@@ -204,8 +198,7 @@ class TestCheckIntegration(unittest.TestCase):
         with patch.object(vl, "get_existing_labels", side_effect=fake_get):
             vl.check(
                 self._input(
-                    "gh issue create --repo noorinalabs/noorinalabs-main "
-                    "--title t --label bug"
+                    "gh issue create --repo noorinalabs/noorinalabs-main --title t --label bug"
                 )
             )
         self.assertEqual(captured["repo"], "noorinalabs/noorinalabs-main")
