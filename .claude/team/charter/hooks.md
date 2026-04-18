@@ -64,6 +64,7 @@ The following charter rules are enforced automatically via Claude Code hooks in 
 - **What it automates:** Blocks `gh pr create` if the feature branch is behind the base branch. Prevents merge conflicts from stale branches.
 - **Augments:** [Branching](branching.md) workflow. Session 4 had RBAC and session hardening PRs conflict because neither was rebased.
 - **Manual steps remaining:** None — the hook runs `git fetch` and `git merge-base --is-ancestor` automatically.
+- **`--repo` flag handling:** If `gh pr create --repo {OWNER/REPO}` targets a repo that differs from the cwd-resolved repo, the hook emits a non-blocking warning and skips the local-git freshness check. Rationale: the local worktree belongs to a different repo, so `origin/{base}` there is unrelated to the PR target; GitHub's branch-protection still gates the actual merge. Fixed in #118 (W9) as the third hook in the W8 substring/cwd-bug cluster (#113 labels, #114 env-test, #118 freshness).
 - **Emergency override:** Remove the hook entry from `.claude/settings.json`.
 
 ## Hook 10: Validate VPS_HOST (`validate_vps_host.py`)
