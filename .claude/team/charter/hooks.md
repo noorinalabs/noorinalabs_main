@@ -5,8 +5,11 @@ The following charter rules are enforced automatically via Claude Code hooks in 
 ## Hook 1: Validate Commit Identity (`validate_commit_identity.py`)
 
 - **What it automates:** Commit Identity rules — validates that every `git commit` command includes `-c user.name=` and `-c user.email=` flags matching a roster member.
+- **Matches:** `git commit` invocations, including those with prefixed `-c key=val` options, and the cross-repo pattern `cd <path> && git commit ...`.
+- **Does NOT match:** `git config`, `git log`, `git show`; occurrences of the literal text "git commit" inside heredoc bodies or single-/double-quoted strings (i.e., commit-message content is never mistaken for a nested command).
+- **Roster resolution:** When the hook runs in a child repo (a repo nested under a parent that has its own `.claude/team/roster.json`), both rosters are loaded at runtime and the union is treated as valid. The child roster wins on name collision with a differing email (per-repo override semantics). The parent-roster path is inferred purely from the filesystem location of the hook file — never from env vars or command input — so it cannot be spoofed.
 - **Augments:** The [Commit Identity](commits.md) section. The manual rule still applies; this hook enforces it automatically.
-- **Manual steps remaining:** When a new team member is hired, add their name and email to `.claude/team/roster.json` (the single source of truth for all hooks and skills).
+- **Manual steps remaining:** When a new org-level coordinator is hired, add them to the parent repo's `.claude/team/roster.json` only. Child repos inherit automatically via runtime merge — no per-repo duplication needed.
 - **Emergency override:** Remove or comment out the hook entry in `.claude/settings.json`. Re-add after the emergency.
 
 ## Hook 2: Block `--no-verify` (`block_no_verify.py`)

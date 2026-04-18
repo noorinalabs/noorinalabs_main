@@ -1,8 +1,25 @@
 #!/usr/bin/env python3
 """PreToolUse hook: Validate git commit identity flags.
 
-Ensures every `git commit` command includes `-c user.name=` and `-c user.email=`
-flags matching a roster member from the charter's Commit Identity table.
+Fires on: Bash tool calls.
+Matches: `git commit` invocations (including those with `-c` flags or after
+    shell operators like `&&`, `||`, `;`, `|`). Also matches the pattern
+    `cd <path> && git commit ...` to resolve cross-repo commits against the
+    target repo's roster.
+Does NOT match: `git config`, `git log`, `git show`, nor occurrences of the
+    literal text "git commit" that appear inside heredoc bodies or inside
+    single-/double-quoted strings (e.g., within a commit message).
+Flag pass-through: N/A — this hook is advisory/blocking, it does not rewrite
+    the command.
+
+Roster resolution (parent+child merge):
+  When the hook fires in a child repository (a repo whose working directory
+  is nested under a parent that itself contains a `.claude/team/roster.json`),
+  the hook loads BOTH rosters and treats the union as valid. On name
+  collision with a differing email, the CHILD roster wins (per-repo override
+  semantics). The parent roster path is inferred from the filesystem
+  position of this hook file — never from an environment variable or a
+  user-supplied path — so it cannot be spoofed by a crafted command.
 
 Exit codes:
   0 — allow (not a git commit, or identity is valid)
@@ -17,23 +34,91 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from annunaki_log import log_pretooluse_block
 
-# Load local roster from shared JSON file — single source of truth for all hooks
-_ROSTER_PATH = Path(__file__).resolve().parent.parent / "team" / "roster.json"
-try:
-    ROSTER: dict[str, str] = json.loads(_ROSTER_PATH.read_text(encoding="utf-8"))
-except (FileNotFoundError, json.JSONDecodeError):
-    # Fallback: allow if roster file is missing (don't block all commits)
-    ROSTER = {}
+# Local roster path — this hook's repo's roster (either the parent org-level
+# repo, or a child repo). Single source of truth for identities owned by
+# THIS repo.
+_LOCAL_ROSTER_PATH = Path(__file__).resolve().parent.parent / "team" / "roster.json"
+
+
+def _load_roster(path: Path) -> dict[str, str]:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {}
+
+
+def _find_parent_roster_path(local_repo_root: Path) -> Path | None:
+    """Locate the parent (org-level) roster, if this is a child repo.
+
+    Walks up from `local_repo_root.parent` looking for a directory whose
+    `.claude/team/roster.json` is distinct from the local one. Returns the
+    first such path, or None if this IS the top-level repo.
+
+    Security note: derived purely from the filesystem location of the hook
+    file. Cannot be influenced by the Bash command being validated, env
+    vars, or any external input.
+    """
+    try:
+        local_roster = (local_repo_root / ".claude" / "team" / "roster.json").resolve()
+    except OSError:
+        return None
+
+    current = local_repo_root.parent
+    while True:
+        candidate = current / ".claude" / "team" / "roster.json"
+        if candidate.is_file():
+            try:
+                if candidate.resolve() != local_roster:
+                    return candidate
+            except OSError:
+                pass
+        if current.parent == current:
+            return None
+        current = current.parent
+
+
+def _merge_rosters(parent: dict[str, str], child: dict[str, str]) -> dict[str, str]:
+    """Union of parent+child rosters; child wins on name collision."""
+    merged = dict(parent)
+    merged.update(child)
+    return merged
+
+
+def _build_effective_roster(local_roster_path: Path) -> dict[str, str]:
+    """Compute the effective roster for a given local-roster file.
+
+    The local repo root is derived from the roster path:
+      <local_repo_root>/.claude/team/roster.json
+    i.e. three parents up from the roster file.
+    """
+    local_roster = _load_roster(local_roster_path)
+    try:
+        local_repo_root = local_roster_path.parents[2]
+    except IndexError:
+        return local_roster
+
+    parent_roster_path = _find_parent_roster_path(local_repo_root)
+    if parent_roster_path is None:
+        return local_roster
+
+    parent_roster = _load_roster(parent_roster_path)
+    return _merge_rosters(parent_roster, local_roster)
+
+
+# Effective roster at import time — merged parent+child if applicable.
+ROSTER: dict[str, str] = _build_effective_roster(_LOCAL_ROSTER_PATH)
 
 
 def _detect_target_roster(command: str) -> dict[str, str] | None:
-    """Detect cross-repo commits and load the target repo's roster.
+    """Detect cross-repo commits and load the target repo's effective roster.
 
     When the command contains `cd /path/to/repo && git commit ...`, the
-    commit targets a different repo. Load that repo's roster.json so we
-    validate against the correct team, not the local one.
+    commit targets a different repo. Load that repo's roster.json (plus its
+    parent roster, if any) and return the merged result.
 
-    Returns the target roster dict, or None to use the local ROSTER.
+    Returns the target repo's effective (merged) roster dict, or None to use
+    the local ROSTER.
     """
     cd_match = re.search(r"cd\s+([^\s;&|]+)", command)
     if not cd_match:
@@ -44,10 +129,7 @@ def _detect_target_roster(command: str) -> dict[str, str] | None:
     roster_path = target_dir / ".claude" / "team" / "roster.json"
     if not roster_path.is_file():
         return None
-    try:
-        return json.loads(roster_path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
-        return None
+    return _build_effective_roster(roster_path)
 
 
 def _strip_heredocs(text: str) -> str:
