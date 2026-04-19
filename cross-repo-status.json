@@ -1,17 +1,51 @@
 {
-  "wave_active": false,
-  "current_wave": null,
-  "next_wave": "wave-8",
+  "wave_active": true,
+  "current_wave": "wave-9",
+  "next_wave": "wave-10",
   "phase": "phase-2",
-  "last_completed_wave": "wave-7",
-  "last_completed_at": "2026-04-13T18:01:00Z",
-  "wave_started": null,
-  "deployments_branch": null,
-  "wave_branch_status": "wave-7 merged to main 2026-04-13. wave-8 not yet kicked off.",
-  "open_prs_total": 0,
+  "last_completed_wave": "wave-8",
+  "last_completed_at": "2026-04-17T00:00:00Z",
+  "wave_started": "2026-04-17T00:00:00Z",
+  "deployments_branch": "deployments/phase-2/wave-9",
+  "wave_branch_status": "wave-8 retro merged to main 2026-04-17 (commit 9ca7e44). wave-9 active — data pipeline + user-service cutover.",
+  "open_prs_total": 3,
   "historical_phases": {
     "note": "wave-c phase tracking (phases 1-4) is superseded by phase-2 wave numbering",
     "wave_c_status": "complete — all tracked work merged or superseded"
+  },
+  "wave_9_work": {
+    "theme": "Data pipeline + user-service cutover + deploy infra",
+    "merged_recent": [
+      "deploy #79 (B2 + MinIO), #80 (Kafka KRaft), #92 (TF backend skip_requesting_account_id), #95 (env quoting), #99 (USER_*/JWT_* env wiring), #102 (bitnami→bitnamilegacy), #105 (GHCR auth + drop landing-page build), #107 (clone+cp design-system), #109 (bootstrap aux dirs), #111 (apt noninteractive)",
+      "isnad-graph #820 (Dockerfile COPY design-system tarball)"
+    ],
+    "open_prs": [
+      "deploy #81 — cross-repo integration suite (A.Idrissi)",
+      "isnad-ingest-platform #8 — Kafka worker containers for pipeline stages",
+      "isnad-ingest-platform #9 — pipeline reset CLI (stage/source/full + audit log)"
+    ],
+    "current_blocker": "design-system tarball generation on VPS — frontend/package-lock.json pins noorinalabs-design-system-0.0.1.tgz by name, design-system main is at v0.0.2. Diagnostic in flight.",
+    "paths_forward": [
+      "(a) fix tarball gen on VPS — continue diagnosing (PICKED 2026-04-19)",
+      "(b) bump isnad-graph frontend to design-system 0.0.2, regenerate lockfile (tracked in isnad-graph #818)",
+      "(c) GHCR publishing for api+frontend images (tracked in isnad-graph #817)"
+    ]
+  },
+  "wave_8_work": {
+    "merged": [
+      "main #115, isnad-graph #811, user-service #60, design-system #56 (#111 CI sweep across 4 repos)",
+      "isnad-graph #808, user-service #58, data-acquisition #27 (#110 ruff pre-commit)",
+      "main #122 (#109 CI gate hook)",
+      "main #127 (retro — 5 proposals accepted, charter updated, trust matrix stable)"
+    ],
+    "process_changes_ratified_2026-04-17": [
+      "Hook authorship spec requirement — charter/hooks.md § Hook Authorship Requirements",
+      "W9 opens with hook-architecture mini-sprint — issue #125",
+      "Single-reviewer exception formalized — charter/pull-requests.md § Single-Reviewer Exception",
+      "Disable-with-followup → charter — charter/pull-requests.md § Load-Bearing Followups for Disabled CI Jobs",
+      "Pre-wave auth/scope audit — /wave-kickoff step 3",
+      "Trust matrix updates now land in retro PR (stale CEO/0000-Trust_Matrix branch retired)"
+    ]
   },
   "wave_7_work": {
     "merged": [
@@ -20,41 +54,72 @@
       "IG #800: Fix Neo4j label casing in admin queries",
       "LP #65: P2W7 landing page design system alignment",
       "deploy #75: Restrict metrics/observability service exposure",
-      "main: Session-start hook, worktree cleanup, annunaki dedup, 4-tier staleness (on wave-7 branch)"
+      "main: Session-start hook, worktree cleanup, annunaki dedup, 4-tier staleness"
     ],
-    "open": [],
-    "remaining": "Wave-7 branch needs merge to main after triage/retro"
+    "status": "complete — merged to main 2026-04-13"
+  },
+  "wave_10_planned": {
+    "theme": "Stg/prod environment split + promotion pathway",
+    "meta_issue": "main #141",
+    "child_issues_count": 9,
+    "must_include": [
+      "user-service #63 — alembic merge migration (revert heads→head in deploy integration tests after merge)"
+    ]
   },
   "design-system": {
-    "latest_version": "0.0.1",
+    "latest_version": "0.0.2",
     "status": "published",
-    "open_prs": 0,
-    "last_updated": "2026-04-12T23:20:00Z"
+    "open_prs": 1,
+    "open_pr_notes": "#57 — publish design-system to GitHub Packages npm registry",
+    "last_updated": "2026-04-19T00:00:00Z"
   },
   "isnad-graph": {
     "status": "active",
     "open_prs": 0,
-    "last_updated": "2026-04-12T23:20:00Z"
+    "open_issues_notable": [
+      "#817 — GHCR publishing for api+frontend images (P2W9)",
+      "#818 — Dockerfile design-system fix (one half landed via #820)",
+      "#819 — cross-repo roster lookup in commit-identity hook"
+    ],
+    "last_updated": "2026-04-19T00:00:00Z"
   },
   "landing-page": {
     "status": "active",
     "open_prs": 0,
     "deploy_status": "live",
-    "last_updated": "2026-04-12T23:20:00Z"
+    "last_updated": "2026-04-19T00:00:00Z"
   },
   "deploy": {
-    "status": "active",
-    "open_prs": 0,
-    "last_updated": "2026-04-12T23:20:00Z"
+    "status": "active — blocked on design-system tarball on VPS",
+    "open_prs": 1,
+    "open_pr_notes": "#81 — cross-repo integration suite (A.Idrissi, pre-existing)",
+    "open_issues_notable": [
+      "#88, #89, #90, #93, #96, #97, #100, #103, #112, #113 — tech-debt cluster from 2026-04-18",
+      "#100 owner-decision-gated — Kafka image migration off bitnamilegacy"
+    ],
+    "last_updated": "2026-04-19T00:00:00Z"
   },
   "data-acquisition": {
     "status": "active",
     "open_prs": 0,
-    "last_updated": "2026-04-12T23:20:00Z"
+    "open_issues_notable": [
+      "#28 — acquire emits Kafka pipeline.raw.new after B2 raw landing (W9 blocker for first end-to-end run)"
+    ],
+    "last_updated": "2026-04-19T00:00:00Z"
   },
   "isnad-ingest-platform": {
     "status": "active",
+    "open_prs": 2,
+    "open_pr_notes": "#8 (kafka workers), #9 (pipeline reset CLI)",
+    "open_issues_notable": [
+      "#10 — port real processor logic into worker shells (W9 blocker for first end-to-end run)"
+    ],
+    "last_updated": "2026-04-19T00:00:00Z"
+  },
+  "user-service": {
+    "status": "active",
     "open_prs": 0,
-    "last_updated": "2026-04-12T23:20:00Z"
+    "w10_dependency": "#63 — alembic merge migration, must merge before W10 deploy integration tests can revert heads→head",
+    "last_updated": "2026-04-19T00:00:00Z"
   }
 }
