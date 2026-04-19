@@ -806,3 +806,13 @@ No changes. All scores stable. See trust_matrix.md § Phase 2 Wave 8.
 
 ### Fire/Hire Actions
 None.
+
+## 2026-04-19 — Librarian rule decay observed; promotion to hook
+
+**Pattern:** Orchestrator skipped `/ontology-librarian` on 3 of 4 code-change PRs in P2W9 follow-up work (deploy#125 kafka GID, deploy#130 obs fix, user-service#67 OAuth GET). In each case the rationalization was "this one's small / obvious" — exactly the wording that eroded CI-gate discipline in W7 and peer-review discipline in W8.
+
+**Enforcement hierarchy applied:** Per charter § Enforcement-Hierarchy Promotion (hook > skill > charter), the CLAUDE.md § Ontology rule ("Every agent MUST run /ontology-librarian {topic} before making code changes") was promoted from charter-only status to a hook-enforced rule.
+
+**Artifact:** `.claude/hooks/enforce_librarian_consulted.py` (PreToolUse on Edit/Write/NotebookEdit). Charter entry: `charter/hooks.md` § Hook 15. Issue: [#150](https://github.com/noorinalabs/noorinalabs-main/issues/150).
+
+**Worked example:** This is the first end-to-end execution of the memory → charter → hook promotion pipeline ratified by the owner on 2026-04-19. The `/promotion-audit` skill (tracked separately) will reference this as its canonical example.

@@ -141,6 +141,16 @@ When hooks sharing the same matcher type (Bash, Agent, SendMessage, etc.) accumu
 - **Manual steps remaining:** None — the hook queries `gh pr view` for the check rollup automatically.
 - **Emergency override:** Pass `--admin` to `gh pr merge`, or remove the `validate_pr_ci_status` entry from the dispatcher hook list.
 
+## Hook 15: Enforce Librarian Consulted (`enforce_librarian_consulted.py`)
+
+- **What it automates:** Blocks `Edit`, `Write`, and `NotebookEdit` tool calls unless `/ontology-librarian` has been consulted earlier in the session. Reads the session transcript (`transcript_path` from the Claude Code hook input) and scans for either a user slash-command invocation of `/ontology-librarian` or an assistant `Skill` tool_use with `skill: "ontology-librarian"`. If neither is present, the edit is blocked with instructions to run the librarian first.
+- **Augments:** [CLAUDE.md § Ontology — "Before any code changes (mandatory)"](../../../CLAUDE.md). The charter rule "Every agent — orchestrator, team member, or one-off — MUST run `/ontology-librarian {topic}` before making code changes" was honored inconsistently across Phase 2 Wave 9 (3 of 4 code-change PRs skipped it — deploy#125 kafka GID, deploy#130 obs fix, user-service#67 OAuth GET). Per the enforcement-hierarchy principle (hook > skill > charter), a repeatedly violated charter rule becomes a hook. See issue [#150](https://github.com/noorinalabs/noorinalabs-main/issues/150).
+- **Matcher:** `Edit`, `Write`, `NotebookEdit` (not `Bash`) — direct registration in `settings.json` since these are the first PreToolUse hooks on these matchers. When a 4th hook is added to any of these matchers, consolidate via the dispatcher pattern (see § Dispatcher Consolidation Policy).
+- **Allowed bypasses:** `/tmp/**` (out-of-repo scratch), `~/.claude/**` (user config), `**/memory/*.md` and `MEMORY.md` (project memory), `.claude/annunaki/*` (hook-managed log). All other paths — including `.claude/team/feedback_log.md`, charter files, and source code — require librarian consultation. Stance documented in the hook docstring: meta-files are project-state artifacts the ontology tracks; treating them as free-edits replays the decay pattern #150 fixes.
+- **Manual steps remaining:** Run `/ontology-librarian {topic}` once per session before any Edit/Write/NotebookEdit on non-allow-listed paths. One invocation unlocks the session.
+- **Emergency override:** Remove the three `enforce_librarian_consulted.py` entries (Edit/Write/NotebookEdit matchers) from `.claude/settings.json`. Re-add after the emergency. There is no in-band override flag — the purpose of the hook is to break the "this one's small" rationalization, so an inline bypass would defeat the point.
+- **Promotion provenance:** First end-to-end execution of the memory → charter → hook promotion pattern ratified by the owner on 2026-04-19. Rule lived in CLAUDE.md § Ontology (charter-equivalent location) since W7; this hook is the underlying enforcement layer. Worked example referenced by the future `/promotion-audit` skill design.
+
 ---
 
 ## Hook Authorship Requirements
