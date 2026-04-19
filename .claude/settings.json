@@ -35,6 +35,36 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/parameterization/code/noorinalabs-main/.claude/hooks/enforce_librarian_consulted.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/parameterization/code/noorinalabs-main/.claude/hooks/enforce_librarian_consulted.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/parameterization/code/noorinalabs-main/.claude/hooks/enforce_librarian_consulted.py",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "PostToolUse": [
