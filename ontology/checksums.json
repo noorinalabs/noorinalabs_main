@@ -63,10 +63,10 @@
       "resolved_at": "2026-04-11T16:26:02.575946+00:00"
     },
     "ontology/repos/deploy.yaml": {
-      "last_tracked": "ec02f04a45d5ae625f53a044c939568029936f2c704969f37777279cc515bdac",
-      "last_resolved": "9282ce2e8926f072f41589f93e95750ca085c4aca9b0bfd105390c1da2b0a144",
-      "tracked_at": "2026-04-19T14:27:14.572208+00:00",
-      "resolved_at": "2026-04-11T16:26:02.575946+00:00"
+      "last_tracked": "54e4ea679b5046cbffcbdb47f857ac4af7507af987376684c47dc12077a4ef6b",
+      "last_resolved": "54e4ea679b5046cbffcbdb47f857ac4af7507af987376684c47dc12077a4ef6b",
+      "tracked_at": "2026-04-19T21:53:09.719511+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
     },
     "ontology/repos/ingestion.yaml": {
       "last_tracked": "368917f91938272e9f8002534ddf7301f02679e0987ffb06fe6022429f0ca0b6",
@@ -87,10 +87,10 @@
       "resolved_at": "2026-04-16T21:36:05.052302+00:00"
     },
     "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/MEMORY.md": {
-      "last_tracked": "c6f32a8a81651ba5de27666e149bfab3493c25057d591c6060a755cc2284a861",
-      "last_resolved": "c6f32a8a81651ba5de27666e149bfab3493c25057d591c6060a755cc2284a861",
-      "tracked_at": "2026-04-19T14:00:38.295905+00:00",
-      "resolved_at": "2026-04-19T14:01:37.639152Z"
+      "last_tracked": "154e412ea9a44cae756b76ff3878e90492a84e828b4dd480fedf65a9106d7fcb",
+      "last_resolved": "154e412ea9a44cae756b76ff3878e90492a84e828b4dd480fedf65a9106d7fcb",
+      "tracked_at": "2026-04-19T14:46:48.767146+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
     },
     ".claude/team/charter.md": {
       "last_tracked": "a79e60476eb72af6689a5af1c3a09e0d5878c67b26ab8f5ab3516ee26ff717d3",
@@ -262,9 +262,9 @@
     },
     "cross-repo-status.json": {
       "last_tracked": "5ef6c2502f6fdb47bb190e4ce9edbacd37efdc11ced4f95d432e2eb778f5af1b",
-      "last_resolved": "68a6428308986e6427a6a8e708e298931864b4e3d5f1134ca05c58fe05a47a7a",
+      "last_resolved": "5ef6c2502f6fdb47bb190e4ce9edbacd37efdc11ced4f95d432e2eb778f5af1b",
       "tracked_at": "2026-04-19T14:08:43.615543+00:00",
-      "resolved_at": "2026-04-16T21:36:05.052302+00:00"
+      "resolved_at": "2026-04-19T21:53:15Z"
     },
     "ONBOARDING.md": {
       "last_tracked": "2399db18c2b9c8cc038c3132efee7e39696fdac41c0a58c95ea3cc987f4439e0",
@@ -1210,27 +1210,243 @@
     },
     "/tmp/main-meta-ghcr-cutover.md": {
       "last_tracked": "0daf96f43755167baf19cfb589e598863a0e2e4dd465f6fb86bf78b062c3fa14",
-      "last_resolved": "",
+      "last_resolved": "0daf96f43755167baf19cfb589e598863a0e2e4dd465f6fb86bf78b062c3fa14",
       "tracked_at": "2026-04-19T14:23:57.178387+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-04-19T21:53:15Z"
     },
     "noorinalabs-deploy/.claude/worktrees/L.Ferreira-0103-drop-build-blocks/compose/docker-compose.prod.yml": {
       "last_tracked": "872471c28086eeb9e0546c992fb9ba9f826adcfbbde7e05659c663973b9cb43c",
-      "last_resolved": "",
+      "last_resolved": "872471c28086eeb9e0546c992fb9ba9f826adcfbbde7e05659c663973b9cb43c",
       "tracked_at": "2026-04-19T14:27:09.642835+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-04-19T21:53:15Z"
     },
     "/tmp/hook-labels-heredoc-bug.md": {
       "last_tracked": "408e6aaaa18797f47f6a9448a915fd1b1aa0898dcc61b77c3b722b168920a448",
-      "last_resolved": "",
+      "last_resolved": "408e6aaaa18797f47f6a9448a915fd1b1aa0898dcc61b77c3b722b168920a448",
       "tracked_at": "2026-04-19T14:27:31.918292+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-04-19T21:53:15Z"
     },
     "noorinalabs-isnad-graph/.claude/worktrees/L.Pham-0817-ghcr-publish-frontend/.github/workflows/ghcr-publish.yml": {
-      "last_tracked": "e5c8c31260d7fd3a958cbde0f267849f192847541be375b33754e9b9cf5d4b7d",
-      "last_resolved": "",
-      "tracked_at": "2026-04-19T14:28:56.513701+00:00",
-      "resolved_at": ""
+      "last_tracked": "3f93d26a67fdf695be46076f5edf19b516f3a24bc1d92734fce7237f87af4df0",
+      "last_resolved": "3f93d26a67fdf695be46076f5edf19b516f3a24bc1d92734fce7237f87af4df0",
+      "tracked_at": "2026-04-19T14:39:00.834742+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-isnad-graph/.claude/worktrees/L.Pham-0817-ghcr-publish-frontend/frontend/.dockerignore": {
+      "last_tracked": "316cbd981a8c1e1f24ae08a23aea4369206bb493ed24841c844180114cc8a838",
+      "last_resolved": "316cbd981a8c1e1f24ae08a23aea4369206bb493ed24841c844180114cc8a838",
+      "tracked_at": "2026-04-19T14:29:23.247293+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-isnad-graph/.claude/worktrees/L.Pham-0817-ghcr-publish-frontend/.dockerignore": {
+      "last_tracked": "30962a5a80e2139d6d2f40d936bb826898eade7f283b4f67cf29c192aa43f173",
+      "last_resolved": "30962a5a80e2139d6d2f40d936bb826898eade7f283b4f67cf29c192aa43f173",
+      "tracked_at": "2026-04-19T14:29:33.969475+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/hook-validate-pr-review-overcount.md": {
+      "last_tracked": "14da3b98bad5c5737296d4fbcd5a9a595bd1ffefd44ba450b0af1b79ea44228c",
+      "last_resolved": "14da3b98bad5c5737296d4fbcd5a9a595bd1ffefd44ba450b0af1b79ea44228c",
+      "tracked_at": "2026-04-19T14:43:11.205088+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/w10-envvar-inventory.md": {
+      "last_tracked": "40c5e852985164037c6eae949e223d05592304d8a92408b48453c5a8bfbfe951",
+      "last_resolved": "40c5e852985164037c6eae949e223d05592304d8a92408b48453c5a8bfbfe951",
+      "tracked_at": "2026-04-19T14:44:01.523762+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/w10-cloudflare-tf.md": {
+      "last_tracked": "918313c36d0b3af08af4ba5065c30825fe19f67e71573b7ee9d9970450f63bc5",
+      "last_resolved": "918313c36d0b3af08af4ba5065c30825fe19f67e71573b7ee9d9970450f63bc5",
+      "tracked_at": "2026-04-19T14:44:25.170614+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/w10-org-secrets.md": {
+      "last_tracked": "64b91850e1b59b5ce82bf75c4b99468da4c78160b4fc31696e635736240fae4f",
+      "last_resolved": "64b91850e1b59b5ce82bf75c4b99468da4c78160b4fc31696e635736240fae4f",
+      "tracked_at": "2026-04-19T14:44:43.453639+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/w10-cloud-init-vps.md": {
+      "last_tracked": "a0c635adf82275245373fd3c025a74b7cf86cfcff73e84718c461a88d55cd603",
+      "last_resolved": "a0c635adf82275245373fd3c025a74b7cf86cfcff73e84718c461a88d55cd603",
+      "tracked_at": "2026-04-19T14:45:12.304656+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/home/parameterization/.claude/projects/-home-parameterization-code-noorinalabs-main/memory/reference_ssh_topology.md": {
+      "last_tracked": "7b38fa918a96708ecc916b620c9ac574db45faf4844f3af9fb6cd6133e4a78e6",
+      "last_resolved": "7b38fa918a96708ecc916b620c9ac574db45faf4844f3af9fb6cd6133e4a78e6",
+      "tracked_at": "2026-04-19T14:46:45.824498+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/event-type-mismatch.md": {
+      "last_tracked": "a45a01f3eddd32eb471f13c573e5035e34e6690d3cdcabc8a6bdc747db29f9df",
+      "last_resolved": "a45a01f3eddd32eb471f13c573e5035e34e6690d3cdcabc8a6bdc747db29f9df",
+      "tracked_at": "2026-04-19T14:48:42.047946+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-deploy/.claude/worktrees/L.Ferreira-0115-remove-dead-scaffolding/.github/workflows/deploy-isnad-graph.yml": {
+      "last_tracked": "2ca93097ba79f886b8ac76e0b9e481ead8efebcb24b2667a37e385a0be3037e4",
+      "last_resolved": "2ca93097ba79f886b8ac76e0b9e481ead8efebcb24b2667a37e385a0be3037e4",
+      "tracked_at": "2026-04-19T14:50:48.768255+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-deploy/.claude/worktrees/L.Ferreira-0115-remove-dead-scaffolding/docs/architecture.md": {
+      "last_tracked": "eb6091e45f9c1a7c65ed4fc75d4e327831397bdb95f53ce62ae093107f9afa12",
+      "last_resolved": "eb6091e45f9c1a7c65ed4fc75d4e327831397bdb95f53ce62ae093107f9afa12",
+      "tracked_at": "2026-04-19T14:51:17.152932+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-deploy/.claude/worktrees/L.Ferreira-0115-remove-dead-scaffolding/docs/troubleshooting.md": {
+      "last_tracked": "b9990f8b348be6614ad15b454c63b936513a9f0c093ddf33bd899eb0a9214bdf",
+      "last_resolved": "b9990f8b348be6614ad15b454c63b936513a9f0c093ddf33bd899eb0a9214bdf",
+      "tracked_at": "2026-04-19T14:51:25.439186+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-deploy/.claude/worktrees/L.Ferreira-0115-remove-dead-scaffolding/docs/runbooks/deploy-isnad-graph.md": {
+      "last_tracked": "afd1035f4d8784d676762eb191e3adf792ff687fdab6ea33e886247ff2241128",
+      "last_resolved": "afd1035f4d8784d676762eb191e3adf792ff687fdab6ea33e886247ff2241128",
+      "tracked_at": "2026-04-19T14:51:36.059741+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/pr-body-115.md": {
+      "last_tracked": "1368f2a3beb226297b0c28b512db82b0787b28ba851629d057d947b035514333",
+      "last_resolved": "1368f2a3beb226297b0c28b512db82b0787b28ba851629d057d947b035514333",
+      "tracked_at": "2026-04-19T14:52:27.242791+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/backup-stale-checkout.md": {
+      "last_tracked": "9f33a285b40abddac884ac98ec05bd625aa5cbc9912174cee26677c31e44e910",
+      "last_resolved": "9f33a285b40abddac884ac98ec05bd625aa5cbc9912174cee26677c31e44e910",
+      "tracked_at": "2026-04-19T14:55:26.639613+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/bootstrap-dead-hint.md": {
+      "last_tracked": "a523f3d2e65f6af08f74bf1354ab9d5a3d489b43cd39ba7c9c9519a25e4f9dd4",
+      "last_resolved": "a523f3d2e65f6af08f74bf1354ab9d5a3d489b43cd39ba7c9c9519a25e4f9dd4",
+      "tracked_at": "2026-04-19T14:55:35.095907+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/first-deploy-broken-services.md": {
+      "last_tracked": "308a36887521c90a14b7a846533822ef9725879c54a94c5498d8632b2b2b07d4",
+      "last_resolved": "308a36887521c90a14b7a846533822ef9725879c54a94c5498d8632b2b2b07d4",
+      "tracked_at": "2026-04-19T15:36:55.561014+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/145-close-comment.md": {
+      "last_tracked": "3f0369ee15f3e916ae47db418f0c6dbfba6bfb34c50d960fa98eeef9aa423e30",
+      "last_resolved": "3f0369ee15f3e916ae47db418f0c6dbfba6bfb34c50d960fa98eeef9aa423e30",
+      "tracked_at": "2026-04-19T15:37:24.187272+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/kafka-perm-bug.md": {
+      "last_tracked": "7d06f9c8d6dfb8294a78a3a53c5e7d32f8be73e12ec35b7bbb2ed8081af090db",
+      "last_resolved": "7d06f9c8d6dfb8294a78a3a53c5e7d32f8be73e12ec35b7bbb2ed8081af090db",
+      "tracked_at": "2026-04-19T16:05:26.701790+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-deploy/.claude/worktrees/L.Ferreira-0124-kafka-gid-root/compose/docker-compose.prod.yml": {
+      "last_tracked": "156ac617acf2b2e0e05e37eadca109bc790a143d13676ec300e0b579cf04bfa0",
+      "last_resolved": "156ac617acf2b2e0e05e37eadca109bc790a143d13676ec300e0b579cf04bfa0",
+      "tracked_at": "2026-04-19T16:06:40.997330+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/user-service-url-parsing.md": {
+      "last_tracked": "2338a844ac64fcc683225ae14421bbe81e739f41eccac5745b4b7143d905d939",
+      "last_resolved": "2338a844ac64fcc683225ae14421bbe81e739f41eccac5745b4b7143d905d939",
+      "tracked_at": "2026-04-19T16:13:20.782822+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/rotate-user-redis-password.md": {
+      "last_tracked": "df0282a1810dc64c4f15cd75b4100c7176de13fb748f95936e74a7dfd7e17668",
+      "last_resolved": "df0282a1810dc64c4f15cd75b4100c7176de13fb748f95936e74a7dfd7e17668",
+      "tracked_at": "2026-04-19T16:13:38.802859+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/alertmanager-bug.md": {
+      "last_tracked": "f3e43ad4aeb539a4d194b1959032d6bd5a5737402ce3f46a4a394e2a029eb5d3",
+      "last_resolved": "f3e43ad4aeb539a4d194b1959032d6bd5a5737402ce3f46a4a394e2a029eb5d3",
+      "tracked_at": "2026-04-19T21:35:16.179348+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/promtail-bug.md": {
+      "last_tracked": "0b8b3458b7cd39943aeb633dd0959fffd0b20308c6bab99efaa5a09261e7095d",
+      "last_resolved": "0b8b3458b7cd39943aeb633dd0959fffd0b20308c6bab99efaa5a09261e7095d",
+      "tracked_at": "2026-04-19T21:35:34.532244+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/oauth-redirect-uri.md": {
+      "last_tracked": "770dff8a97bfcb1813e35a39d0def6967cb2bb3699cd5cb0581db56c3d4ed113",
+      "last_resolved": "770dff8a97bfcb1813e35a39d0def6967cb2bb3699cd5cb0581db56c3d4ed113",
+      "tracked_at": "2026-04-19T21:36:21.707087+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-deploy/.claude/worktrees/L.Ferreira-0127-obs-fixes/infra/alertmanager/alertmanager.yml": {
+      "last_tracked": "4162e285c87eaa2a5aa540a04e8fa96496ca1c22b4270f32f9712241aa3e938f",
+      "last_resolved": "4162e285c87eaa2a5aa540a04e8fa96496ca1c22b4270f32f9712241aa3e938f",
+      "tracked_at": "2026-04-19T21:37:17.274145+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-deploy/.claude/worktrees/L.Ferreira-0127-obs-fixes/compose/docker-compose.prod.yml": {
+      "last_tracked": "f3367aa78c4a4fda25c861561772b0dcb18d5d58a7b1149d065b02375fdde0cf",
+      "last_resolved": "f3367aa78c4a4fda25c861561772b0dcb18d5d58a7b1149d065b02375fdde0cf",
+      "tracked_at": "2026-04-19T21:37:27.134338+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/oauth-callback-method.md": {
+      "last_tracked": "932a69593467c5ddc409a97ed77069ccac32488552686fc4f3eaff894b26bb61",
+      "last_resolved": "932a69593467c5ddc409a97ed77069ccac32488552686fc4f3eaff894b26bb61",
+      "tracked_at": "2026-04-19T21:41:31.643387+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-user-service/.claude/worktrees/M.Salazar-0066-oauth-callback-get/src/app/config.py": {
+      "last_tracked": "ad1d596538af868e3fa7c793da7d55fd24ae734ec79c2a98a965b157c012ba7f",
+      "last_resolved": "ad1d596538af868e3fa7c793da7d55fd24ae734ec79c2a98a965b157c012ba7f",
+      "tracked_at": "2026-04-19T21:45:37.186655+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-user-service/.claude/worktrees/M.Salazar-0066-oauth-callback-get/src/app/routers/auth.py": {
+      "last_tracked": "156973de21fccd6f13ce7b2e17e8812fb5a16dbbc6a4f8b43e888943457f9205",
+      "last_resolved": "156973de21fccd6f13ce7b2e17e8812fb5a16dbbc6a4f8b43e888943457f9205",
+      "tracked_at": "2026-04-19T21:48:20.157672+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-user-service/.claude/worktrees/M.Salazar-0066-oauth-callback-get/src/app/schemas/auth.py": {
+      "last_tracked": "d17e3fe2bca6c86733ee8df43311882005e8bc4628e917f74bfea834fc555683",
+      "last_resolved": "d17e3fe2bca6c86733ee8df43311882005e8bc4628e917f74bfea834fc555683",
+      "tracked_at": "2026-04-19T21:46:59.358065+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-user-service/.claude/worktrees/M.Salazar-0066-oauth-callback-get/.env.example": {
+      "last_tracked": "da18ff3ec95f43b72058f06c3dc90ef130f8d9a143aaa8d32945a711d62c738e",
+      "last_resolved": "da18ff3ec95f43b72058f06c3dc90ef130f8d9a143aaa8d32945a711d62c738e",
+      "tracked_at": "2026-04-19T21:47:10.992997+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "noorinalabs-user-service/.claude/worktrees/M.Salazar-0066-oauth-callback-get/tests/test_oauth_callback_get.py": {
+      "last_tracked": "48766648cd1b2098e1577186a5189f403ff2ba46587394bf0df63645d6145d85",
+      "last_resolved": "48766648cd1b2098e1577186a5189f403ff2ba46587394bf0df63645d6145d85",
+      "tracked_at": "2026-04-19T21:48:48.970393+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/pr-066-body.md": {
+      "last_tracked": "9537f3f324ba5ab5cce8963c29fd6dbbbfc33ea9bea230c44c22edefae1966eb",
+      "last_resolved": "9537f3f324ba5ab5cce8963c29fd6dbbbfc33ea9bea230c44c22edefae1966eb",
+      "tracked_at": "2026-04-19T21:50:22.221907+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/pr-67-anya.md": {
+      "last_tracked": "81d4c8a668f98f0923aa19616d3d804b7b4b49ebb77b3620af8aa3814cc20a6c",
+      "last_resolved": "81d4c8a668f98f0923aa19616d3d804b7b4b49ebb77b3620af8aa3814cc20a6c",
+      "tracked_at": "2026-04-19T21:52:01.731000+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
+    },
+    "/tmp/pr-67-idris.md": {
+      "last_tracked": "cfda5f151d9dee45e465da7b39e48526d0df1086f1f1b8f707619b0a7f22bce8",
+      "last_resolved": "cfda5f151d9dee45e465da7b39e48526d0df1086f1f1b8f707619b0a7f22bce8",
+      "tracked_at": "2026-04-19T21:52:12.825135+00:00",
+      "resolved_at": "2026-04-19T21:53:15Z"
     }
   }
 }
