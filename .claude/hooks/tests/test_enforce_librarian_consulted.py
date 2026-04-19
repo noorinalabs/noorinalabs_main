@@ -40,7 +40,10 @@ def _librarian_user_line(text: str = "/ontology-librarian narrator API") -> dict
         "type": "user",
         "message": {
             "role": "user",
-            "content": f"<command-message>ontology-librarian</command-message>\n<command-name>{text}</command-name>",
+            "content": (
+                "<command-message>ontology-librarian</command-message>\n"
+                f"<command-name>{text}</command-name>"
+            ),
         },
     }
 
@@ -131,9 +134,7 @@ class AllowListTests(unittest.TestCase):
         result = hook.check(
             {
                 "tool_name": "Edit",
-                "tool_input": {
-                    "file_path": os.path.expanduser("~/.claude/preferences.json")
-                },
+                "tool_input": {"file_path": os.path.expanduser("~/.claude/preferences.json")},
                 "transcript_path": self._transcript_no_librarian(),
             }
         )
@@ -145,7 +146,7 @@ class AllowListTests(unittest.TestCase):
             {
                 "tool_name": "Edit",
                 "tool_input": {
-                    "file_path": "/home/parameterization/code/noorinalabs-main/.claude/annunaki/errors.jsonl"
+                    "file_path": "/repo/.claude/annunaki/errors.jsonl",
                 },
                 "transcript_path": self._transcript_no_librarian(),
             }
@@ -206,7 +207,7 @@ class BlockingTests(unittest.TestCase):
                 ),
             }
         )
-        self.assertIsNotNone(result)
+        assert result is not None  # mypy narrowing
         self.assertEqual(result["decision"], "block")
         self.assertIn("/ontology-librarian", result["reason"])
 
@@ -219,7 +220,7 @@ class BlockingTests(unittest.TestCase):
                 "transcript_path": _write_transcript([]),
             }
         )
-        self.assertIsNotNone(result)
+        assert result is not None  # mypy narrowing
         self.assertEqual(result["decision"], "block")
 
     def test_write_on_charter_blocks_without_librarian(self) -> None:
@@ -230,13 +231,11 @@ class BlockingTests(unittest.TestCase):
         result = hook.check(
             {
                 "tool_name": "Write",
-                "tool_input": {
-                    "file_path": "/repo/.claude/team/feedback_log.md"
-                },
+                "tool_input": {"file_path": "/repo/.claude/team/feedback_log.md"},
                 "transcript_path": _write_transcript([]),
             }
         )
-        self.assertIsNotNone(result)
+        assert result is not None  # mypy narrowing
         self.assertEqual(result["decision"], "block")
 
     def test_empty_transcript_blocks_real_code_edit(self) -> None:
@@ -248,7 +247,7 @@ class BlockingTests(unittest.TestCase):
                 "transcript_path": _write_transcript([]),
             }
         )
-        self.assertIsNotNone(result)
+        assert result is not None  # mypy narrowing
         self.assertEqual(result["decision"], "block")
 
 
@@ -319,7 +318,7 @@ class FailOpenTests(unittest.TestCase):
             }
         )
         # Current stance: missing file -> block (strict).
-        self.assertIsNotNone(result)
+        assert result is not None  # mypy narrowing
         self.assertEqual(result["decision"], "block")
 
     def test_no_transcript_path_blocks(self) -> None:
@@ -331,7 +330,7 @@ class FailOpenTests(unittest.TestCase):
                 "transcript_path": "",
             }
         )
-        self.assertIsNotNone(result)
+        assert result is not None  # mypy narrowing
         self.assertEqual(result["decision"], "block")
 
 
@@ -339,14 +338,10 @@ class SignalDetectionTests(unittest.TestCase):
     """Unit-level tests for _content_has_librarian_signal."""
 
     def test_string_content_with_slash_command(self) -> None:
-        self.assertTrue(
-            hook._content_has_librarian_signal("please run /ontology-librarian hooks")
-        )
+        self.assertTrue(hook._content_has_librarian_signal("please run /ontology-librarian hooks"))
 
     def test_string_content_without_slash_command(self) -> None:
-        self.assertFalse(
-            hook._content_has_librarian_signal("please run /ontology-rebuild")
-        )
+        self.assertFalse(hook._content_has_librarian_signal("please run /ontology-rebuild"))
 
     def test_text_block_with_slash_command(self) -> None:
         self.assertTrue(

@@ -37,13 +37,22 @@ Stance on meta-files (.claude/team/feedback_log.md, trust_matrix.md, etc.):
     add a sentinel-comment bypass — do not broaden the path allow-list.
 
 Transcript shape expected (JSONL, one object per line):
-    { "type": "user",      "message": {"role":"user",
-                                       "content": "<command-name>/ontology-librarian</command-name>..."}, ...}
-    { "type": "user",      "message": {"role":"user",
-                                       "content": [{"type":"text","text":"/ontology-librarian ..."}]}, ...}
-    { "type": "assistant", "message": {"role":"assistant",
-                                       "content": [{"type":"tool_use","name":"Skill",
-                                                    "input":{"skill":"ontology-librarian",...}}]}, ...}
+    Form A (string content):
+        {"type": "user",
+         "message": {"role": "user",
+                     "content": "<command-name>/ontology-librarian</command-name>..."}}
+    Form B (list content with text block):
+        {"type": "user",
+         "message": {"role": "user",
+                     "content": [{"type": "text",
+                                  "text": "/ontology-librarian ..."}]}}
+    Form C (assistant Skill tool_use):
+        {"type": "assistant",
+         "message": {"role": "assistant",
+                     "content": [{"type": "tool_use",
+                                  "name": "Skill",
+                                  "input": {"skill": "ontology-librarian",
+                                            "args": "..."}}]}}
 
 Detection signals (any ONE is sufficient):
     1. A `user` line whose text contains the literal substring
@@ -92,9 +101,7 @@ _ALLOW_ABS_PREFIXES = (
     os.path.expanduser("~/.claude/"),
 )
 
-_ALLOW_PATH_SUFFIXES = (
-    "MEMORY.md",
-)
+_ALLOW_PATH_SUFFIXES = ("MEMORY.md",)
 
 # Directory segments that mark "not source code".
 _ALLOW_PATH_CONTAINS = (
@@ -200,8 +207,8 @@ def _transcript_has_librarian(transcript_path: str) -> bool:
 
 _BLOCK_MESSAGE = (
     "BLOCKED: /ontology-librarian must be consulted before code edits in this session.\n"
-    "Per CLAUDE.md § Ontology: \"Every agent — orchestrator, team member, or one-off —\n"
-    "MUST run /ontology-librarian {topic} before making code changes.\"\n"
+    'Per CLAUDE.md § Ontology: "Every agent — orchestrator, team member, or one-off —\n'
+    'MUST run /ontology-librarian {topic} before making code changes."\n'
     "Run /ontology-librarian {topic} first, then retry the edit."
 )
 
@@ -217,11 +224,7 @@ def check(input_data: dict) -> dict | None:
 
     tool_input = input_data.get("tool_input") or {}
     # Edit/Write use file_path; NotebookEdit uses notebook_path.
-    file_path = (
-        tool_input.get("file_path")
-        or tool_input.get("notebook_path")
-        or ""
-    )
+    file_path = tool_input.get("file_path") or tool_input.get("notebook_path") or ""
 
     if _is_allowlisted(file_path):
         return None
