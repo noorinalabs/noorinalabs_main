@@ -124,12 +124,16 @@ A `Stop` hook automatically writes a handoff file to project memory after every 
 
 For a richer handoff that includes conversational context (what was discussed, decisions made), manually run `/handoff` before exiting — but the automatic version covers the essentials.
 
-### Before any code changes (mandatory)
+### Before any code changes (mandatory — hook-enforced as of 2026-04-19)
 
 **Every agent — orchestrator, team member, or one-off — MUST run `/ontology-librarian {topic}` before making code changes.** This applies to:
 - The orchestrator working directly on code
-- Team agents spawned for implementation work (orchestrator runs the librarian and includes output in the agent's prompt)
+- Team agents spawned for implementation work
 - One-off fixes or changes outside of planned wave work
+
+**Enforcement**: `enforce_librarian_consulted` PreToolUse hook (charter `hooks.md` § Hook 15) blocks Edit/Write/NotebookEdit unless `/ontology-librarian` was invoked earlier in the same session. There is no in-band override — see Hook 15 for emergency procedure.
+
+**Spawning subagents**: every Agent prompt MUST include a "MANDATORY first action: run `/ontology-librarian {topic}` before any Edit/Write" instruction. The hook scans the agent's own session transcript, so passing librarian output FROM the orchestrator into the agent's prompt is not sufficient — the agent must invoke the librarian itself.
 
 The query should describe the area being modified (e.g., `/ontology-librarian narrator API endpoints`, `/ontology-librarian design system tokens`).
 
