@@ -87,8 +87,7 @@ The following charter rules are enforced automatically via Claude Code hooks in 
 - **Manual steps remaining:** Run `/wave-kickoff` to set the wave context. The hook is a warning, not a block.
 - **Emergency override:** Not needed (warning only). Remove the hook entry to suppress.
 
-## Bash Hook Dispatcher Architecture
-
+## Bash Hook Dispatcher Architecture <!-- promotion-target: none -->
 All Bash-matcher hooks are consolidated into a **single dispatcher** (`bash_dispatcher.py`) that dynamically loads individual hook modules via `importlib.util`. This reduces process spawns from N (one per hook) to 1 per Bash tool call.
 
 **Key design decisions:**
@@ -106,8 +105,7 @@ All Bash-matcher hooks are consolidated into a **single dispatcher** (`bash_disp
 
 **Why:** Phase 2 Wave 1 PR #73 consolidated 12 individual Bash-matcher hooks into this pattern, reducing process spawns from 12 to 1 per Bash call.
 
-## Dispatcher Consolidation Policy
-
+## Dispatcher Consolidation Policy <!-- promotion-target: none -->
 When hooks sharing the same matcher type (Bash, Agent, SendMessage, etc.) accumulate beyond **3**, they must be consolidated into a dispatcher immediately. Do not wait for hook sprawl to become a performance problem.
 
 **Threshold:** >3 hooks of the same matcher type triggers mandatory consolidation.
@@ -153,8 +151,7 @@ When hooks sharing the same matcher type (Bash, Agent, SendMessage, etc.) accumu
 
 ---
 
-## Hook Authorship Requirements
-
+## Hook Authorship Requirements <!-- promotion-target: none -->
 Every new hook in `.claude/hooks/` must meet these requirements **at the time it is merged**. Partial compliance is a moderate feedback event.
 
 ### 1. Input-language specification

@@ -1,11 +1,9 @@
 # Cross-Repo Communication Protocol
 
-## Overview
-
+## Overview <!-- promotion-target: none -->
 This protocol replaces the hub-and-spoke model (everything routes through the orchestrator) with direct manager-to-manager messaging, shared state, and dependency contracts. The goal is to reduce orchestrator bottleneck and enable managers to coordinate directly.
 
-## Shared State: `cross-repo-status.json`
-
+## Shared State: `cross-repo-status.json` <!-- promotion-target: none -->
 A live status file in `noorinalabs-main` that all agents read/write. Location: `cross-repo-status.json` in the repository root.
 
 - Agents check this file **before** asking the orchestrator for status
@@ -14,8 +12,7 @@ A live status file in `noorinalabs-main` that all agents read/write. Location: `
 
 See the `cross-repo-status.json` file for the current schema and values.
 
-## Dependency Contracts: `dependencies.yml`
-
+## Dependency Contracts: `dependencies.yml` <!-- promotion-target: none -->
 Each repo declares what it **provides** and what it **needs** in `dependencies.yml` (repository root). This is the single source of truth for cross-repo dependencies.
 
 Each entry includes:
@@ -24,8 +21,7 @@ Each entry includes:
 
 See the `dependencies.yml` file for the current contracts.
 
-## Direct Manager-to-Manager Messaging
-
+## Direct Manager-to-Manager Messaging <!-- promotion-target: none -->
 All repo managers are on the same team (`noorinalabs`) and can SendMessage directly:
 
 | Agent Name | Role |
@@ -44,8 +40,7 @@ All repo managers are on the same team (`noorinalabs`) and can SendMessage direc
 
 The PD (Nadia) coordinates priorities and resolves conflicts but does not relay routine status.
 
-## Topic Channels (Conventions in `cross-repo-status.json`)
-
+## Topic Channels (Conventions in `cross-repo-status.json`) <!-- promotion-target: none -->
 Instead of literal pub/sub, use conventions in the shared state file:
 
 | Channel | Write event | Who reads |
@@ -55,8 +50,7 @@ Instead of literal pub/sub, use conventions in the shared state file:
 | deployments | Service deployed, health verified | Deploy team, dependent services |
 | dependencies | New dependency needed, contract changed | All affected repos |
 
-## Event-Driven Spawn Triggers
-
+## Event-Driven Spawn Triggers <!-- promotion-target: none -->
 These events should trigger automatic agent spawning:
 
 | Trigger | Action |
@@ -67,8 +61,7 @@ These events should trigger automatic agent spawning:
 | CI failure on deployments branch | Notify the PR author agent |
 | Manifest changed in B2 | Trigger ingest-platform reload |
 
-## Protocol Rules
-
+## Protocol Rules <!-- promotion-target: none -->
 1. **Check shared state first.** Before asking the orchestrator or another manager for status, read `cross-repo-status.json`.
 2. **Update shared state promptly.** After any significant event (merge, publish, deploy, blocker), update the relevant entry in `cross-repo-status.json` with a current timestamp.
 3. **Direct messages for action items.** Use SendMessage for requests that need a response or action from a specific manager.

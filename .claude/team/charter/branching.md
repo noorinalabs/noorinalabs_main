@@ -1,7 +1,6 @@
 # Branching Rules
 
-## Deployments Branches
-
+## Deployments Branches <!-- promotion-target: none -->
 Each phase is organized into **waves** of parallel work. Before starting a wave, create a deployments branch:
 
 ```
@@ -12,8 +11,7 @@ deployments/phase{N}/wave-{M}
 - **All feature branches for that wave PR into the deployments branch** — not into `main`.
 - At the end of a phase, PR the deployments branch into `main`. **Wait for the user to merge** before starting the next phase.
 
-## Feature Branches
-
+## Feature Branches <!-- promotion-target: none -->
 - All feature branches are created from the **current deployments branch** for their wave.
 - Before creating a branch, always pull the latest base:
   ```bash
@@ -27,8 +25,7 @@ deployments/phase{N}/wave-{M}
   ```
   Resolve any conflicts before pushing and creating the PR.
 
-## Worktree Cleanup
-
+## Worktree Cleanup <!-- promotion-target: none -->
 **After every wave completes** (all PRs merged into the deployments branch), clean up stale worktrees:
 
 ```bash
