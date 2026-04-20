@@ -4,8 +4,7 @@ When all work on a feature branch is complete (code committed, review done, must
 
 **PR ownership:** Only the team member who implemented the work creates the PR. The Program Director must NOT create duplicate PRs for the same branch.
 
-## Comment-Based Reviews (Mandatory)
-
+## Comment-Based Reviews (Mandatory) <!-- promotion-target: none -->
 All agents share a single GitHub user account. **`gh pr review --approve` is blocked** — it always fails with "cannot approve your own pull request". All PR reviews MUST use comment-based reviews instead.
 
 **Review format** (posted via `gh pr comment`):
@@ -19,8 +18,7 @@ TechDebt: none | #15, #16, ...
 - The `Requestor` must differ from the branch author (validated by the merge hook). This is enforced by the `block_gh_pr_review.py` PreToolUse hook and validated by `validate_pr_review.py` at merge time.
 - The `TechDebt:` line is **mandatory** on every review. If the reviewer found non-blocking observations, they MUST create `tech-debt` labeled issues BEFORE posting the review, then list the issue numbers. If no tech-debt was found, write `TechDebt: none`. This is enforced by the `validate_pr_review.py` PreToolUse hook at merge time.
 
-## Review Prompt Template (Mandatory)
-
+## Review Prompt Template (Mandatory) <!-- promotion-target: none -->
 When the orchestrator assigns a review to any agent, the prompt **MUST** include a copy-paste-ready `gh pr comment` command with all fields pre-filled. Do not rely on agents writing the format from memory — this has a 100% error rate.
 
 **Template for orchestrator prompts:**
@@ -41,16 +39,14 @@ Replace `Approved` with `Changes Requested` if blocking issues found. Replace `T
 
 Failing to include the review template in a review assignment prompt is a **minor feedback event** for the orchestrator.
 
-## Two-Reviewer Assignment at Wave Kickoff
-
+## Two-Reviewer Assignment at Wave Kickoff <!-- promotion-target: none -->
 Every PR must have **two reviewers** assigned at wave kickoff — a primary and a secondary. Both reviewers are named in the agent's spawn prompt and in the execution plan.
 
 **Why:** In Phase 3 Wave 1, only one reviewer was planned per PR. Every PR needed ad-hoc second reviewer assignments, causing merge delays while idle agents were redirected.
 
 The Program Director's execution plan MUST include a review matrix with two named reviewers per expected PR. The orchestrator verifies this before spawning agents.
 
-## Single-Reviewer Exception (Wave-Bootstrap Only)
-
+## Single-Reviewer Exception (Wave-Bootstrap Only) <!-- promotion-target: none -->
 The two-reviewer requirement may be waived **exclusively** for wave-bootstrap PRs — i.e., PRs that establish the tooling/CI/hooks that subsequent wave PRs will be gated by (e.g., the pre-commit hook rollout that the CI sweep depends on).
 
 Strict conditions — **all must hold**:
@@ -63,8 +59,7 @@ All other PRs require two comment-based reviews. `--admin` merges without two re
 
 **Why:** In Phase 2 Wave 8, the single-reviewer shortcut was invoked 8× — it had stopped being an exception and become a pattern of convenience. This clause formalizes the boundary.
 
-## Load-Bearing Followups for Disabled CI Jobs
-
+## Load-Bearing Followups for Disabled CI Jobs <!-- promotion-target: skill -->
 When a PR disables a CI job to unblock merge, the followup tracking issue must be **load-bearing** — the re-enablement of the job is a first-class acceptance criterion of the issue, not a hidden subtask of "fix the underlying bug."
 
 Concrete requirements:
@@ -79,8 +74,7 @@ Concrete requirements:
 
 **Why:** Phase 2 Wave 8 ratified this rule mid-wave after two PRs (isnad-graph#811, design-system#56) disabled CI jobs with tracking issues that could be "closed" by just fixing the bug without ever re-enabling the job. Promoting the rule into the charter closes that loophole. Reference: `feedback_disable_followup_load_bearing.md` (historical memory, superseded by this clause).
 
-## PR Review Workflow for Deployments Branch PRs
-
+## PR Review Workflow for Deployments Branch PRs <!-- promotion-target: skill -->
 1. **Create the PR** targeting `deployments/phase{N}/wave-{M}`.
 2. **Notify reviewers** — the PR creator must notify at least **two** other team members to review the PR. Use SendMessage or a GitHub comment to notify. **A PR MUST NOT be merged without at least two peer reviews from distinct non-authors.** For waves with fewer than 4 engineers, the manager's review counts but must include a substantive review comment (not just "LGTM"). This is enforced by the `validate_pr_review.py` PreToolUse hook. **This rule applies even on fast/compact waves** — speed does not exempt PRs from the review gate. Wave 7 merged 5 PRs with zero reviews; this must not recur.
 3. **Reviewer performs the review** and posts a comment-based review on the PR with:
@@ -94,8 +88,7 @@ Concrete requirements:
 5. **Push final changes** from the review fixes.
 6. **The team merges** the PR into the deployments branch themselves — no user approval needed for PRs into deployments branches.
 
-## Review Finding Disposition
-
+## Review Finding Disposition <!-- promotion-target: none -->
 Every finding from a PR review must be dispositioned before merge. No finding may be silently dropped.
 
 | Finding Type | Action Required | Blocks Merge? |
@@ -109,8 +102,7 @@ Every finding from a PR review must be dispositioned before merge. No finding ma
 2. All tech-debt items have corresponding GitHub Issues created
 3. Issues are labeled `tech-debt` and assigned to the appropriate team member
 
-## Post-Merge Integration Verification
-
+## Post-Merge Integration Verification <!-- promotion-target: skill -->
 **After every PR merge into a deployments branch**, the manager must verify the integrated result before merging the next PR:
 
 1. **Pull the updated deployments branch** locally (or in a worktree).
@@ -122,8 +114,7 @@ This catches semantic conflicts that GitHub's textual merge cannot detect (e.g.,
 
 **CI enforcement:** All repositories must configure CI workflows to trigger on pushes to `deployments/**` branches (not just PRs). This provides automatic verification after each merge, complementing the manager's manual check.
 
-## Cross-PR Dependency Sequencing
-
+## Cross-PR Dependency Sequencing <!-- promotion-target: skill -->
 When multiple PRs in the same wave have dependencies (e.g., PR B depends on changes from PR A):
 
 1. **Identify dependencies** before merging — check if any PR depends on another PR's changes
@@ -132,8 +123,7 @@ When multiple PRs in the same wave have dependencies (e.g., PR B depends on chan
 4. **After merging the base PR**, the dependent PR must rebase/merge the updated base before its CI result is trusted
 5. **Document dependencies** in PR descriptions: "Depends on PR #N (must merge first)"
 
-## Wave Merge PR Verification
-
+## Wave Merge PR Verification <!-- promotion-target: skill -->
 At the **end of a wave or phase**, the Manager creates a PR from the deployments branch into `main`. Before presenting the PR to the user:
 
 1. **Verify all CI checks are green** — run `gh pr checks {NUMBER}` and confirm every job passes.
@@ -143,18 +133,17 @@ At the **end of a wave or phase**, the Manager creates a PR from the deployments
 
 The **user reviews and merges** this PR. Do not proceed to the next phase until the user has merged.
 
-## PR Template
-
+## PR Template <!-- promotion-target: none -->
 ```bash
 git push -u origin <branch-name>
 gh pr create --base deployments/phase{N}/wave-{M} --title "<short title>" --body "$(cat <<'EOF'
-## Summary
+## Summary <!-- promotion-target: none -->
 <1-3 bullet points describing the change>
 
-## Related Issues
+## Related Issues <!-- promotion-target: none -->
 Closes #<issue-number>
 
-## Review Checklist
+## Review Checklist <!-- promotion-target: none -->
 - [ ] Reviewed by another team member
 - [ ] Must-fix items resolved
 - [ ] Tech debt items filed as GitHub Issues (if any)
@@ -169,8 +158,7 @@ EOF
 - The body must reference the related GitHub Issue(s) with `Closes #N`.
 - The submitting team member is responsible for creating the PR immediately upon branch completion.
 
-## Pre-Push Checklist
-
+## Pre-Push Checklist <!-- promotion-target: none -->
 Before pushing a branch and creating a PR, every engineer must:
 
 1. **Run the repo's lint check** (`ruff check` / `npm run lint` / equivalent) — fix all errors.
@@ -181,8 +169,7 @@ Before pushing a branch and creating a PR, every engineer must:
 
 Pushing code that fails lint, formatting, or tests is a **minor feedback event**.
 
-## CI Must Be Green Before Merge
-
+## CI Must Be Green Before Merge <!-- promotion-target: none -->
 **No PR may be merged while CI is failing, even if failures are pre-existing.** If a new CI workflow is introduced and it catches pre-existing violations, those violations must be fixed before or in the same PR as the workflow addition.
 
 - If CI is red on the target branch due to pre-existing issues, fix forward — create a predecessor PR that resolves the violations, merge it first, then merge the CI workflow PR.
@@ -191,8 +178,7 @@ Pushing code that fails lint, formatting, or tests is a **minor feedback event**
 
 **Why:** In Phase 2 Wave 1, PR #72 introduced a hook CI workflow that immediately failed on pre-existing ruff I001 lint in other files. CI went red on main because the violations weren't fixed before merge.
 
-## CI Enforcement After PR Creation
-
+## CI Enforcement After PR Creation <!-- promotion-target: skill -->
 After creating a PR, **every team member** must follow this process:
 
 1. **Wait for all CI jobs to complete.** Do not merge or request review until CI has finished.

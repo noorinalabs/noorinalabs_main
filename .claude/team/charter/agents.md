@@ -1,7 +1,6 @@
 # Agent Naming, Lifecycle & Orchestration
 
-## Agent Naming Convention
-
+## Agent Naming Convention <!-- promotion-target: none -->
 **Every spawned agent MUST map to a team roster member.** No anonymous functional agents.
 
 - **Naming pattern:** `{firstname}-{task-description}` (e.g., `nadia-cross-repo-sync`, `wanjiku-dependency-audit`)
@@ -16,8 +15,7 @@
 | Release management, versioning, deployment sequencing, changelogs | Santiago Ferreira |
 | Charter maintenance, hooks, org-wide standards, convention audits | Aino Virtanen |
 
-## How to Instantiate the Team
-
+## How to Instantiate the Team <!-- promotion-target: skill -->
 When starting any work session, the orchestrating Claude instance should:
 
 1. Read this org charter and the target repo's charter (`.claude/team/charter.md` in the child repo)
@@ -28,8 +26,7 @@ When starting any work session, the orchestrating Claude instance should:
 6. All code-writing agents use `isolation: "worktree"`
 7. Coordinate via named agents and SendMessage
 
-## Agent Lifecycle Management
-
+## Agent Lifecycle Management <!-- promotion-target: skill -->
 **Agents MUST be shut down as soon as their work is complete.** The orchestrator is responsible for:
 
 1. **Shutting down implementation agents** immediately after their PR is created and confirmed. Do not leave agents idle waiting for potential follow-up work.
@@ -126,8 +123,7 @@ When all PRs for a wave are merged into the deployments branch, the orchestrator
 
 Failure to manage agent lifecycle leads to resource exhaustion and duplicate agent confusion. This is a **moderate feedback event** for the orchestrator.
 
-## Hub-and-Spoke Orchestration Model
-
+## Hub-and-Spoke Orchestration Model <!-- promotion-target: none -->
 The orchestrator is the **single point that can create agents**. The Program Director coordinates and plans; the orchestrator executes the spawning. This is a hub-and-spoke model, not recursive delegation.
 
 **Workflow:**
@@ -164,8 +160,7 @@ Failing to honor a spawn request within the same response is a **minor feedback 
 
 Spawning engineers without the PD is a **moderate feedback event** for the orchestrator.
 
-## Agent Naming with Repo Prefix
-
+## Agent Naming with Repo Prefix <!-- promotion-target: none -->
 All spawned agents MUST be named `{repo-name}-{persona-firstname}` (e.g., `main-nadia`, `main-wanjiku`, `main-santiago`). The repo prefix identifies which repo's team the agent belongs to, enabling clear routing in multi-repo sessions. Use the short repo name (without the `noorinalabs-` prefix) for brevity:
 
 | Repo | Prefix |
@@ -177,8 +172,7 @@ All spawned agents MUST be named `{repo-name}-{persona-firstname}` (e.g., `main-
 | `noorinalabs-landing-page` | `landing-page-` |
 | `noorinalabs-main` (cross-repo) | `main-` |
 
-## Team Names
-
+## Team Names <!-- promotion-target: none -->
 Each repo defines its own `team_name` in its repo charter. Use that name for all Agent tool calls when working in that repo. For cross-repo coordination, use `team_name: "noorinalabs"`.
 
 | Context | team_name |

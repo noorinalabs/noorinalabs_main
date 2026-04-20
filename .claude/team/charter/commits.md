@@ -14,8 +14,7 @@ EOF
 )"
 ```
 
-## Identity Table
-
+## Identity Table <!-- promotion-target: none -->
 | Team Member | user.name | user.email |
 |---|---|---|
 | Nadia Khoury | `Nadia Khoury` | `parametrization+Nadia.Khoury@gmail.com` |

@@ -107,6 +107,17 @@ Based on pain points and findings, propose specific charter amendments. Present 
 **Rationale:** {why, based on retro findings}
 ```
 
+
+### 7.5. Run promotion audit (`/promotion-audit`)
+
+Invoke `/promotion-audit` to deterministically check whether any memories, charter sections, or skills have crossed promotion thresholds during this wave. The audit resolves the current wave from `cross-repo-status.json`, classifies every candidate, and:
+
+- **AUTO-tier** (memory → charter, charter → skill): opens a PR with the auto-generated artifact; lands via the standard 2-reviewer pattern.
+- **DECIDE-tier** (skill → hook): files a draft issue with the proposed hook design. Hooks are security-sensitive — never auto-applied (D6).
+- **KEPT / SUPERSEDED / ALREADY-PROMOTED**: informational; no action.
+
+The audit appends its table to this retro's feedback_log entry **and** writes a standalone log at `.claude/team/promotion_audit_log/{wave-name}.md`. On unchanged repo state, the audit is byte-deterministic — re-running produces identical output. See issue #152 for the full pipeline spec and PR #153 / Hook 15 for the worked example.
+
 ### 8. Present full retro summary to the user
 
 **Output the complete retro summary directly in the conversation.** Do not just write to files — the user must see the retro without having to open `feedback_log.md`. Include:

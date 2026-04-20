@@ -1,13 +1,11 @@
 # Work Delegation & Issue Management
 
-## Delegation Flow
-
+## Delegation Flow <!-- promotion-target: skill -->
 1. **Program Director decomposes cross-repo requirements** and delegates each to the appropriate team member (TPM, Release Coordinator, or Standards & Quality Lead) based on domain.
 2. **The assigned team member creates GitHub Issues** in the appropriate repository with clear acceptance criteria.
 3. For cross-repo work, the Program Director creates **meta-issues** in `noorinalabs-main` that link to per-repo issues.
 
-## Issue Review Process
-
+## Issue Review Process <!-- promotion-target: none -->
 Every newly created cross-repo issue receives a review pass from each of the following roles. **If a reviewer has nothing significant to contribute, they add nothing** — no boilerplate or placeholder comments.
 
 | Reviewer | Applies to |
@@ -18,8 +16,7 @@ Every newly created cross-repo issue receives a review pass from each of the fol
 
 Reviews may include: dependency concerns, timeline conflicts, release impact, standards compliance, or cross-team blockers. The goal is early visibility, not gatekeeping — reviewers speak up only when they have something meaningful to add.
 
-## Work Gate: Issues Before Implementation
-
+## Work Gate: Issues Before Implementation <!-- promotion-target: none -->
 **No team member may begin implementation work or delegate it to repo teams until ALL GitHub Issues for the current initiative have been:**
 
 1. **Created** — the full set of issues covering the initiative's requirements exists.
@@ -27,16 +24,14 @@ Reviews may include: dependency concerns, timeline conflicts, release impact, st
 
 Only after both conditions are met does the Program Director signal that implementation may begin. This ensures the entire initiative is planned, visible, and vetted before any work starts.
 
-## Pre-Wave Checklist
-
+## Pre-Wave Checklist <!-- promotion-target: skill -->
 Before any wave begins, the Manager must verify:
 
 1. **Roster validation** — all assigned engineers exist in the org-level `roster.json`. If missing, add them before work begins. This prevents commit identity blockers.
 2. **CI workflow exists** — the repo has a working CI workflow that triggers on `deployments/**` branches. If this is Wave 1 of a new repo/phase, the scaffolding issue MUST include a CI workflow. No Wave 2 work starts without CI running.
 3. **Critical-path work identified** — if a task blocks others, that engineer is spawned first with priority.
 
-## Implementation Kickoff & Issue Assignment
-
+## Implementation Kickoff & Issue Assignment <!-- promotion-target: none -->
 Once the work gate is cleared, the Program Director delegates to the appropriate repo teams via their respective managers.
 
 ### Assignment
@@ -67,8 +62,7 @@ Every issue must be kept up to date:
 - **Comments** — used for questions, clarifications, progress updates, and decisions.
 - **Close condition** — issues are closed **only** when the corresponding work is complete and verified. Do not close prematurely. For `[MANUAL]` issues, the human confirms completion via comment.
 
-## Comment Format
-
+## Comment Format <!-- promotion-target: none -->
 All issue comments MUST follow this format:
 
 ```
@@ -83,8 +77,7 @@ RequestOrReplied: Request
 - **Requestee** = the person being asked or referenced (use `N/A` for general status updates with no specific ask).
 - **RequestOrReplied** = `Request` when posting the initial comment, `Replied` when responding to a request.
 
-## Reply Protocol
-
+## Reply Protocol <!-- promotion-target: none -->
 When a team member is tagged as **Requestee** on a comment with `RequestOrReplied: Request`, they **must** respond with a new comment on the same issue using this format:
 
 ```
@@ -101,16 +94,14 @@ After posting the reply, the replying team member **must directly notify** the o
 1. A reply has been posted on the issue.
 2. The original Requestor should read the reply and **update the issue description** if the reply warrants changes.
 
-## Ticket Update Rules Based on Ownership
-
+## Ticket Update Rules Based on Ownership <!-- promotion-target: none -->
 The **ticket owner** is the team member whose `FIRSTNAME_LASTNAME` label is on the issue.
 
 - **Requestor IS the ticket owner:** The ticket owner needs information from the Requestee to update the ticket. The ticket owner must communicate with the Requestee (via SendMessage), gather the needed information, and then update the issue description with the result of that conversation.
 
 - **Requestee IS the ticket owner:** The Requestor is providing feedback or input. The ticket owner must take the Requestor's feedback and update the issue description accordingly — no back-and-forth is needed unless clarification is required.
 
-## Escalation & Cross-Team Clarification
-
+## Escalation & Cross-Team Clarification <!-- promotion-target: skill -->
 When a ticket needs clarification or feedback from another team member:
 1. Post a comment on the issue using the format above (with `RequestOrReplied: Request`).
 2. Notify the Program Director if needed.

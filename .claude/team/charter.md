@@ -1,21 +1,18 @@
 # Team Charter — NoorinALabs (Organization)
 
-## Purpose
-
+## Purpose <!-- promotion-target: none -->
 This is the **org-wide coordination charter** for the `noorinalabs-main` parent repository. This team does NOT write application code — it coordinates across the child repositories (`noorinalabs-isnad-graph`, `noorinalabs-deploy`, `noorinalabs-design-system`, `noorinalabs-landing-page`), each of which has its own team and charter.
 
 All cross-repo coordination, org-wide standards, release management, and program-level planning is executed through this team.
 
-## Execution Model
-
+## Execution Model <!-- promotion-target: none -->
 - All team members are spawned as Claude Code agents (via the Agent tool)
 - **Worktrees are REQUIRED for all code-writing agents** — each agent working on code MUST use `isolation: "worktree"`. No two engineers may work in the same working directory simultaneously. This prevents branch contention and accidental cross-branch commits.
 - **Ontology consultation is REQUIRED before code changes** — any agent (orchestrator, team member, or one-off) MUST run `/ontology-librarian {topic}` before making code changes. This front-loads domain context, surfaces stale references, and prevents changes that conflict with the existing architecture. The librarian query should describe the area being modified (e.g., `/ontology-librarian narrator API endpoints`).
 - Each team member has a persistent name and personality (see `roster/` directory)
 - Team members communicate via the SendMessage tool when named and running concurrently
 
-## Org Chart
-
+## Org Chart <!-- promotion-target: none -->
 ```mermaid
 graph TD
     PD["Program Director<br/><small>Nadia Khoury · Senior VP</small>"]
@@ -32,8 +29,7 @@ graph TD
 
 Each child repository has its own team with its own manager. The Program Director coordinates across repo managers but does not directly manage repo-level engineers.
 
-## Role Definitions
-
+## Role Definitions <!-- promotion-target: none -->
 ### Program Director (Senior VP / Executive)
 - **Reports to:** The user (project owner)
 - **Spawns:** All other org-level team members
@@ -62,8 +58,7 @@ Each child repository has its own team with its own manager. The Program Directo
   - **Standards maintenance:** Maintains org-wide charter templates, manages shared hooks, audits repos for convention compliance, proposes new standards, reviews charter changes.
 - **Not a code writer** — Aino does not implement features. She is the quality gate.
 
-## Feedback System
-
+## Feedback System <!-- promotion-target: none -->
 ### Upward Feedback
 - Any team member can send feedback about their superior to that superior's boss
 - TPM / Release Coordinator / Standards Lead → Program Director → User
@@ -87,12 +82,10 @@ Each child repository has its own team with its own manager. The Program Directo
 
 Each team member maintains a directional trust score (1-5) for every other team member they interact with. Default is 3 (neutral). Scores decrease for bad quality/dishonesty and increase for reliable delivery/honest communication. The full matrix lives in `.claude/team/trust_matrix.md` on `main`. All trust updates are committed directly to `main` — no separate branches.
 
-## Steady-State Goal
-
+## Steady-State Goal <!-- promotion-target: none -->
 The team should evolve through feedback cycles toward a steady state of little to no negative feedback. Hire and fire decisions serve this goal — the team composition should stabilize as effective members are retained.
 
-## Session Start Protocol
-
+## Session Start Protocol <!-- promotion-target: none -->
 At the start of every session, establish situational awareness before taking any action:
 
 ### 1. Ontology check
@@ -113,8 +106,7 @@ The charter evolves through wave retros (proposed changes in `/wave-retro` step 
 
 This ensures the charter reflects the current state of the project's process, not a stale snapshot from several waves ago. The charter should be a living document that evolves with every milestone.
 
-## Cross-Repo Wave Plan
-
+## Cross-Repo Wave Plan <!-- promotion-target: none -->
 All cross-repo work is tracked on the **[Cross-Repo Wave Plan](https://github.com/orgs/noorinalabs/projects/2)** GitHub Project board. Issues are tagged by Wave with dependency ordering. The board is the **single source of truth** for cross-repo sequencing.
 
 ### Board Maintenance Rules
@@ -151,8 +143,7 @@ All cross-repo work is tracked on the **[Cross-Repo Wave Plan](https://github.co
 - If an issue is closed, its board status must be updated to Done
 - If an issue is moved between waves, update its Wave tag
 
-## Sub-Documents
-
+## Sub-Documents <!-- promotion-target: none -->
 Detailed rules are organized into focused sub-documents. Agents load only the sections relevant to their task.
 
 | Document | Contents |
