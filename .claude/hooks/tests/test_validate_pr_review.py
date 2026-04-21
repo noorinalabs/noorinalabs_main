@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 """Tests for validate_pr_review hook.
 
-Covers issue #147: TechDebt attestation must be required ONLY on actual
-review verdicts (Approved / Changes Requested), NOT on Request or Replied
-comments. Also covers the W8 hook-authorship NEGATIVE-MATCH requirement.
+Covers:
+- Issue #147: TechDebt attestation must be required ONLY on actual review
+  verdicts (Approved / Changes Requested), NOT on Request or Replied
+  comments.
+- Issue #164: reviewer set must dedup on full Requestee name, NOT on
+  lastname — two distinct reviewers sharing a lastname (e.g.,
+  Lucas Ferreira and Santiago Ferreira) count as TWO reviewers.
+
+Also covers the W8 hook-authorship NEGATIVE-MATCH requirement.
 
 Run: python3 -m pytest .claude/hooks/tests/test_validate_pr_review.py -v
 Or:  python3 .claude/hooks/tests/test_validate_pr_review.py
@@ -242,6 +248,70 @@ class TechDebtFilterTests(_CheckCommentReviewsHarness):
         ]
         result = self._run_with_fake_api(comments, self.BRANCH_AUTHOR, repo=self.REPO)
         self.assertEqual(result.reviews_missing_tech_debt, ["Mateo Santos"])
+
+
+class ReviewerDedupTests(_CheckCommentReviewsHarness):
+    """Issue #164: reviewer set must dedup on full name, NOT on lastname.
+
+    Prior behavior keyed the set on lastname, so Lucas Ferreira and Santiago
+    Ferreira counted as one reviewer. Guard tests for the full-name fix.
+    """
+
+    @staticmethod
+    def _comment(body: str) -> dict:
+        return {"body": body, "user": {"login": "anyone"}}
+
+    def test_two_reviewers_same_lastname_count_as_two(self):
+        """NEGATIVE MATCH for #164: two Ferreiras must count as 2, not 1."""
+        comments = [
+            self._comment(
+                "Requestor: Linh Pham\nRequestee: Lucas Ferreira\n"
+                "RequestOrReplied: Approved\nTechDebt: none"
+            ),
+            self._comment(
+                "Requestor: Linh Pham\nRequestee: Santiago Ferreira\n"
+                "RequestOrReplied: Approved\nTechDebt: none"
+            ),
+        ]
+        result = self._run_with_fake_api(comments, self.BRANCH_AUTHOR, repo=self.REPO)
+        self.assertEqual(
+            len(result.reviewers),
+            2,
+            f"two distinct reviewers sharing lastname collapsed into: {result.reviewers}",
+        )
+        self.assertIn("lucas ferreira", result.reviewers)
+        self.assertIn("santiago ferreira", result.reviewers)
+
+    def test_same_person_counted_once_across_multiple_comments(self):
+        """Positive: same reviewer making Request + Approved counts as one."""
+        comments = [
+            self._comment(
+                "Requestor: Linh Pham\nRequestee: Mateo Santos\nRequestOrReplied: Request"
+            ),
+            self._comment(
+                "Requestor: Linh Pham\nRequestee: Mateo Santos\n"
+                "RequestOrReplied: Approved\nTechDebt: none"
+            ),
+        ]
+        result = self._run_with_fake_api(comments, self.BRANCH_AUTHOR, repo=self.REPO)
+        self.assertEqual(len(result.reviewers), 1)
+        self.assertIn("mateo santos", result.reviewers)
+
+    def test_branch_author_lastname_still_excluded(self):
+        """Author-equality check still works (it uses lastname, correctly).
+
+        Branch author has lastname `Pham`. A Pham-surnamed reviewer must still
+        be excluded from the reviewer set — regression guard for the
+        author-equality branch of the logic after the dedup-key change.
+        """
+        comments = [
+            self._comment(
+                "Requestor: Linh Pham\nRequestee: Linh Pham\n"
+                "RequestOrReplied: Approved\nTechDebt: none"
+            ),
+        ]
+        result = self._run_with_fake_api(comments, self.BRANCH_AUTHOR, repo=self.REPO)
+        self.assertEqual(result.reviewers, set(), "branch author must not self-review")
 
 
 class MergeCommandMatchTests(unittest.TestCase):

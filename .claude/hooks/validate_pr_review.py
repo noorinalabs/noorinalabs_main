@@ -34,6 +34,15 @@ Charter-format review comments:
   Replied comments are process metadata and must NOT be required to carry the
   TechDebt attestation line. This is the fix for issue #147.
 
+Reviewer dedup key:
+  The reviewer set is keyed on the FULL requestee name (lowercased), not on
+  the lastname. Two distinct reviewers with the same lastname (e.g.,
+  "Lucas Ferreira" and "Santiago Ferreira") are counted as TWO reviewers
+  toward the two-peer-review requirement. This is the fix for issue #164.
+  The author-equality check still uses lastname because branches are named
+  `{Initial}.{Lastname}/...` and we only have the author's lastname to
+  compare against.
+
 Exit codes:
   0 — allow (not a merge command, or two reviews exist)
   2 — block (fewer than two peer reviews found, or a verdict is missing TechDebt)
@@ -225,13 +234,19 @@ def check_comment_reviews(
             else:
                 reviewer_lastname = requestee_name
 
-            # Reviewer must differ from branch author.
+            # Reviewer must differ from branch author. Author check stays on
+            # lastname (branch format is `{Initial}.{Lastname}/...`), but the
+            # dedup key for the reviewer set is the FULL requestee name —
+            # otherwise two distinct reviewers sharing a lastname collapse
+            # into one (issue #164 fix: Lucas Ferreira + Santiago Ferreira
+            # were counted as 1/2 on deploy#81).
+            #
             # NOTE: Reviewer counting is NOT filtered by verdict type. It
             # continues to use all Requestee+RequestOrReplied comments as in
             # prior behavior; issue #147 addresses the TechDebt filter only,
             # and weakening the reviewer count would break existing flows.
             if reviewer_lastname.lower() != branch_author_lastname.lower():
-                result.reviewers.add(reviewer_lastname.lower())
+                result.reviewers.add(requestee_name.lower())
 
             ror_value = ror_match.group(1).strip()
             # Keep only the first line of the value, in case the regex greedy-
