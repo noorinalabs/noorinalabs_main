@@ -1,0 +1,242 @@
+#!/usr/bin/env python3
+"""Tests for validate_commit_identity hook.
+
+Covers the W9 parent+child roster merge feature (issue #112 part a) plus
+regression coverage for the pre-existing cross-repo `cd <path>` detection.
+
+Run: python3 -m pytest .claude/hooks/tests/test_validate_commit_identity.py -v
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+_HERE = Path(__file__).resolve().parent
+_HOOKS_DIR = _HERE.parent
+sys.path.insert(0, str(_HOOKS_DIR))
+
+import validate_commit_identity as hook  # noqa: E402
+
+
+def _git_init(path: Path) -> None:
+    """Init a bare git repo at `path` by creating `.git` as a dir stub.
+
+    We don't need `git` to work — the hook only checks `(path / ".git").exists()`.
+    Creating `.git` as a directory satisfies the check deterministically and
+    without spawning subprocesses.
+    """
+    (path / ".git").mkdir(parents=True, exist_ok=True)
+
+
+def _write_roster(repo_path: Path, roster: dict[str, str]) -> None:
+    team_dir = repo_path / ".claude" / "team"
+    team_dir.mkdir(parents=True, exist_ok=True)
+    (team_dir / "roster.json").write_text(json.dumps(roster), encoding="utf-8")
+
+
+class LoadMergedRosterTests(unittest.TestCase):
+    """Unit tests for `_load_merged_roster` — parent+child merge semantics."""
+
+    def test_child_only_no_parent(self):
+        """Parent roster missing → returns child roster unchanged."""
+        with tempfile.TemporaryDirectory() as td:
+            outer = Path(td)
+            _git_init(outer)  # parent IS a git repo, but has no roster
+            child = outer / "child"
+            child.mkdir()
+            _git_init(child)
+            _write_roster(child, {"Alice": "alice@example.com"})
+
+            merged = hook._load_merged_roster(child)
+            self.assertEqual(merged, {"Alice": "alice@example.com"})
+
+    def test_parent_not_a_git_repo(self):
+        """Parent dir exists but is NOT a git repo → parent ignored."""
+        with tempfile.TemporaryDirectory() as td:
+            outer = Path(td)
+            # Intentionally do NOT `_git_init(outer)` — parent has no `.git`
+            _write_roster(outer, {"ShouldNotAppear": "nope@example.com"})
+            child = outer / "child"
+            child.mkdir()
+            _git_init(child)
+            _write_roster(child, {"Alice": "alice@example.com"})
+
+            merged = hook._load_merged_roster(child)
+            self.assertEqual(merged, {"Alice": "alice@example.com"})
+            self.assertNotIn("ShouldNotAppear", merged)
+
+    def test_parent_is_git_repo_without_roster(self):
+        """Parent is a git repo but has no `.claude/team/roster.json` → ignored."""
+        with tempfile.TemporaryDirectory() as td:
+            outer = Path(td)
+            _git_init(outer)
+            # no roster written for outer
+            child = outer / "child"
+            child.mkdir()
+            _git_init(child)
+            _write_roster(child, {"Alice": "alice@example.com"})
+
+            merged = hook._load_merged_roster(child)
+            self.assertEqual(merged, {"Alice": "alice@example.com"})
+
+    def test_child_plus_parent_merge_union(self):
+        """Parent + child with disjoint names → union of both."""
+        with tempfile.TemporaryDirectory() as td:
+            outer = Path(td)
+            _git_init(outer)
+            _write_roster(outer, {"Nadia": "nadia@example.com"})
+            child = outer / "child"
+            child.mkdir()
+            _git_init(child)
+            _write_roster(child, {"Alice": "alice@example.com"})
+
+            merged = hook._load_merged_roster(child)
+            self.assertEqual(
+                merged,
+                {
+                    "Nadia": "nadia@example.com",
+                    "Alice": "alice@example.com",
+                },
+            )
+
+    def test_child_wins_on_name_collision(self):
+        """Same name in both with different emails → child email wins."""
+        with tempfile.TemporaryDirectory() as td:
+            outer = Path(td)
+            _git_init(outer)
+            _write_roster(outer, {"Alice": "alice-parent@example.com"})
+            child = outer / "child"
+            child.mkdir()
+            _git_init(child)
+            _write_roster(child, {"Alice": "alice-child@example.com"})
+
+            merged = hook._load_merged_roster(child)
+            self.assertEqual(merged, {"Alice": "alice-child@example.com"})
+
+    def test_walk_only_one_level_grandparent_ignored(self):
+        """Grandparent has roster, parent does not → grandparent NOT loaded."""
+        with tempfile.TemporaryDirectory() as td:
+            grand = Path(td)
+            _git_init(grand)
+            _write_roster(grand, {"Grandparent": "gp@example.com"})
+            parent = grand / "parent"
+            parent.mkdir()
+            # parent is NOT a git repo and has no roster
+            child = parent / "child"
+            child.mkdir()
+            _git_init(child)
+            _write_roster(child, {"Alice": "alice@example.com"})
+
+            merged = hook._load_merged_roster(child)
+            self.assertEqual(merged, {"Alice": "alice@example.com"})
+            self.assertNotIn("Grandparent", merged)
+
+    def test_malformed_parent_roster_does_not_block(self):
+        """A broken parent roster.json must fail-open — child roster is returned."""
+        with tempfile.TemporaryDirectory() as td:
+            outer = Path(td)
+            _git_init(outer)
+            team_dir = outer / ".claude" / "team"
+            team_dir.mkdir(parents=True)
+            (team_dir / "roster.json").write_text("{ this is not valid json", encoding="utf-8")
+            child = outer / "child"
+            child.mkdir()
+            _git_init(child)
+            _write_roster(child, {"Alice": "alice@example.com"})
+
+            merged = hook._load_merged_roster(child)
+            self.assertEqual(merged, {"Alice": "alice@example.com"})
+
+
+class DetectTargetRosterTests(unittest.TestCase):
+    """Regression tests for `cd <path> && git commit` target-roster detection."""
+
+    def test_cd_target_returns_merged_roster(self):
+        """`cd <child> && git commit` loads child+parent merged roster."""
+        with tempfile.TemporaryDirectory() as td:
+            outer = Path(td)
+            _git_init(outer)
+            _write_roster(outer, {"Nadia": "nadia@example.com"})
+            child = outer / "child"
+            child.mkdir()
+            _git_init(child)
+            _write_roster(child, {"Alice": "alice@example.com"})
+
+            command = f"cd {child} && git commit -m 'x'"
+            detected = hook._detect_target_roster(command)
+            self.assertIsNotNone(detected)
+            assert detected is not None  # for type-narrowing
+            self.assertEqual(
+                detected,
+                {
+                    "Nadia": "nadia@example.com",
+                    "Alice": "alice@example.com",
+                },
+            )
+
+    def test_cd_target_with_no_roster_returns_none(self):
+        """`cd <dir>` where dir has no roster → None (fall back to local)."""
+        with tempfile.TemporaryDirectory() as td:
+            target = Path(td) / "nonroster"
+            target.mkdir()
+            # no .claude/team/roster.json
+
+            command = f"cd {target} && git commit -m 'x'"
+            self.assertIsNone(hook._detect_target_roster(command))
+
+    def test_no_cd_returns_none(self):
+        """Command without `cd` → None (use local ROSTER)."""
+        self.assertIsNone(hook._detect_target_roster("git commit -m 'x'"))
+
+
+class CheckIntegrationTests(unittest.TestCase):
+    """Integration: `check()` accepts a name present only in the parent roster.
+
+    Verifies the end-to-end merge path: an org-level coordinator defined ONLY
+    in the parent repo's roster is accepted when committing in a child repo.
+    """
+
+    def test_parent_only_name_accepted_in_child_commit(self):
+        with tempfile.TemporaryDirectory() as td:
+            outer = Path(td)
+            _git_init(outer)
+            _write_roster(outer, {"Nadia": "nadia@example.com"})
+            child = outer / "child"
+            child.mkdir()
+            _git_init(child)
+            _write_roster(child, {"Alice": "alice@example.com"})
+
+            command = (
+                f'cd {child} && git -c user.name="Nadia" '
+                f'-c user.email="nadia@example.com" commit -m "x"'
+            )
+            result = hook.check({"tool_name": "Bash", "tool_input": {"command": command}})
+            self.assertIsNone(result, f"expected allow, got block: {result}")
+
+    def test_child_email_override_blocks_parent_email(self):
+        """When child overrides a name's email, the parent email is rejected."""
+        with tempfile.TemporaryDirectory() as td:
+            outer = Path(td)
+            _git_init(outer)
+            _write_roster(outer, {"Alice": "alice-parent@example.com"})
+            child = outer / "child"
+            child.mkdir()
+            _git_init(child)
+            _write_roster(child, {"Alice": "alice-child@example.com"})
+
+            command = (
+                f'cd {child} && git -c user.name="Alice" '
+                f'-c user.email="alice-parent@example.com" commit -m "x"'
+            )
+            result = hook.check({"tool_name": "Bash", "tool_input": {"command": command}})
+            self.assertIsNotNone(result)
+            assert result is not None
+            self.assertEqual(result.get("decision"), "block")
+
+
+if __name__ == "__main__":
+    unittest.main()
