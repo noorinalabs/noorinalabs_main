@@ -5,8 +5,9 @@ The following charter rules are enforced automatically via Claude Code hooks in 
 ## Hook 1: Validate Commit Identity (`validate_commit_identity.py`)
 
 - **What it automates:** Commit Identity rules — validates that every `git commit` command includes `-c user.name=` and `-c user.email=` flags matching a roster member.
+- **Parent+child roster merge (#112 part a):** When the target repo (either the repo hosting this hook, or the `cd <path>` target of a cross-repo commit) sits inside another git repo that itself has `.claude/team/roster.json`, the hook loads the parent roster and merges it under the child roster at load time. Child entries win on name collision. Walk-up is limited to ONE level to avoid false positives in nested `code/` trees. This lets org-level coordinators (e.g. Nadia.Khoury, Wanjiku, Santiago, Aino) commit in any child repo without duplicating their entries into every child `roster.json`.
 - **Augments:** The [Commit Identity](commits.md) section. The manual rule still applies; this hook enforces it automatically.
-- **Manual steps remaining:** When a new team member is hired, add their name and email to `.claude/team/roster.json` (the single source of truth for all hooks and skills).
+- **Manual steps remaining:** When a new team member is hired, add their name and email to the appropriate `.claude/team/roster.json` — org-level coordinators go in `noorinalabs-main`'s roster, per-repo members go in that repo's roster.
 - **Emergency override:** Remove or comment out the hook entry in `.claude/settings.json`. Re-add after the emergency.
 
 ## Hook 2: Block `--no-verify` (`block_no_verify.py`)
