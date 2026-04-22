@@ -97,7 +97,7 @@ class BodyFlagSkipTests(unittest.TestCase):
         """POS: `--body-foo` should NOT count as a body flag. With pytest present
         and no ENVIRONMENT=test, this should block (not gh, no real --body)."""
         result = hook.check(_bash("custom-tool --body-foo pytest"))
-        self.assertIsNotNone(result, "--body-foo is not --body or --body-file")
+        assert result is not None, "--body-foo is not --body or --body-file"
         self.assertEqual(result.get("decision"), "block")
 
 
@@ -107,13 +107,13 @@ class PositiveMatchTests(unittest.TestCase):
     def test_bare_pytest_blocks(self) -> None:
         """POS: `pytest` alone — classic invocation."""
         result = hook.check(_bash("pytest"))
-        self.assertIsNotNone(result)
+        assert result is not None
         self.assertEqual(result.get("decision"), "block")
 
     def test_pytest_with_path_blocks(self) -> None:
         """POS: `pytest tests/` — typical invocation."""
         result = hook.check(_bash("pytest tests/"))
-        self.assertIsNotNone(result)
+        assert result is not None
         self.assertEqual(result.get("decision"), "block")
 
     def test_make_test_blocks(self) -> None:
@@ -135,7 +135,7 @@ class PositiveMatchTests(unittest.TestCase):
         """POS regression: leading env prefix with real test command must still
         block. `DEBUG=1 pytest tests/` has `pytest` as effective argv[0]."""
         result = hook.check(_bash("DEBUG=1 pytest tests/"))
-        self.assertIsNotNone(result)
+        assert result is not None
         self.assertEqual(result.get("decision"), "block")
 
 
