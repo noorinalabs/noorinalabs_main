@@ -1927,6 +1927,36 @@
       "tracked_at": "2026-04-21T02:47:56.377553+00:00",
       "resolved_at": "2026-04-21T03:08:46.038672Z",
       "resolution_note": "noise: tmp/worktree path, no ontology impact"
+    },
+    "/tmp/pr168_review_replied.md": {
+      "last_tracked": "af8abd671db79f94591834861ffb3fe6eaad02191ad5b4ce42ed332a3c4a873f",
+      "last_resolved": "af8abd671db79f94591834861ffb3fe6eaad02191ad5b4ce42ed332a3c4a873f",
+      "tracked_at": "2026-04-21T22:52:21.044546+00:00",
+      "resolved_at": "2026-04-22T00:42:15.074619+00:00"
+    },
+    "/tmp/pr168_review_approved.md": {
+      "last_tracked": "72736bb38787582a834a4a597c5410f96c748f25417586644e66edf41864eac8",
+      "last_resolved": "72736bb38787582a834a4a597c5410f96c748f25417586644e66edf41864eac8",
+      "tracked_at": "2026-04-21T22:52:24.089576+00:00",
+      "resolved_at": "2026-04-22T00:42:15.074619+00:00"
+    },
+    "/tmp/pr172_review_nino.md": {
+      "last_tracked": "0e162ca461bbaf8b91d4747083057e88ffcbeab6c346d6525bbf128509fab7a8",
+      "last_resolved": "0e162ca461bbaf8b91d4747083057e88ffcbeab6c346d6525bbf128509fab7a8",
+      "tracked_at": "2026-04-21T22:53:15.728884+00:00",
+      "resolved_at": "2026-04-22T00:42:15.074619+00:00"
+    },
+    "/tmp/pr172_approval_nino.md": {
+      "last_tracked": "61516c1c4b79a4fd0f93c2cc8318e2fabe216c9abf8bf43f604eb730aabc2ef7",
+      "last_resolved": "61516c1c4b79a4fd0f93c2cc8318e2fabe216c9abf8bf43f604eb730aabc2ef7",
+      "tracked_at": "2026-04-21T22:53:17.981103+00:00",
+      "resolved_at": "2026-04-22T00:42:15.074619+00:00"
+    },
+    ".claude/worktrees/A.Virtanen-0143-ontology-tracker-path-filter/.claude/hooks/ontology_tracker.py": {
+      "last_tracked": "ff1855b02b71e507f5a04590f8c4129d4009551b48cc927cd2801ff31b825298",
+      "last_resolved": "ff1855b02b71e507f5a04590f8c4129d4009551b48cc927cd2801ff31b825298",
+      "tracked_at": "2026-04-21T22:56:04.016082+00:00",
+      "resolved_at": "2026-04-22T00:42:15.074619+00:00"
     }
   }
 }
