@@ -88,7 +88,7 @@ Also update checksums for any ontology files that were modified during this pass
 Stage and commit all ontology changes and any auto-updated docs. Use the Standards & Quality Lead identity (Aino Virtanen) for ontology commits:
 
 ```bash
-cd "$(git rev-parse --show-toplevel)" && \
+cd "$REPO_ROOT" && \
   git add ontology/ && \
   git -c user.name="Aino Virtanen" -c user.email="parametrization+Aino.Virtanen@gmail.com" \
       commit -m "ontology: rebuild — {summary of changes}"

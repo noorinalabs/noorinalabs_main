@@ -69,7 +69,7 @@ Run `/annunaki` to check the error monitor.
 Read the current project state:
 
 ```bash
-cat "$REPO_ROOT/.claude/cross-repo-status.json"
+cat "$REPO_ROOT/cross-repo-status.json"
 gh issue list --repo noorinalabs/noorinalabs-main --state open --limit 10 --json number,title,labels
 ```
 
