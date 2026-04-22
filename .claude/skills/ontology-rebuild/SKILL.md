@@ -6,6 +6,8 @@ args: scope
 
 Rebuild the ontology for files that have changed since the last resolution pass. The `scope` argument is optional — if omitted, processes all dirty files. If provided, can be `code`, `docs`, or a specific repo name to limit scope.
 
+> Note: all repo paths in bash blocks below are rooted at `$REPO_ROOT` to avoid cwd drift when the skill is invoked from a worktree or child-repo subdirectory (#149).
+
 ## Context
 
 The ontology system has three roles:
@@ -20,7 +22,8 @@ A file is "dirty" when `last_tracked != last_resolved` in `checksums.json`.
 ### 1. Read checksums and identify dirty files
 
 ```bash
-cat ontology/checksums.json
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cat "$REPO_ROOT/ontology/checksums.json"
 ```
 
 Build a list of all files where `last_tracked != last_resolved`. If no dirty files exist, report "Ontology is up to date — no dirty files" and stop.
@@ -85,9 +88,11 @@ Also update checksums for any ontology files that were modified during this pass
 Stage and commit all ontology changes and any auto-updated docs. Use the Standards & Quality Lead identity (Aino Virtanen) for ontology commits:
 
 ```bash
-git add ontology/
-# Also add any auto-updated docs
-git -c user.name="Aino Virtanen" -c user.email="parametrization+Aino.Virtanen@gmail.com" commit -m "ontology: rebuild — {summary of changes}"
+cd "$REPO_ROOT" && \
+  git add ontology/ && \
+  git -c user.name="Aino Virtanen" -c user.email="parametrization+Aino.Virtanen@gmail.com" \
+      commit -m "ontology: rebuild — {summary of changes}"
+# Also add any auto-updated docs before committing.
 ```
 
 ## Docs update policy

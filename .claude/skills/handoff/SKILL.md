@@ -6,6 +6,8 @@ args: notes
 
 Generate a handoff summary for the next session. The optional `notes` argument lets the user add specific context (e.g., "was debugging the auth flow" or "next step is PR review").
 
+> Note: all repo paths in bash blocks below are rooted at `$REPO_ROOT` to avoid cwd drift when the skill is invoked from a worktree or child-repo subdirectory (#149).
+
 ## Instructions
 
 ### 1. Gather current state
@@ -14,9 +16,10 @@ Collect the following in parallel:
 
 **Git state:**
 ```bash
-git status
-git log --oneline -10
-git branch --show-current
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+git -C "$REPO_ROOT" status
+git -C "$REPO_ROOT" log --oneline -10
+git -C "$REPO_ROOT" branch --show-current
 ```
 
 **Open PRs across all repos:**

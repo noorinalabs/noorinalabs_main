@@ -6,6 +6,8 @@ args: team_name
 
 Run a lightweight retrospective for the `{team_name}` team. This is a **mid-wave health check**, not a full end-of-wave retrospective. Use `/wave-retro` for the comprehensive end-of-wave engine with trust matrix updates and charter proposals.
 
+> Note: all repo paths in bash blocks below are rooted at `$REPO_ROOT` to avoid cwd drift when the skill is invoked from a worktree or child-repo subdirectory (#149).
+
 ## When to use
 
 - Mid-wave checkpoint to surface blockers early
@@ -19,7 +21,8 @@ Run a lightweight retrospective for the `{team_name}` team. This is a **mid-wave
 Determine the active wave from `cross-repo-status.json` or ask the user:
 
 ```bash
-cat .claude/cross-repo-status.json 2>/dev/null
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cat "$REPO_ROOT/cross-repo-status.json" 2>/dev/null
 ```
 
 ### 2. Collect progress data

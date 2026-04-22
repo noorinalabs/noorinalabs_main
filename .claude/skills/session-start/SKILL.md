@@ -7,6 +7,8 @@ description: "MANDATORY first action in every session — runs full startup prot
 
 **This skill MUST be invoked as the FIRST action in every new session.** Do not respond to the user's message, do not read files, do not run any other tool — invoke `/session-start` first. The user's actual request is handled AFTER this completes.
 
+> Note: all repo paths in bash blocks below are rooted at `$REPO_ROOT` to avoid cwd drift when the skill is invoked from a worktree or child-repo subdirectory (#149).
+
 ## Instructions
 
 Execute all 7 steps below. Steps that are independent of each other SHOULD run in parallel. Present results in a single concise status table at the end.
@@ -14,8 +16,9 @@ Execute all 7 steps below. Steps that are independent of each other SHOULD run i
 ### Step 0 — Worktree cleanup
 
 ```bash
-git worktree prune
-git worktree list
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+git -C "$REPO_ROOT" worktree prune
+git -C "$REPO_ROOT" worktree list
 ```
 
 Verify only the main repo root is listed. Remove any stale worktrees.
@@ -66,7 +69,7 @@ Run `/annunaki` to check the error monitor.
 Read the current project state:
 
 ```bash
-cat cross-repo-status.json
+cat "$REPO_ROOT/cross-repo-status.json"
 gh issue list --repo noorinalabs/noorinalabs-main --state open --limit 10 --json number,title,labels
 ```
 
@@ -81,7 +84,7 @@ Report:
 Read the tail of the feedback log:
 
 ```bash
-tail -40 .claude/team/feedback_log.md
+tail -40 "$REPO_ROOT/.claude/team/feedback_log.md"
 ```
 
 Check for:

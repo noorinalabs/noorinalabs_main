@@ -6,6 +6,8 @@ args: team_name, Phase number, Wave number
 
 Finalize a wave by reviewing all open PRs, merging in dependency order, closing resolved issues, and cleaning up. This is the **exit gate** before running `/wave-retro`.
 
+> Note: all repo paths in bash blocks below are rooted at `$REPO_ROOT` to avoid cwd drift when the skill is invoked from a worktree or child-repo subdirectory (#149).
+
 ## Instructions
 
 ### 1. Inventory open PRs
@@ -128,14 +130,15 @@ For any remaining open issues:
 **All wave worktrees MUST be removed before the wrapup is considered complete.** Stale worktrees accumulate across waves and cause branch contention.
 
 ```bash
+REPO_ROOT="$(git rev-parse --show-toplevel)"
 # Prune any stale worktree metadata
-git worktree prune
+git -C "$REPO_ROOT" worktree prune
 
 # List all worktrees and identify wave-related ones
-git worktree list
+git -C "$REPO_ROOT" worktree list
 
 # Remove each wave worktree (branches matching wave assignees)
-# Example: git worktree remove .claude/worktrees/W.Mwangi+0063-fix-branch-freshness-worktree --force
+# Example: git -C "$REPO_ROOT" worktree remove "$REPO_ROOT/.claude/worktrees/W.Mwangi+0063-fix-branch-freshness-worktree" --force
 ```
 
 For each worktree:
