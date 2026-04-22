@@ -131,8 +131,16 @@ def get_pr_data(pr_number: str | None, repo: str | None = None) -> dict | None:
 
 
 def extract_branch_author_lastname(head_ref: str) -> str | None:
-    """Extract the last name from branch format '{FirstInitial}.{LastName}/...'."""
-    match = re.match(r"[A-Za-z]\.([A-Za-z]+)/", head_ref)
+    """Extract the last name from branch format '{FirstInitial}.{LastName}[-/]...'.
+
+    Accepts both separator styles seen in practice:
+    - slash: `A.Virtanen/0179-branch-regex-fix` (legacy/charter spec)
+    - dash:  `A.Virtanen-0179-branch-regex-fix` (observed on recent branches)
+
+    Returns None if the head_ref does not match the `{Initial}.{LastName}` prefix
+    followed by one of the accepted separators.
+    """
+    match = re.match(r"[A-Za-z]\.([A-Za-z]+)[-/]", head_ref)
     if match:
         return match.group(1)
     return None
