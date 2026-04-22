@@ -44,17 +44,13 @@ class GhSubcommandSkipTests(unittest.TestCase):
     def test_gh_pr_comment_with_pytest_in_body(self) -> None:
         """NEG: `gh pr comment ... --body "...pytest..."` — repro case from #114."""
         result = hook.check(
-            _bash(
-                'gh pr comment 808 --repo noorinalabs/x --body "fixing pytest CVE"'
-            )
+            _bash('gh pr comment 808 --repo noorinalabs/x --body "fixing pytest CVE"')
         )
         self.assertIsNone(result, "gh pr comment mentioning pytest in body must be allowed")
 
     def test_gh_issue_create_with_make_test_in_body(self) -> None:
         """NEG: `gh issue create --body "make test broke"` — substring false-positive."""
-        result = hook.check(
-            _bash('gh issue create --title "x" --body "make test broke"')
-        )
+        result = hook.check(_bash('gh issue create --title "x" --body "make test broke"'))
         self.assertIsNone(result, "gh issue create mentioning make test in body must be allowed")
 
     def test_gh_pr_create_runs_pytest_mention(self) -> None:
@@ -66,9 +62,7 @@ class GhSubcommandSkipTests(unittest.TestCase):
         """NEG: `ENVIRONMENT=test gh pr comment ... --body "pytest"` — gh skip
         takes precedence; we don't want to accidentally encourage the env prefix
         on gh commands by only allowing them if ENVIRONMENT=test is present."""
-        result = hook.check(
-            _bash('ENVIRONMENT=test gh pr comment 1 --body "pytest"')
-        )
+        result = hook.check(_bash('ENVIRONMENT=test gh pr comment 1 --body "pytest"'))
         self.assertIsNone(
             result,
             "gh after env-assignment prefix is still a gh invocation, not a test",
@@ -76,9 +70,7 @@ class GhSubcommandSkipTests(unittest.TestCase):
 
     def test_gh_with_multiple_env_prefixes(self) -> None:
         """NEG: multiple leading env assignments still resolve to `gh` argv[0]."""
-        result = hook.check(
-            _bash('FOO=1 BAR=2 gh pr comment 1 --body "pytest note"')
-        )
+        result = hook.check(_bash('FOO=1 BAR=2 gh pr comment 1 --body "pytest note"'))
         self.assertIsNone(result)
 
 
@@ -93,7 +85,7 @@ class BodyFlagSkipTests(unittest.TestCase):
 
     def test_body_file_flag(self) -> None:
         """NEG: --body-file also triggers the skip (same rationale)."""
-        result = hook.check(_bash('gh pr create --body-file /tmp/body.md'))
+        result = hook.check(_bash("gh pr create --body-file /tmp/body.md"))
         self.assertIsNone(result)
 
     def test_body_equals_form(self) -> None:
@@ -104,7 +96,7 @@ class BodyFlagSkipTests(unittest.TestCase):
     def test_body_flag_false_friend_not_matched(self) -> None:
         """POS: `--body-foo` should NOT count as a body flag. With pytest present
         and no ENVIRONMENT=test, this should block (not gh, no real --body)."""
-        result = hook.check(_bash('custom-tool --body-foo pytest'))
+        result = hook.check(_bash("custom-tool --body-foo pytest"))
         self.assertIsNotNone(result, "--body-foo is not --body or --body-file")
         self.assertEqual(result.get("decision"), "block")
 

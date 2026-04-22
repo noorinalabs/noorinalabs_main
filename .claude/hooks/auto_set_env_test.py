@@ -76,7 +76,7 @@ def _strip_leading_env(command: str) -> str:
         m = _ENV_ASSIGN.match(command)
         if not m:
             return command
-        command = command[m.end():]
+        command = command[m.end() :]
 
 
 def _is_gh_invocation(command: str) -> bool:
@@ -112,9 +112,7 @@ def check(input_data: dict) -> dict | None:
     if _has_body_flag(command):
         return None
 
-    is_test_cmd = bool(
-        re.search(r"\bpytest\b", command) or re.search(r"\bmake\s+test\b", command)
-    )
+    is_test_cmd = bool(re.search(r"\bpytest\b", command) or re.search(r"\bmake\s+test\b", command))
     if not is_test_cmd:
         return None
 
