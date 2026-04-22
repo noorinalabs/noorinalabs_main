@@ -6,6 +6,8 @@ args: team_name, Phase number, Wave number
 
 Initialize infrastructure for a new wave. This is the **setup step** that creates the deployment branch and cleans up stale worktrees. For full wave planning with issue assignment and kickoff comments, use `/wave-kickoff` after this completes.
 
+> Note: all repo paths in bash blocks below are rooted at `$REPO_ROOT` to avoid cwd drift when the skill is invoked from a worktree or child-repo subdirectory (#149).
+
 ## Instructions
 
 ### 1. Clean stale worktrees
@@ -13,8 +15,9 @@ Initialize infrastructure for a new wave. This is the **setup step** that create
 Remove any leftover worktrees from previous waves:
 
 ```bash
-git worktree prune
-git worktree list
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+git -C "$REPO_ROOT" worktree prune
+git -C "$REPO_ROOT" worktree list
 ```
 
 Report any worktrees that were pruned. If active worktrees remain, list them and confirm with the user before proceeding (they may belong to in-progress work).
@@ -26,7 +29,7 @@ Report any worktrees that were pruned. If active worktrees remain, list them and
 
 ```bash
 # Check if previous wave branch exists
-git ls-remote --heads origin "deployments/phase{P}/wave-{M-1}"
+git -C "$REPO_ROOT" ls-remote --heads origin "deployments/phase{P}/wave-{M-1}"
 ```
 
 If the previous wave branch exists but has not been merged to main, warn the user:
@@ -40,6 +43,7 @@ are integrated before merging this wave.
 ### 3. Create the deployment branch
 
 ```bash
+cd "$REPO_ROOT"
 git fetch origin
 git checkout main && git pull origin main
 git checkout -b "deployments/phase{P}/wave-{M}"
@@ -49,6 +53,7 @@ git push -u origin "deployments/phase{P}/wave-{M}"
 If the branch already exists on the remote:
 
 ```bash
+cd "$REPO_ROOT"
 git fetch origin "deployments/phase{P}/wave-{M}"
 git checkout "deployments/phase{P}/wave-{M}"
 git pull origin "deployments/phase{P}/wave-{M}"
@@ -81,12 +86,13 @@ Update `cross-repo-status.json` to reflect the new active wave:
 
 ```bash
 # Read current status
-cat cross-repo-status.json
+cat "$REPO_ROOT/cross-repo-status.json"
 ```
 
 Set the active wave fields for this repo. Commit directly to the wave branch:
 
 ```bash
+cd "$REPO_ROOT"
 git -c user.name="{Manager Name}" -c user.email="{manager email}" \
     add cross-repo-status.json && \
 git -c user.name="{Manager Name}" -c user.email="{manager email}" \

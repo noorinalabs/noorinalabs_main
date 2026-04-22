@@ -6,11 +6,15 @@ args: team_name, Phase number, Wave number
 
 Automate the wave kickoff process for the `{team_name}` team.
 
+> Note: all repo paths in bash blocks below are rooted at `$REPO_ROOT` to avoid cwd drift when the skill is invoked from a worktree or child-repo subdirectory (#149).
+
 ## Instructions
 
 ### 1. Create the deployments branch
 
 ```bash
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
 git fetch origin
 git checkout main && git pull origin main
 git checkout -b deployments/phase{N}/wave-{M}

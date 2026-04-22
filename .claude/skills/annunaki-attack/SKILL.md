@@ -5,6 +5,8 @@ description: Analyze captured errors, propose automation (hooks/skills/charter),
 
 Process the Annunaki error log, deduplicate errors, propose preventative automation, create GitHub issues, and implement fixes. This is the **action** counterpart to the `/annunaki` status viewer.
 
+> Note: all repo paths in bash blocks below are rooted at `$REPO_ROOT` to avoid cwd drift when the skill is invoked from a worktree or child-repo subdirectory (#149).
+
 ## When to run
 
 - Before `/wave-wrapup` hands off to retro (integrated into wave-wrapup step 11.5)
@@ -16,7 +18,8 @@ Process the Annunaki error log, deduplicate errors, propose preventative automat
 ### 1. Read and deduplicate the error log
 
 ```bash
-cat .claude/annunaki/errors.jsonl 2>/dev/null
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cat "$REPO_ROOT/.claude/annunaki/errors.jsonl" 2>/dev/null
 ```
 
 If the file is empty or missing, report "No errors to process" and exit.
@@ -29,7 +32,8 @@ If the file is empty or missing, report "No errors to process" and exit.
 
 ```bash
 # Back up the original
-cp .claude/annunaki/errors.jsonl .claude/annunaki/errors.jsonl.bak.$(date +%Y%m%d%H%M%S)
+cp "$REPO_ROOT/.claude/annunaki/errors.jsonl" \
+   "$REPO_ROOT/.claude/annunaki/errors.jsonl.bak.$(date +%Y%m%d%H%M%S)"
 
 # Write deduplicated version (done in the analysis step below)
 ```
@@ -133,7 +137,7 @@ After all issues are created and fixes implemented, clear the processed errors:
 ```bash
 # Keep only errors that were classified as noise (they'll naturally age out)
 # Write a fresh errors.jsonl with only unprocessed entries (if any)
-echo "" > .claude/annunaki/errors.jsonl
+: > "$REPO_ROOT/.claude/annunaki/errors.jsonl"
 ```
 
 ### 7. Report

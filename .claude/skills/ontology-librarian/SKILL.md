@@ -6,6 +6,8 @@ args: query
 
 The ontology librarian provides read-only access to the project ontology. It checks for staleness, retrieves relevant context, and reports which references may be out of date. It never modifies the ontology — that's the resolver's job.
 
+> Note: all repo paths in bash blocks below are rooted at `$REPO_ROOT` to avoid cwd drift when the skill is invoked from a worktree or child-repo subdirectory (#149).
+
 The `query` argument is optional. If provided, it's a natural language question or entity/service name to look up. If omitted, runs a staleness check and provides a summary.
 
 ## When to use
@@ -22,7 +24,8 @@ The `query` argument is optional. If provided, it's a natural language question 
 Read `ontology/checksums.json` and count dirty files (where `last_tracked != last_resolved`):
 
 ```bash
-cat ontology/checksums.json
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cat "$REPO_ROOT/ontology/checksums.json"
 ```
 
 Report staleness status:

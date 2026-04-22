@@ -5,6 +5,8 @@ description: View Annunaki error monitor status — shows recent captured errors
 
 Display the current state of the Annunaki error monitor. This skill is the **status viewer** for the always-on error monitoring hook (`annunaki_monitor.py`).
 
+> Note: all repo paths in bash blocks below are rooted at `$REPO_ROOT` to avoid cwd drift when the skill is invoked from a worktree or child-repo subdirectory (#149).
+
 ## How it works
 
 The Annunaki system has two parts:
@@ -18,7 +20,8 @@ The Annunaki system has two parts:
 Check that `annunaki_monitor.py` is registered in `.claude/settings.json` under `PostToolUse`:
 
 ```bash
-cat .claude/settings.json | grep -c annunaki_monitor
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+grep -c annunaki_monitor "$REPO_ROOT/.claude/settings.json"
 ```
 
 If 0, warn the user that monitoring is not active and offer to wire it up.
@@ -26,7 +29,7 @@ If 0, warn the user that monitoring is not active and offer to wire it up.
 ### 2. Read the error log
 
 ```bash
-wc -l .claude/annunaki/errors.jsonl 2>/dev/null || echo "0 (no errors logged yet)"
+wc -l "$REPO_ROOT/.claude/annunaki/errors.jsonl" 2>/dev/null || echo "0 (no errors logged yet)"
 ```
 
 ### 3. Show recent errors
@@ -34,7 +37,7 @@ wc -l .claude/annunaki/errors.jsonl 2>/dev/null || echo "0 (no errors logged yet
 Display the last 20 errors with timestamps and commands:
 
 ```bash
-tail -20 .claude/annunaki/errors.jsonl 2>/dev/null
+tail -20 "$REPO_ROOT/.claude/annunaki/errors.jsonl" 2>/dev/null
 ```
 
 Parse and present them in a readable table:

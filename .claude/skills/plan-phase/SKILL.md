@@ -6,6 +6,8 @@ args: team_name, Phase number
 
 Plan a phase of work for the `{team_name}` team. Decomposes phase scope into GitHub Issues, assigns them, reviews from multiple perspectives, and proposes a wave structure.
 
+> Note: all repo paths in bash blocks below are rooted at `$REPO_ROOT` to avoid cwd drift when the skill is invoked from a worktree or child-repo subdirectory (#149).
+
 ## Instructions
 
 ### 1. Gather phase scope
@@ -17,8 +19,9 @@ Read available context to determine what this phase should accomplish:
 - Cross-repo status (`cross-repo-status.json`) for dependency context
 
 ```bash
+REPO_ROOT="$(git rev-parse --show-toplevel)"
 gh issue list --state open --label "tech-debt" --json number,title,labels
-cat .claude/cross-repo-status.json 2>/dev/null
+cat "$REPO_ROOT/cross-repo-status.json" 2>/dev/null
 ```
 
 ### 2. Decompose into issues
