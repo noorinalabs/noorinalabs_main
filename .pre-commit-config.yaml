@@ -24,3 +24,17 @@ repos:
         args: [--fix]
         files: ^\.claude/hooks/.*\.py$
         exclude: ^\.claude/worktrees/
+
+  # Mypy mirrors CI's `mypy .claude/hooks/ --ignore-missing-imports --no-error-summary`.
+  # Running as a `local` hook so we use the system mypy; upstream mirrors-mypy installs
+  # its own env and would drift from whatever CI pins.
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: python3 -m mypy --ignore-missing-imports --no-error-summary
+        language: system
+        types: [python]
+        files: ^\.claude/hooks/.*\.py$
+        exclude: ^\.claude/worktrees/
+        pass_filenames: true
