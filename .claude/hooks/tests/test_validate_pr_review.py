@@ -314,6 +314,37 @@ class ReviewerDedupTests(_CheckCommentReviewsHarness):
         self.assertEqual(result.reviewers, set(), "branch author must not self-review")
 
 
+class ExtractBranchAuthorLastnameTests(unittest.TestCase):
+    """Regression tests for issue #179.
+
+    The regex must accept BOTH separator styles seen in practice — the
+    charter-spec slash and the dash-separator that recent branches actually
+    use. When the regex missed dash-separator branches, reviewer-counting
+    never ran and merges blocked on 0/2 reviews.
+    """
+
+    def test_slash_separator_legacy(self):
+        """Legacy slash separator still extracts lastname."""
+        self.assertEqual(hook.extract_branch_author_lastname("A.Virtanen/0001-foo"), "Virtanen")
+
+    def test_dash_separator_current(self):
+        """Dash separator — the fix for #179."""
+        self.assertEqual(hook.extract_branch_author_lastname("A.Virtanen-0001-foo"), "Virtanen")
+
+    # NEGATIVE MATCHES — hook-authorship spec requires neg coverage.
+    def test_underscore_separator_rejected(self):
+        """Underscore is NOT an accepted separator."""
+        self.assertIsNone(hook.extract_branch_author_lastname("A.Virtanen_0001-foo"))
+
+    def test_plain_branch_name_rejected(self):
+        """A branch without the `{Initial}.{LastName}` prefix returns None."""
+        self.assertIsNone(hook.extract_branch_author_lastname("main"))
+
+    def test_no_separator_rejected(self):
+        """Prefix present but no separator before trailing content returns None."""
+        self.assertIsNone(hook.extract_branch_author_lastname("A.Virtanen0001"))
+
+
 class MergeCommandMatchTests(unittest.TestCase):
     """Regression tests for the merge-command gate."""
 
