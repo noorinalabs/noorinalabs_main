@@ -145,9 +145,11 @@ This issue is assigned to you for p{N}-wave-{M}.
 Please begin implementation.
 ```
 
-### 9. Ontology librarian lookup per agent (MANDATORY)
+### 9. Ontology librarian — both bakes required (MANDATORY)
 
-**Before spawning any agent**, the orchestrator MUST run `/ontology-librarian {topic}` for each agent's work area and **include the output in the agent's spawn prompt**. Do NOT tell agents to "run it themselves" — the orchestrator runs it and bakes the context in.
+**Two hooks enforce this independently, so both steps are required:**
+
+**(a) Orchestrator bakes librarian output into the spawn prompt** — `enforce_ontology_context.py` scans the Agent tool prompt for the literal heading `## Ontology Context` and **blocks** the spawn if absent.
 
 For each agent in the wave:
 1. Identify the repos and code areas they'll modify
@@ -155,16 +157,31 @@ For each agent in the wave:
    ```
    /ontology-librarian {repo} {area being modified}
    ```
-   Examples:
-   - `/ontology-librarian isnad-graph frontend auth and verification`
-   - `/ontology-librarian user-service Dockerfile and dependencies`
-   - `/ontology-librarian main hooks and CI`
-3. Include the librarian's output (entities, services, conventions, stale warnings) in the agent's spawn prompt under a `## Ontology Context` section
-4. If the librarian flags stale references, note them so the agent treats that information with caution
+3. Include the librarian's output (entities, services, conventions, stale warnings) in the agent's spawn prompt under a `## Ontology Context` section (literal heading — the hook matches on it)
 
-**Why:** In P2W3, running the librarian before spawning agents identified 10 stale issues (middleware extracted to user-service) — saving significant wasted effort. In P2W2, skipping this step led to 3 already-resolved issues being assigned.
+**(b) Instruct the agent to run `/ontology-librarian` themselves as their FIRST action** — Hook 15 (`enforce_librarian_consulted.py`) scans the spawned agent's own transcript independently. Passing baked context from the orchestrator is not enough; Hook 15 still blocks Edit/Write/NotebookEdit until the agent invokes the librarian in their own session.
 
-**Enforcement:** The `validate_wave_context.py` PreToolUse hook fires on Agent spawns. Agents spawned without ontology context in their prompt will trigger a warning.
+Spawn prompt pattern that satisfies both:
+```
+## MANDATORY first action
+Run `/ontology-librarian {topic}` **yourself** in this session before any Edit/Write. Hook 15 scans your transcript.
+
+## Ontology Context
+(Baked from orchestrator's librarian run. Contents here.)
+```
+
+**Why:** In P2W3, running the librarian before spawning agents identified 10 stale issues — saving significant wasted effort. In P2W10 kickoff, the orchestrator forgot the `## Ontology Context` heading on 3 parallel spawns and all 3 were blocked.
+
+### 9a. Delegation pattern — orchestrator spawns, managers request
+
+Per charter `agents.md` § Hub-and-Spoke Orchestration Model + § Single-Leader Constraint:
+
+- **Only the orchestrator (team lead) can call Agent.** Managers and implementers do not have the Agent tool.
+- **Single team per session** — one `TeamCreate` per orchestrator session; additional TeamCreates fail with "Already leading team." Use `team_name: "noorinalabs"` for cross-repo waves.
+- **Managers request implementer spawns** via `SendMessage` to the team lead with full context (name, roster file, issue, branch, reviewers, Contract ownership if applicable).
+- **Team lead spawns each implementer** following step 9 above (both bakes).
+
+When composing spawn prompts for implementers, pull the manager's specified reviewer pairings, branch names, and Contract expectations into the prompt so the implementer starts with full context.
 
 ### 10. Output execution plan
 

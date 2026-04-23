@@ -68,10 +68,10 @@
       "tracked_at": "2026-04-16T21:36:05.052302+00:00"
     },
     ".claude/skills/wave-kickoff/SKILL.md": {
+      "last_tracked": "6cf6e0a8b40c4f4badb39760f680ddf28ead5464d43862e3d1e40525a6cea4be",
       "last_resolved": "4a12511cafd3640536ce552fbc0f25b9585c98ec8c3a22411918885270472b70",
-      "last_tracked": "4a12511cafd3640536ce552fbc0f25b9585c98ec8c3a22411918885270472b70",
-      "resolved_at": "2026-04-17T02:56:03.855330+00:00",
-      "tracked_at": "2026-04-17T02:54:35.749176+00:00"
+      "tracked_at": "2026-04-23T03:07:42.694189+00:00",
+      "resolved_at": "2026-04-17T02:56:03.855330+00:00"
     },
     ".claude/skills/wave-retro/SKILL.md": {
       "last_resolved": "4cb181da87445574175c9aeb268376114faa3b821ad833a0d80df1aab1b431bd",
@@ -92,10 +92,10 @@
       "tracked_at": "2026-04-16T21:36:05.052302+00:00"
     },
     ".claude/team/charter/agents.md": {
+      "last_tracked": "791f49adadd0065103aeb3b808252d2204b61c35b9ca2eb0cb4a5faf93757f89",
       "last_resolved": "dce25c289af21159f90f4c6b15bb7ef638f96a272e3e9b479442ccbfde0dc751",
-      "last_tracked": "dce25c289af21159f90f4c6b15bb7ef638f96a272e3e9b479442ccbfde0dc751",
-      "resolved_at": "2026-04-16T21:36:05.052302+00:00",
-      "tracked_at": "2026-04-16T21:36:05.052302+00:00"
+      "tracked_at": "2026-04-23T03:05:57.195189+00:00",
+      "resolved_at": "2026-04-16T21:36:05.052302+00:00"
     },
     ".claude/team/charter/hooks.md": {
       "last_resolved": "518829629de66db1d14abc8d37c32703dfee4bd42ebeb3c651b7afe2946232c7",
@@ -246,6 +246,156 @@
       "last_tracked": "a587c68c10694f2c642e93e3fff799bc5398a7579721dce71fcdac983de985ef",
       "resolved_at": "2026-04-16T21:36:05.052302+00:00",
       "tracked_at": "2026-04-16T21:36:05.052302+00:00"
+    },
+    "noorinalabs-deploy/docs/adr/0001-tf-hetzner-per-env-state-strategy.md": {
+      "last_tracked": "df6c132662f796eb0efa30a1f636e9373201365c71849beae8cad4162782f948",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:53:57.622668+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-user-service/alembic/versions/0040_merge_multi_heads.py": {
+      "last_tracked": "b31bec638982fb86c286345f0830ff17724cf779e89d67d2b67be2f07d6e8808",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:53:59.478024+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/modules/hetzner-vps/versions.tf": {
+      "last_tracked": "d140160236ffbe23c19ebfdbe8972babd68a0caece2210d7b67687c1fa70f235",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:54:13.320134+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-user-service/alembic/versions/MIGRATION_RANGES.md": {
+      "last_tracked": "767f77d66276890a1d0dd19298d948cc9decb9a7c44526da1ed9f39551e19df0",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:54:21.226552+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/modules/hetzner-vps/variables.tf": {
+      "last_tracked": "be149a3e1d3cff8f50cce8b8f8a2808e02ad8aafebdb382444c7475e61854b15",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:54:21.679185+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/modules/hetzner-vps/main.tf": {
+      "last_tracked": "c6b07bee51b4b7b7c772a315445e2b0d3d23ea500e729f3b7efaa62ec196f1f4",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:54:28.504193+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/modules/hetzner-vps/outputs.tf": {
+      "last_tracked": "f39837d72b79126f135684a4713ea8a576d3e97be1c13f2299fb6e52964a4bbc",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:54:34.617331+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/modules/hetzner-vps/README.md": {
+      "last_tracked": "20828f11a68a7528fd2cf2a6bc387b2d4ed1e1f8d5b8f0abf0be00ca85864c0a",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:54:45.312319+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/stg/versions.tf": {
+      "last_tracked": "d140160236ffbe23c19ebfdbe8972babd68a0caece2210d7b67687c1fa70f235",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:54:49.420753+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/stg/backend.tf": {
+      "last_tracked": "37ad9ea77d156428eb1a34f2147553bd39645fd601b8dbf8eff69b764763c253",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:54:51.790021+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/stg/variables.tf": {
+      "last_tracked": "aae9e1bc5eb3b48f250eabe07beabd405e78679aa5b3dd777b202d5132101504",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:54:56.576031+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/stg/main.tf": {
+      "last_tracked": "5479f002c9988c8d2d174d16cac4f8c2040b82afad896eea996ac79ea4b456e0",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:54:58.872752+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/stg/outputs.tf": {
+      "last_tracked": "771b75f523ce9d0c80b4ccdb63ff21302cf02b7f212515eb6993afd84f5c15c7",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:55:02.495039+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/stg/terraform.tfvars.example": {
+      "last_tracked": "f172cc8093c05ab9158f8a07b50cea2c56c57d5fc402e638f62e6a066f722843",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:55:06.422410+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/prod/versions.tf": {
+      "last_tracked": "d140160236ffbe23c19ebfdbe8972babd68a0caece2210d7b67687c1fa70f235",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:55:09.440235+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/prod/backend.tf": {
+      "last_tracked": "281d3a534383689a05ffba5511996ae9a09be48c2f9ec2968acbb4b9a6215723",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:55:11.996146+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/prod/variables.tf": {
+      "last_tracked": "23b1a25a6780b992c0a0c282011987ac286ca157a4e15e63a89cd5d06a2f4d5a",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:55:16.266938+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/prod/main.tf": {
+      "last_tracked": "2304b12b4b0fe9753e6b4e3a727e8b59fbce047a7b82558cab58923f7bf347c7",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:55:18.515149+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/prod/outputs.tf": {
+      "last_tracked": "55eca8d57dfd268eee9dac819e834166b123d2c918651ff70b1d27a0c5fdd462",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:55:20.943227+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/envs/prod/terraform.tfvars.example": {
+      "last_tracked": "e571dc46c1c718f597d5f2d732fc385f5123fb0442c2965d8d69c28ad0cb8824",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:55:24.030162+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/terraform/hetzner/README.md": {
+      "last_tracked": "fbfafbb1e66eec369ba8d5b30315ba765c95e7f809f6b3246f1fb578fec90418",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:56:03.317239+00:00",
+      "resolved_at": ""
+    },
+    "noorinalabs-deploy/.github/workflows/terraform.yml": {
+      "last_tracked": "7ea5d7bf5d219f8cb8fce8394f80ec141cd66b14e143317e2fe16f0d454576e0",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T02:56:33.476405+00:00",
+      "resolved_at": ""
+    },
+    ".claude/drafts/spawn_linh_0815.md": {
+      "last_tracked": "8e959a3bfac26d4e9e8912b2ba7831d4bce74ed6542996f294ab277969c855ed",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T03:05:57.188148+00:00",
+      "resolved_at": ""
+    },
+    ".claude/drafts/spawn_anya_0063.md": {
+      "last_tracked": "457bde4c8a188d2ef09f2143c9aa682f0e746e44b375612ea297a2e1e49e5d66",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T03:05:57.431714+00:00",
+      "resolved_at": ""
+    },
+    ".claude/skills/session-start/SKILL.md": {
+      "last_tracked": "6bbd49b06c4f959c7b8e5ed98b608347b2d7d22990e6b9bd3535946f53140eaf",
+      "last_resolved": "",
+      "tracked_at": "2026-04-23T03:07:58.485892+00:00",
+      "resolved_at": ""
     }
   },
   "last_cleanup": {
