@@ -2,10 +2,10 @@
   "description": "Tracks file checksums for ontology change detection. last_tracked = current file hash (updated by tracker hook). last_resolved = hash when ontology was last rebuilt from this file (updated by resolver). When last_tracked != last_resolved, the file is dirty.",
   "files": {
     ".claude/hooks/annunaki_log.py": {
-      "last_resolved": "ff302070ec73dab2811a8308f6666fcbe633a5759da8cd49e941c16c24216e79",
-      "last_tracked": "ff302070ec73dab2811a8308f6666fcbe633a5759da8cd49e941c16c24216e79",
-      "resolved_at": "2026-04-23T00:07:17.600045+00:00",
-      "tracked_at": "2026-04-22T04:22:26.067556+00:00"
+      "last_tracked": "11045b48e09f457a3ed734fcaa5817547ce9dacd433aa0ee465f278d010919cc",
+      "last_resolved": "11045b48e09f457a3ed734fcaa5817547ce9dacd433aa0ee465f278d010919cc",
+      "tracked_at": "2026-04-24T21:39:48.041300+00:00",
+      "resolved_at": "2026-04-24T21:40:57.525747+00:00"
     },
     ".claude/hooks/dispatcher.py": {
       "last_resolved": "f550dd83a45a65b26a26193c2215b13d6196c3118ccf6437141009cc29bcca54",
@@ -152,10 +152,10 @@
       "tracked_at": "2026-04-16T21:36:05.052302+00:00"
     },
     "cross-repo-status.json": {
-      "last_resolved": "5ef6c2502f6fdb47bb190e4ce9edbacd37efdc11ced4f95d432e2eb778f5af1b",
-      "last_tracked": "5ef6c2502f6fdb47bb190e4ce9edbacd37efdc11ced4f95d432e2eb778f5af1b",
-      "resolved_at": "2026-04-19T21:53:15Z",
-      "tracked_at": "2026-04-19T14:08:43.615543+00:00"
+      "last_tracked": "80218bcffdaca368d626f82a342132e7dd03b3d53a85b4ddefbf6ca8afdad20a",
+      "last_resolved": "80218bcffdaca368d626f82a342132e7dd03b3d53a85b4ddefbf6ca8afdad20a",
+      "tracked_at": "2026-04-24T21:31:04.856448+00:00",
+      "resolved_at": "2026-04-24T21:40:57.525747+00:00"
     },
     "dependencies.yml": {
       "last_resolved": "f4b53ffd3e1f81e055130ae2f53ff08ba9b5f651782434bbf3ac8b3eab4276e8",
@@ -510,6 +510,18 @@
       "last_resolved": "acc0d25da0c7fcf3792ade1703f7c75f2215a29daafe0367db907f4e8d2e990f",
       "tracked_at": "2026-04-24T03:01:27.801658+00:00",
       "resolved_at": "2026-04-24T21:26:53.116672+00:00"
+    },
+    ".claude/hooks/annunaki_monitor.py": {
+      "last_tracked": "23e12f4e425606f83df6e859878dbf6cd9dbf696d07792c1fb076ddc7ef02307",
+      "last_resolved": "23e12f4e425606f83df6e859878dbf6cd9dbf696d07792c1fb076ddc7ef02307",
+      "tracked_at": "2026-04-24T21:39:57.857444+00:00",
+      "resolved_at": "2026-04-24T21:40:57.525747+00:00"
+    },
+    ".claude/skills/annunaki/SKILL.md": {
+      "last_tracked": "ecbbaf535d18f49bec8be1d8c4cce9e69d8735969fa74c35e1862e9fb918af2f",
+      "last_resolved": "ecbbaf535d18f49bec8be1d8c4cce9e69d8735969fa74c35e1862e9fb918af2f",
+      "tracked_at": "2026-04-24T21:40:10.484031+00:00",
+      "resolved_at": "2026-04-24T21:40:57.525747+00:00"
     }
   },
   "last_cleanup": {

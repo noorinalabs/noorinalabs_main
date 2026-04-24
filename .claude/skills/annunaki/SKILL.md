@@ -32,6 +32,19 @@ If 0, warn the user that monitoring is not active and offer to wire it up.
 wc -l "$REPO_ROOT/.claude/annunaki/errors.jsonl" 2>/dev/null || echo "0 (no errors logged yet)"
 ```
 
+**Parsing note:** the log is JSONL but may contain blank or whitespace-only lines from historical manual edits. Any parser you write MUST skip them — `json.loads("")` raises `JSONDecodeError`. The canonical pattern is:
+
+```python
+for line in open(path):
+    line = line.strip()
+    if not line:
+        continue
+    try:
+        rec = json.loads(line)
+    except json.JSONDecodeError:
+        continue  # skip corrupt lines
+```
+
 ### 3. Show recent errors
 
 Display the last 20 errors with timestamps and commands:
@@ -57,6 +70,27 @@ Parse and present them in a readable table:
 ```
 
 ### 4. Show error frequency
+
+Use the blank-line-safe parser from § 2 when building the breakdown. A one-liner Bash recipe:
+
+```bash
+python3 - <<'PY' "$REPO_ROOT/.claude/annunaki/errors.jsonl"
+import json, sys
+from collections import Counter
+by_hook = Counter()
+with open(sys.argv[1]) as f:
+    for line in f:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            by_hook[json.loads(line).get("hook", "unknown")] += 1
+        except json.JSONDecodeError:
+            continue
+for h, c in by_hook.most_common():
+    print(f"{c:4d}  {h}")
+PY
+```
 
 If there are more than 10 errors, show a breakdown:
 
