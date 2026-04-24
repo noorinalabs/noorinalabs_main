@@ -504,6 +504,12 @@
       "last_resolved": "642d1549e7f707e42be43c68b49056a36ab8a876ab3007e344c7a5c5a669f560",
       "tracked_at": "2026-04-24T00:38:19.791363+00:00",
       "resolved_at": "2026-04-24T01:27:45.382939+00:00"
+    },
+    ".claude/drafts/secrets-migration-tonight-2026-04-23.md": {
+      "last_tracked": "acc0d25da0c7fcf3792ade1703f7c75f2215a29daafe0367db907f4e8d2e990f",
+      "last_resolved": "acc0d25da0c7fcf3792ade1703f7c75f2215a29daafe0367db907f4e8d2e990f",
+      "tracked_at": "2026-04-24T03:01:27.801658+00:00",
+      "resolved_at": "2026-04-24T21:26:53.116672+00:00"
     }
   },
   "last_cleanup": {
