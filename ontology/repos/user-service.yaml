@@ -93,3 +93,12 @@ build_commands:
   check: "make check"
   migrate: "make migrate"
   migrate_new: "make migrate-new"
+
+ci:
+  ghcr_publish:
+    workflow: .github/workflows/ghcr-publish.yml
+    pr: "user-service#83 (Mateo)"
+    issue: "#64"
+    status: merged
+    description: "Image-tag Contract v6 replica of isnad-graph commit b8931847. Emits 4 tags on push to main: sha-<short>, latest, stg-<short>, stg-latest."
+    notify_deploy: "Fires repository_dispatch event-type=deploy-noorinalabs-user-service to noorinalabs-deploy with payload {repo,sha,ref,actor}. Requires DEPLOY_REPO_PAT secret (NOT yet provisioned — tracked in user-service#84)."

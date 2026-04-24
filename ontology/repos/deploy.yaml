@@ -95,19 +95,36 @@ workflows:
       plan: "matrix over [stg, prod] — PR only — comments plan on PR"
       apply: "matrix over [stg, prod] with max-parallel=1 — push to main only — stg before prod"
     environments: { stg: staging, prod: production }
-  integration_tests: { trigger: "pull_request + push to main", purpose: "cross-repo integration suite" }
+  integration_tests:
+    trigger: "pull_request + push to main + workflow_dispatch"
+    purpose: "cross-repo integration suite (#49)"
+    sibling_ref_resolution: "wave-aware — resolve user-service + isnad-graph refs to same wave branch when PR base = deployments/* (with main fallback). Added in #159 (Aisha, P2W10)."
   rollback: { trigger: workflow_dispatch, inputs: [image_tag, service] }
-  # Promotion pathway (P2W10, section A — open PRs):
-  promote: { pr: "deploy#155 (Aisha)", issue: "#84", status: open, description: "stg auto-deploy + prod manual-approval promotion" }
-  deploy_stg: { pr: "deploy#155 (Aisha)", issue: "#84", status: open, trigger: "ghcr-publish → stg auto" }
-  deploy_prod: { pr: "deploy#155 (Aisha)", issue: "#84", status: open, trigger: "manual approval in production environment" }
-  alembic_pre_deploy_gate: { pr: "deploy#153 (Lucas)", issue: "#85", status: draft, description: "alembic upgrade head pre-deploy gate with heads-count assertion" }
-  image_tag_invariants: { pr: "deploy#157 (Weronika)", issue: "#83 (bundled)", status: open, description: "CI validation of image-tag shape per #815 Contract v6" }
+  # Promotion pathway (P2W10, section A — all merged):
+  promote: { pr: "deploy#155 (Aisha)", issue: "#84", status: merged, description: "stg auto-deploy + prod manual-approval promotion (Contract v6 image-tag retag)" }
+  deploy_stg: { pr: "deploy#155 (Aisha)", issue: "#84", status: merged, trigger: "repository_dispatch from service repos (deploy-noorinalabs-{isnad-graph,user-service,landing-page})" }
+  deploy_prod: { pr: "deploy#155 (Aisha)", issue: "#84", status: merged, trigger: "manual approval in production GH Environment" }
+  alembic_pre_deploy_gate:
+    workflow: .github/workflows/db-migrate.yml
+    pr: "deploy#153 (Lucas)"
+    issue: "#85"
+    status: merged
+    description: "Reusable workflow_call. Per-env GH Environment mapping. Heads-count assertion on `0040` + `alembic upgrade head` (singular). Job output `migrated=true|false` set runner-side after SSH step (not inside ssh-action — see #153 review B1)."
+    runbook: docs/runbooks/user-service-alembic.md
+    callers_pending: "promote.yml not yet `uses:`-wires this workflow — tracked in deploy#160 (W11)"
+    observability_followup: "Prometheus alert was deferred — textfile-collector emission tracked in deploy#161 (W11)"
+  image_tag_invariants:
+    workflow: .github/workflows/image-tag-invariants.yml
+    pr: "deploy#155 (Aisha, bundled)"
+    issue: "#84"
+    status: merged
+    description: "Smoke test asserting Contract v6 invariants — exactly 4 publish-side tags (sha-<short>, latest, stg-<short>, stg-latest) + exactly 2 promote-side tags (prod-<short>, prod-latest) per image."
+    invariant_script: integration-tests/scripts/check_tag_invariants.py
 
 environments:
   staging:
     vps: { provider: Hetzner, spec: "CPX21 (3 vCPU, 4GB)", location: Ashburn, name: noorinalabs-stg }
-    domains_planned: "stg.isnad-graph.noorinalabs.com, stg.landing (per PR #157)"
+    domains: "isnad.stg.noorinalabs.com, auth.stg.noorinalabs.com, stg.noorinalabs.com (landing) — per merged #157"
     tls: "Caddy auto-provisioned Let's Encrypt"
     deploy_user: deploy
     deploy_method: "SSH via appleboy/ssh-action"
@@ -133,3 +150,17 @@ scripts:
   verify_deployment: scripts/verify_deployment.sh
   backup: scripts/backup.sh
   restore: scripts/restore.sh
+
+integration_tests:
+  path: integration-tests/
+  compose: integration-tests/docker-compose.test.yml
+  scripts:
+    generate_test_secrets: integration-tests/scripts/generate_test_secrets.sh
+    check_tag_invariants: "integration-tests/scripts/check_tag_invariants.py — Contract v6 four-publish-tags + two-promote-tags assertion (deploy#155 bundled)"
+  workflow: .github/workflows/integration-tests.yml
+  user_service_alembic: "Now uses `alembic upgrade head` (singular) per US wave-10 0040_merge_multi_heads.py landed (deploy#159)"
+  notes:
+    - "Sibling-repo refs are wave-aware (resolves user-service + isnad-graph to same wave branch when PR base = deployments/*, falls back to main). Added 2026-04-24 in deploy#159."
+
+runbooks:
+  user_service_alembic: docs/runbooks/user-service-alembic.md  # added in deploy#153 (Lucas, P2W10)
