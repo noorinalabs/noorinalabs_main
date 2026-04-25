@@ -238,11 +238,15 @@ infrastructure:
     provider: Hetzner Cloud
     location: Ashburn (ash)
     os: Ubuntu 24.04
-    # P2W10: split into per-env (stg + prod). Pre-wave-10 single server was noorinalabs-isnad-graph-prod.
-    # Currently-live production is a hand-made isnad-graph-prod VPS outside Terraform (decommission in deploy#86).
+    # P2W10: split into per-env (stg + prod). System hostnames realigned to Hetzner names 2026-04-24
+    # (stg was 'noorinalabs-isnad-graph-prod' — clear evidence stg was cloned from prod template, not cloud-init'd fresh).
+    # Currently-live production runs the full 20-container stack on noorinalabs-1box-prod (the originally
+    # hand-made VPS — title in deploy#86 is misleading, it's the whole prod stack, not just isnad-graph).
+    # W10 plan: option C cutover — TF-clean rebuild of new prod box, restore minimal data (admin user only
+    # per main#212 owner direction), DNS-flip, decommission old prod (#86 retitle pending).
     servers:
-      stg: { name: noorinalabs-stg, type: CPX21, specs: { vcpu: 3, ram_gb: 4 }, state_key: hetzner/stg.tfstate }
-      prod: { name: noorinalabs-prod, type: CPX41, specs: { vcpu: 8, ram_gb: 16 }, state_key: hetzner/prod.tfstate }
+      stg:  { hetzner_name: noorinalabs-1box-stg,  system_hostname: noorinalabs-1box-stg,  ipv4: 87.99.137.225, type: CPX21, specs: { vcpu: 3, ram_gb: 4 }, state_key: hetzner/stg.tfstate,  notes: "Cloned from prod template — same package set incl. openssh-server + fail2ban. deploy#82 provisioned VPSes via TF but did NOT inject cloud-init SSH keys (real gap, 2026-04-24); first-access required Hetzner password reset + manual key paste. Cloning artifacts: /home/deploy was root-owned with deploy-owned subdirs (chown -R recovered 2026-04-24); old system hostname was 'noorinalabs-isnad-graph-prod' (renamed). Option C cutover plan retires this clone and rebuilds via clean cloud-init." }
+      prod: { hetzner_name: noorinalabs-1box-prod, system_hostname: noorinalabs-1box-prod, ipv4: 87.99.134.161, type: CPX41, specs: { vcpu: 8, ram_gb: 16 }, state_key: hetzner/prod.tfstate, notes: "Full stack: caddy + landing + isnad-graph (api+frontend) + user-service + neo4j + 2x postgres + 2x redis + kafka (bitnamilegacy, deploy#100 owner-decision pending) + kafka-ui + prometheus + grafana + loki + promtail + alertmanager + 2x postgres-exporter + node-exporter." }
 
   dns:
     provider: Cloudflare

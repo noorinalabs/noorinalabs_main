@@ -77,6 +77,17 @@ Updated by `/ontology-rebuild`. Manual edits require `checksums.json` update.
 - Two Co-Authored-By trailers required (team member + Claude)
 - Enforced by `validate_commit_identity.py` hook
 
+### SSH topology (owner workstation → VPSes)
+- **Two keys on owner workstation:**
+  - `~/.ssh/id_ed25519` (comment `parametrization@gmail.com`) — root user on both VPSes
+  - `~/.ssh/noorinalabs_deploy` (comment `deploy@isnad-graph`, fingerprint `SHA256:UP42OaHWXymDpno0mnQ4vfJV902h3K6eYQ3XdrCR4Uo`) — `deploy` user. **Renamed from `isnad_deploy` 2026-04-24** to align with secrets-audit §3.0.a (PR #213).
+- **`~/.ssh/config`** uses 4 role-explicit Host aliases (no silent default-fallback): `noorinalabs-stg-{root,deploy}`, `noorinalabs-prod-{root,deploy}`. Each entry sets `IdentitiesOnly yes` to force the declared key only.
+- **Per-user authorization on VPSes:**
+  - `root`'s `authorized_keys`: `id_ed25519` only (root-only key)
+  - `deploy`'s `authorized_keys`: BOTH `id_ed25519` AND `noorinalabs_deploy` (mirrors prod pattern; lets owner reach `deploy@*` from either key, but `root@*` only via root-only key)
+- **Per-VPS + per-role key separation tech-debt** tracked in deploy#164. Current shared-key posture is the prod baseline; W10 should not introduce new asymmetry between stg and prod, but the longer-term goal is per-env keys with `DEPLOY_SSH_PRIVATE_KEY` env-scoped via deploy#155 GH Environments.
+- **Custodial paths for value-preservation** (per secrets-audit §3.0.a, PR #213 merged): `~/.ssh/noorinalabs_deploy` (DEPLOY_SSH_PRIVATE_KEY), `~/.ssh/jwt_private.pem` + `~/.ssh/jwt_public.pem` (JWT_PRIVATE_KEY/JWT_PUBLIC_KEY).
+
 ### Branching
 - Feature branches: `{FirstInitial}.{LastName}/{IIII}-{issue-name}`
 - Wave branches: `deployments/phase{N}/wave-{M}`

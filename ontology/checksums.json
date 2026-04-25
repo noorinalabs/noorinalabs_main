@@ -188,10 +188,10 @@
       "tracked_at": "2026-04-16T21:36:05.052302+00:00"
     },
     "ontology/conventions.md": {
-      "last_resolved": "9307179304689d3ddde7e91f76999674b3f8b6b917adffc2d4d0f4b97021a4d6",
-      "last_tracked": "9307179304689d3ddde7e91f76999674b3f8b6b917adffc2d4d0f4b97021a4d6",
-      "resolved_at": "2026-04-23T00:07:17.600045+00:00",
-      "tracked_at": "2026-04-23T00:07:17.600045+00:00"
+      "last_tracked": "c3b9c216a229639111499ee44452920c16a0ff8b4ae7cffb3e0a216e48459c58",
+      "last_resolved": "c3b9c216a229639111499ee44452920c16a0ff8b4ae7cffb3e0a216e48459c58",
+      "tracked_at": "2026-04-25T04:26:20.060747+00:00",
+      "resolved_at": "2026-04-25T04:26:20.060747+00:00"
     },
     "ontology/domain.yaml": {
       "last_resolved": "6fedad509f80b9570d0385fb5759e861d8b6f7b219ecc425b8dd472173ca536c",
@@ -200,10 +200,10 @@
       "tracked_at": "2026-04-16T21:36:05.052302+00:00"
     },
     "ontology/repos/deploy.yaml": {
-      "last_tracked": "db5be51383a34075e636a210bda2c6aed770cfe33f6e91f54d524f6070b6222f",
-      "last_resolved": "db5be51383a34075e636a210bda2c6aed770cfe33f6e91f54d524f6070b6222f",
-      "tracked_at": "2026-04-24T01:27:12.203148+00:00",
-      "resolved_at": "2026-04-24T01:27:45.382939+00:00"
+      "last_tracked": "f8ec9084df54486965c759809f0fff10615fc35cdc39c405204bbae327824ad4",
+      "last_resolved": "f8ec9084df54486965c759809f0fff10615fc35cdc39c405204bbae327824ad4",
+      "tracked_at": "2026-04-25T04:26:20.060747+00:00",
+      "resolved_at": "2026-04-25T04:26:20.060747+00:00"
     },
     "ontology/repos/design-system.yaml": {
       "last_resolved": "64f1eb7a16e3c9284f92d018eed4ce2a0da2aa761f60353c98117f3b2319a1a8",
@@ -242,10 +242,10 @@
       "resolved_at": "2026-04-24T01:27:45.382939+00:00"
     },
     "ontology/services.yaml": {
-      "last_tracked": "e675ed0765574c46c43823e3dd5b45a57096e9a56955e18343de580a1e9b9a09",
-      "last_resolved": "e675ed0765574c46c43823e3dd5b45a57096e9a56955e18343de580a1e9b9a09",
-      "tracked_at": "2026-04-23T23:34:38.322695+00:00",
-      "resolved_at": "2026-04-23T23:34:47.340707+00:00"
+      "last_tracked": "ec477dffc7b92ddb367af3f3cee17ff5e84f3962d43a83a2faa58234d8e4b72a",
+      "last_resolved": "ec477dffc7b92ddb367af3f3cee17ff5e84f3962d43a83a2faa58234d8e4b72a",
+      "tracked_at": "2026-04-25T04:26:20.060747+00:00",
+      "resolved_at": "2026-04-25T04:26:20.060747+00:00"
     },
     "noorinalabs-deploy/docs/adr/0001-tf-hetzner-per-env-state-strategy.md": {
       "last_tracked": "df6c132662f796eb0efa30a1f636e9373201365c71849beae8cad4162782f948",

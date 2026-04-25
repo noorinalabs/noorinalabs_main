@@ -151,6 +151,26 @@ scripts:
   backup: scripts/backup.sh
   restore: scripts/restore.sh
 
+backup_service_state:
+  status: "BROKEN — zero successful backups, ever (B2 bucket isnad-graph-backups empty as of 2026-04-24)"
+  diagnosis_2026-04-24: |
+    Three bugs stacked in the installed isnad-backup.{service,timer} on noorinalabs-1box-prod;
+    repo copy at /opt/noorinalabs-deploy/systemd/ is identical to installed copy (no fix has been
+    authored anywhere — original deploy#121 'stale path' framing was incomplete).
+    Bug A: ReadWritePaths=/tmp/isnad-backups + PrivateTmp=yes — host path missing → status=226/NAMESPACE
+            before ExecStart. This has been the live failure since at least 2026-04-23.
+    Bug B: WorkingDirectory + EnvironmentFile point at /opt/noorinalabs-isnad-graph/ (deploy moved
+            to /opt/noorinalabs-deploy/ between W7 and W9).
+    Bug C: COMPOSE_FILE default 'docker-compose.prod.yml' resolved against stale WorkingDirectory.
+  scope_owner: "deploy#121 (rewritten 2026-04-24, labels: bug, priority-high, infrastructure, p2-wave-10)"
+  cutover_gate: "Per main#212 option C: new prod box gets one successful end-to-end backup (dump → compress → B2 upload → retention prune) within 24h of first compose-up before DNS-flip."
+  reusable_logic: "scripts/backup.sh design (rclone+B2 native creds, 7-daily/4-weekly retention, sha256sum, mktemp+trap) is sound — only path bindings + COMPOSE_FILE default need updating."
+
+cloud_init_ssh_key_gap:
+  surfaced: 2026-04-24
+  evidence: "Stg (provisioned via deploy#82 TF) had zero authorized_keys for either root or deploy. Required Hetzner password-reset + manual key paste for first access. Cloning artifacts (root-owned /home/deploy with deploy-owned subdirs) suggest stg was cloned from prod template rather than cloud-init'd fresh."
+  followup: "Pending issue (not yet filed): deploy#82 followup — inject owner pubkey into Hetzner cloud-init user-data so future TF-provisioned boxes are SSH-accessible from day 1. Cluster with deploy#118 cloud-init baseline."
+
 integration_tests:
   path: integration-tests/
   compose: integration-tests/docker-compose.test.yml
