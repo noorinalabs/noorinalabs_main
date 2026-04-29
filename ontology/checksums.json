@@ -522,6 +522,108 @@
       "last_tracked": "ec477dffc7b92ddb367af3f3cee17ff5e84f3962d43a83a2faa58234d8e4b72a",
       "resolved_at": "2026-04-25T04:26:20.060747+00:00",
       "tracked_at": "2026-04-25T04:26:20.060747+00:00"
+    },
+    "aino-ig-0194/.claude/settings.json": {
+      "last_tracked": "d002e78433abf04bc3cc28f432bd23b9250ce3ca2a3e52290b1fb380f8868011",
+      "last_resolved": "d002e78433abf04bc3cc28f432bd23b9250ce3ca2a3e52290b1fb380f8868011",
+      "tracked_at": "2026-04-28T12:51:11.594785+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster.json": {
+      "last_tracked": "188f999783fcefaf7bc7042708f6db64265ebf4f6f6de8d7bee0c64c1ceeeb67",
+      "last_resolved": "188f999783fcefaf7bc7042708f6db64265ebf4f6f6de8d7bee0c64c1ceeeb67",
+      "tracked_at": "2026-04-28T13:11:02.981642+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster/manager_adaeze.md": {
+      "last_tracked": "43966625f5a162781c6120062dd66ac2f45c171f035c77a23cdb466c5b409bd2",
+      "last_resolved": "43966625f5a162781c6120062dd66ac2f45c171f035c77a23cdb466c5b409bd2",
+      "tracked_at": "2026-04-28T13:11:03.633880+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/feedback_log.md": {
+      "last_tracked": "af340cf8355d032cf175c53b1af5538d855dd4dd0e5bd03918b6cc9221fb28eb",
+      "last_resolved": "af340cf8355d032cf175c53b1af5538d855dd4dd0e5bd03918b6cc9221fb28eb",
+      "tracked_at": "2026-04-28T13:11:04.270640+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/trust_matrix.md": {
+      "last_tracked": "175dd09d673b2fa1daf823e1428acd1972adfc549f5e0f70f315aee538000d55",
+      "last_resolved": "175dd09d673b2fa1daf823e1428acd1972adfc549f5e0f70f315aee538000d55",
+      "tracked_at": "2026-04-28T13:11:49.790574+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster/architect_sayed.md": {
+      "last_tracked": "19500181c91d22c1298b60d685375823e67435b8e5b39c7d97b7b4bf67ddf88f",
+      "last_resolved": "19500181c91d22c1298b60d685375823e67435b8e5b39c7d97b7b4bf67ddf88f",
+      "tracked_at": "2026-04-28T13:11:50.539167+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster/devops_architect_bjorn.md": {
+      "last_tracked": "1500756fa269b51d4a0ae53b4d241977c8622fd41f232d67fac8cd45aa3633e3",
+      "last_resolved": "1500756fa269b51d4a0ae53b4d241977c8622fd41f232d67fac8cd45aa3633e3",
+      "tracked_at": "2026-04-28T13:11:51.748727+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/charter.md": {
+      "last_tracked": "b8b611cad5017e54f283c33e459f73063cb1e64f3fbb61098f49de267de21d78",
+      "last_resolved": "b8b611cad5017e54f283c33e459f73063cb1e64f3fbb61098f49de267de21d78",
+      "tracked_at": "2026-04-28T13:11:52.498462+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster/data_lead_camila.md": {
+      "last_tracked": "3971e33d87b2cdfba453cabe8eed575cd331e44ea85b7c93d923ff4167f5d306",
+      "last_resolved": "3971e33d87b2cdfba453cabe8eed575cd331e44ea85b7c93d923ff4167f5d306",
+      "tracked_at": "2026-04-28T13:11:53.086066+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster/tech_lead_petra.md": {
+      "last_tracked": "51d11dd0f15a9c10d68ec0f63e648d9b5626e762eb4b9f3d7df9b2cede3b82ba",
+      "last_resolved": "51d11dd0f15a9c10d68ec0f63e648d9b5626e762eb4b9f3d7df9b2cede3b82ba",
+      "tracked_at": "2026-04-28T13:12:13.413276+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster/devops_engineer_fatima.md": {
+      "last_tracked": "865f9c3864b8b22092663228229a76aa692feceaf86b951c4a879e0007a639a1",
+      "last_resolved": "865f9c3864b8b22092663228229a76aa692feceaf86b951c4a879e0007a639a1",
+      "tracked_at": "2026-04-28T13:12:29.134414+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster/security_engineer_kalinda.md": {
+      "last_tracked": "78b7f75f5b9d05894dacb9f924d9942b769a14efdcbb69ce76654066fa894a3d",
+      "last_resolved": "78b7f75f5b9d05894dacb9f924d9942b769a14efdcbb69ce76654066fa894a3d",
+      "tracked_at": "2026-04-28T13:12:46.468210+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster/data_engineer_imelda.md": {
+      "last_tracked": "9b86168a4118faba916cf6231fff69b1f9d17960f42eac0ab5b33579ae2f663f",
+      "last_resolved": "9b86168a4118faba916cf6231fff69b1f9d17960f42eac0ab5b33579ae2f663f",
+      "tracked_at": "2026-04-28T13:12:59.308071+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster/engineer_yusuke.md": {
+      "last_tracked": "51b9a03bfe78bfa39ce0628c7adae4836e4dc38456779f5a1b62d83df22c44c4",
+      "last_resolved": "51b9a03bfe78bfa39ce0628c7adae4836e4dc38456779f5a1b62d83df22c44c4",
+      "tracked_at": "2026-04-28T13:13:22.595509+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster/engineer_leopold.md": {
+      "last_tracked": "f2cd45cf89e1e03c70934472c2b24c258a641f12478fb25ff0fa7b30d1164ff4",
+      "last_resolved": "f2cd45cf89e1e03c70934472c2b24c258a641f12478fb25ff0fa7b30d1164ff4",
+      "tracked_at": "2026-04-28T13:13:41.981136+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    "noorinalabs-isnad-ingest-platform/.claude/team/roster/qa_engineer_tomas.md": {
+      "last_tracked": "532fb54266d69676532b8dd4a44214407cf7d37e3df0b04ad91e86e78f9d443f",
+      "last_resolved": "532fb54266d69676532b8dd4a44214407cf7d37e3df0b04ad91e86e78f9d443f",
+      "tracked_at": "2026-04-28T13:15:04.247125+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    ".claude/drafts/w10-retro-readout-bereket.md": {
+      "last_tracked": "e5004b0097522789de12d087ed242b0d8161f1a993a9aae0fa4c246b8ae654a7",
+      "last_resolved": "e5004b0097522789de12d087ed242b0d8161f1a993a9aae0fa4c246b8ae654a7",
+      "tracked_at": "2026-04-28T13:32:19.516556+00:00",
+      "resolved_at": "2026-04-29T23:42:13.267098Z"
     }
   },
   "last_cleanup": {
