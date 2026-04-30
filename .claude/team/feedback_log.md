@@ -1051,3 +1051,118 @@ _None this run._
 - `feedback_repo_independence.md` (memory): Memory enforced via another artifact (charter / hook) [enforced-elsewhere -> cross-repo roster lookup hook]
 - `feedback_settings_permission.md` (memory): Memory enforced via another artifact (charter / hook) [enforced-elsewhere -> settings.json permission rules]
 
+## 2026-04-30 — Phase 2 Wave 10 Retrospective
+
+### Wave theme
+
+Stg/prod environment split + promotion pathway (theme), with Phase B (stg fresh-start rebuild) as a Phase C dry-run mid-wave. Started 2026-04-23; closed 2026-04-30 with 3 operational items carried to phase-3.
+
+### Team Performance
+
+**Org-wide output:** ~22 PRs merged across 5 repos over 7 days (deploy: 14, user-service: 3, isnad-graph: 2, landing-page: 1, parent: 2). Wave-merge ceremony today closed all 5 deployments-branch → main merges. 0 open PRs at wrap. 30+ issues closed; 22 tech-debt items filed against phase-3 (formerly p2-wave-11).
+
+**Carry-forward (3):** `deploy#86` (VPS decom routine `trig_01Bif8T51pdaYFjkbM5bERyL`, async-dispatched, fires post-merge), `deploy#151` (manual SRE B2 tfstate-key migration), `user-service#84` (manual DEPLOY_REPO_PAT secret provisioning). All operational, not code.
+
+**Notable side effects of the wave-merge ceremony:** wave-10 → main triggered the natural auto-deploy chain that captures the cpx21 capacity verdict deferred from Phase B. `deploy#86` routine becomes eligible to fire its 5 prereqs. `user-service#89` resolved a non-trivial `ghcr-publish.yml` conflict between #83 (Contract v6 tags + notify-deploy) and #87 (PR Trivy trigger) via union semantics.
+
+### Per-Engineer Assessments
+
+**Aisha Idrissi (deploy SRE)** — heavy lifter of W10
+- PRs: deploy#150 (Hetzner per-env), #157 (CF stg), #155 (promote.yml stg/prod), #168 (auth→users rename), #175 (bootstrap GHCR pull), #185 (TF sensitive ssh_public_key), #177 (B2 bootstrap runbook), #189 (BACKUP_B2_* end-to-end). 8 PRs across Section A + B precursors.
+- Cross-cutting: drove Phase B rebuild (stg fresh-start) successfully + captured 6 cloud-init/module hardening gaps in `deploy#173`.
+- Severity: **none** (very positive; sustained delivery on the wave's biggest workstream)
+
+**Lucas Ferreira (deploy SRE)**
+- PRs: deploy#153 (alembic pre-deploy gate), #181 (verify-deploy split stg/prod), #176 (compose-validate paths + actionlint), plus PR #154 / #159 work on integration-tests + alembic-revert-to-head.
+- Tech-debt surfaced: filed multiple followups during reviews (CF runbook, blackbox-exporter, etc).
+- Severity: **none** (positive; clean execution after W9 deploy#146 red-CI ding has not recurred)
+
+**Weronika Zielinska (Platform Architect / deploy)**
+- PRs in deploy: 2 (kafka-kraft work)
+- Plus parent-repo: validation + design contribution
+- Severity: **none** (positive)
+
+**Mateo Salazar (user-service Engineer)**
+- PRs: user-service#80 (alembic merge migration — load-bearing for deploy alembic gate), #83 (Contract v6 image-tag), #87 (GHCR PR Trivy trigger), #88 (ci.yml deployments/** trigger).
+- Conflict source: #83 + #87 both touched `ghcr-publish.yml` and merged to different branches → conflict resolved at wave-merge. Recommendation: when two PRs touch the same workflow, sequence the merges so the second rebases first.
+- Severity: **minor** — same-file PR sequencing gap; wave-merge resolution went smoothly
+
+**Anya Kowalczyk (user-service Tech Lead)**
+- PRs: user-service#80 alembic merge migration (review + landing).
+- Cross-Contract cited: per Charter § Cross-Contract PRs, alembic merge migration is now in main (was P2W10 critical-path).
+- Severity: **none** (positive)
+
+**Idris Yusuf (isnad-graph Security Engineer)**
+- PRs: isnad-graph#847 (pip 26.0.1 → 26.1 CVE-2026-3219), with parallel cherry-pick to main #850.
+- Severity: **none** (positive; security signal handled correctly with multi-branch coverage)
+
+**Linh Pham (isnad-graph Frontend)**
+- PRs: isnad-graph#844 (Contract v6 image-tag emission).
+- Severity: **none** (positive)
+
+**K. Mensah-Williams (landing-page)**
+- PRs: landing-page#71 (Contract v6 image-tag).
+- Severity: **none** (positive)
+
+**Aino Virtanen (Standards & Quality Lead)**
+- Hooks: authored Hook 17 `validate_wave_audit` (`main#218` — closed `main#195`).
+- Ontology rebuilds across the wave; charter updates (agents.md, hooks.md, issues.md) for single-session-team delegation pattern + Cross-Contract PRs § + Load-Bearing Followups §.
+- Caught & filed `main#194` Hook 14 sync fan-out (closed today across 7 child repos).
+- Severity: **none** (very positive; sustained hook-author signal continues from W9)
+
+**Bereket Tadesse (deploy Infrastructure Manager)**
+- Drafted comprehensive 278-line W10 retro readout (`.claude/drafts/w10-retro-readout-bereket.md`) before retro skill ran — ahead-of-the-game discipline.
+- Five new feedback primitives surfaced & saved as memories during the wave (multi-layer gap, refresh-before-status-claim 4-site application, integrity-claim verification, runtime-gate scoping, live-trace acceptance).
+- Severity: **none** (very positive; promotion to "named-primitive author" tier this wave)
+
+**Nadia Khoury (Program Director)**
+- Drove ceremony orchestration: 5-repo wave-merge sequence, conflict resolution on `user-service#89`, status JSON refreshes (8 entries through the wave).
+- Filed `main#222` branch-protection remediation tracker (anchor on #182).
+- Severity: **none** (positive)
+
+**Wanjiku Mwangi (TPM)**
+- Cross-repo wave coordination, project-board hygiene.
+- Severity: **none** (positive)
+
+**Santiago Ferreira (Release Coordinator)**
+- §3.0.a TODO marker resolution (closes `main#211`); secrets-audit migration runbook contributions.
+- Severity: **none** (positive)
+
+**Orchestrator (this session)**
+- Wave-wrapup ceremony executed end-to-end: ontology refresh, annunaki sweep, worktree sweep (45 stale removed across child repos), 5-repo wave-merge sequence, ghcr-publish.yml conflict resolution.
+- Single off-track moment: initial `git merge` on user-service local wave-10 was at a stale ref (3 behind origin); recovered via `git reset --hard origin/...` before re-merging.
+- Severity: **minor** — local-ref-staleness check before merge would have been cleaner
+
+### Top 3 Going Well
+
+1. **Section A executed end-to-end.** 10 of 11 promotion-pathway items closed; only async-dispatched `deploy#86` carries forward. Phase B rebuild as Phase C dry-run worked exactly as intended.
+2. **Hook 14 + Hook 17 fan-out closed in the same wave.** `validate_pr_ci_status` synced to all 7 child repos (`main#194` closed today); `validate_wave_audit` (Hook 17) shipped as `main#218`. Charter `enforce_librarian_consulted` strictness held.
+3. **Bereket's 5-primitive draft.** Retro readout written *during* the wave, not after — process discipline that should propagate.
+
+### Top 3 Pain Points
+
+1. **Same-file PR sequencing in user-service.** `#83` (Contract v6 tags) and `#87` (PR Trivy trigger) both touched `ghcr-publish.yml` on different branches → conflict at wave-merge ceremony. Resolution was tractable (union semantics) but consumed orchestrator time. **Process gap:** when a PR touches a file already touched by an open same-wave PR, the second-author should rebase before merge.
+2. **Worktree pile-up across child repos.** 45 stale worktrees from prior waves (mostly P2W7-W9) survived because squash-merge produces non-ancestor branch tips and the standard `--is-ancestor` ancestor-check classifies them as "unmerged". W10 wrapup needed a PR-state recheck to clean them. **Process gap:** wave-wrapup worktree sweep must check via `gh pr` state, not just git ancestry.
+3. **`validate_labels` hook regression.** Annunaki captured a `validate_labels` block on a `cat > /tmp/file <<EOF` command — the hook misread the redirect target as a label arg. (Per audit: this is sibling to #216 / #223 / #226 — substring matching across the hook validators.) Filed for phase-3 cleanup.
+
+### Proposed Process Changes (with rationale)
+
+1. **Same-file PR sequencing rule.** When a PR target file already has open changes on another same-wave PR, the second PR must rebase (or wait for the first to merge) before reviewer-approval. Rationale: prevents wave-merge-ceremony conflicts; small upfront cost.
+2. **Worktree sweep PR-state check.** Update `wave-wrapup` skill step 8 to default to `gh pr list --head <branch> --state all` instead of `git merge-base --is-ancestor` for merge-status detection. Rationale: 45-worktree pile-up shows the ancestor check is unreliable for squash-merged branches.
+3. **Adopt Bereket's 5 primitives as memories** (already done) **and consider charter promotion of "refresh-before-status-claim" as a charter-section** since it now has retro-citations across two waves (W9, W10) with four distinct application sites. Rationale: enforcement-hierarchy escalation per memory `feedback_enforcement_hierarchy.md`.
+
+### Promotion audit (deterministic — see `.claude/team/promotion_audit_log/wave-10.md`)
+
+**Result: 0 AUTO · 0 DECIDE · 54 KEPT · 4 SUPERSEDED.**
+
+No memory has crossed thresholds for auto-promotion this wave. The four superseded entries are unchanged from W9. The 54 kept memories include the 5 newly-saved Bereket primitives — each at retro_citations=1, below threshold. Consider revisiting at next phase boundary (phase-3 W1 retro) when citation counts may have accumulated.
+
+### Carry-forward (passed via skill args)
+
+- `deploy#86` → phase-3 (async routine `trig_01Bif8T51pdaYFjkbM5bERyL` fires post-merge)
+- `deploy#151` → phase-3 (manual SRE B2 tfstate-key migration)
+- `user-service#84` → phase-3 (manual DEPLOY_REPO_PAT secret provisioning)
+
+### Charter changes proposed (require user approval)
+
+None this retro. Process changes above are skill-level (wave-wrapup step 8) and convention-level (same-file PR sequencing) — both can be applied without charter amendment if approved.
