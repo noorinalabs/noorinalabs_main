@@ -6,9 +6,9 @@
   "last_completed_wave": "wave-9",
   "last_completed_at": "2026-04-23T00:00:00Z",
   "wave_started": "2026-04-23T00:00:00Z",
-  "last_updated": "2026-04-30T03:25:00Z",
+  "last_updated": "2026-04-30T05:00:00Z",
   "deployments_branch": "deployments/phase-2/wave-10",
-  "wave_branch_status": "wave-9 retro merged 2026-04-23 (commit 28348fe). wave-10 active — stg/prod environment split + promotion pathway (meta: main#141). Phase B (stg fresh-start rebuild) closed 2026-04-27. Hook 14 sync fan-out main#194 CLOSED 2026-04-30T02:57Z (7 of 7 child repos covered; isnad-graph#845 merged after fast-follow #850 cherry-picked pip 26.0.1→26.1 from #847 to main, clearing CVE-2026-3219). user-service#61 CLOSED 2026-04-30T03:04Z (PR #87 — GHCR Publish PR-trigger fix; Anya Approved arch, Idris Changes-Requested then Approved on Q2 env-var script-injection fix). Phase C VPS decom (deploy#86) dispatched to remote routine trig_01Bif8T51pdaYFjkbM5bERyL — fires every 2 days at 13:00 UTC, kicks off when wave-10 wraps to main and 5 prereqs verify.",
+  "wave_branch_status": "wave-9 retro merged 2026-04-23 (commit 28348fe). wave-10 active. Phase B (stg fresh-start rebuild) closed 2026-04-27. Hook 14 sync fan-out main#194 CLOSED 2026-04-30T02:57Z (7/7 child repos). user-service#61 CLOSED 2026-04-30T03:04Z via PR #87. user-service#81 CLOSED 2026-04-30T04:00Z via PR #88 (ci.yml trigger on deployments/** branches; Single-Reviewer Exception attempted but hook strict-blocks — filed #228). deploy#126 CLOSED 2026-04-30T03:54Z (4 secrets rotated to URL-safe). main#182 CLOSED 2026-04-30T03:54Z (branch protection investigation: 1/8 protected; remediation continues at #222). deploy#170 CLOSED 2026-04-30T04:53Z (CF token narrowed `.com`-only, old revoked). deploy#172 CLOSED 2026-04-30T04:33Z (Phase 1: SSE-B2 enabled on noorinalabs-terraform-state; Phase 2: 13 plaintext versions scrubbed, only 2 SSE-B2 versions remain). Phase C VPS decom (deploy#86) dispatched to remote routine trig_01Bif8T51pdaYFjkbM5bERyL.",
   "open_prs_total": 0,
   "historical_phases": {
     "note": "wave-c phase tracking (phases 1-4) is superseded by phase-2 wave numbering",
@@ -34,14 +34,20 @@
       "deploy#116 — inventory all env vars across repos/envs (currently UNLABELED p2-wave-10 — verify)",
       "main#148 — RESOLVED 2026-04-26 for Tier A-D; Tier E PIPELINE_B2_* deferred to W11"
     ],
-    "section_d_retro_mandated_open": [
-      "main#182 — investigate branch-protection gating (PR #178 merged with red CI). LAST OPEN of 3 — main#194 CLOSED 2026-04-30, main#195 CLOSED 2026-04-28 via #218."
+    "section_d_retro_mandated_open": [],
+    "section_d_retro_mandated_closed": [
+      "main#182 CLOSED 2026-04-30 — investigation: 1/8 repos protected (only isnad-graph/main); remediation tracked at #222",
+      "main#194 CLOSED 2026-04-30 — Hook 14 fan-out (7/7 child repos)",
+      "main#195 CLOSED 2026-04-28 via #218 — validate_wave_audit hook (Hook 17)"
     ],
-    "section_e_direct_blockers_open": [
-      "deploy#126 — rotate USER_REDIS/POSTGRES passwords to URL-safe (still p2-wave-10)"
-    ],
+    "section_e_direct_blockers_open": [],
     "section_e_direct_blockers_closed_or_relabeled": [
-      "deploy#141, #96, #93, #121, #122 — closed or retagged out of p2-wave-10 since last refresh; verify per-issue"
+      "deploy#126 CLOSED 2026-04-30 — passwords rotated to URL-safe (4 secrets across stg+prod)",
+      "deploy#141, #96, #93, #121, #122 — closed or retagged out of p2-wave-10 in earlier sessions"
+    ],
+    "security_techdebt_resolved_2026_04_30": [
+      "deploy#170 CLOSED — CLOUDFLARE_API_TOKEN narrowed from 3 zones (.com/.net/.org) to .com only; old token revoked; GH secret rotated 04:51:47Z",
+      "deploy#172 CLOSED — Phase 1 (SSE-B2 enabled on noorinalabs-terraform-state) + Phase 2 (13 plaintext versions deleted, only 2 SSE-B2 versions remain). Phase 3 (state-resident secret rotation) deferred to W11 as deploy#193."
     ],
     "open_prs": [],
     "secrets_migration_tonight": "2026-04-23 scope: 6 of 8 Tier-B sections (§3.1, 3.2, 3.3, 3.5, 3.6, 3.7). §3.4 JWT + §3.8 SSH + §3.9 Tier C deferred to weekend pending main#211 TODO(santiago) resolution. Runbook: docs/secrets-audit-2026-04-24.md. Draft runbook: .claude/drafts/secrets-migration-tonight-2026-04-23.md.",
@@ -136,22 +142,27 @@
     "last_updated": "2026-04-30T03:25:00Z"
   },
   "deploy": {
-    "status": "active — W10 section A in-flight; Phase B (stg rebuild) closed 2026-04-27; deploy#189 merged 2026-04-30",
+    "status": "active — W10 section A in-flight; #126/#170/#172 all closed 2026-04-30",
     "open_prs": 0,
     "open_issues_notable": [
       "#86 — Phase C VPS decom (DISPATCHED to routine trig_01Bif8T51pdaYFjkbM5bERyL)",
-      "#126 — rotate USER_REDIS/POSTGRES passwords to URL-safe (W10 active)",
-      "#170 — narrow CLOUDFLARE_API_TOKEN scope to noorinalabs.com only (W10 security)",
-      "#172 — verify B2 state bucket has SSE-B2 encryption (W10 security)",
       "#151 — [MANUAL] TF state migration hetzner/terraform.tfstate → hetzner/prod.tfstate (post-#150 merge)",
       "#100 — RESOLVED: apache/kafka selected 2026-04-29 (W11 analysis pass next)",
       "#173 — Phase B follow-up (6 cloud-init/module hardening gaps)",
       "#137 — caddy healthcheck unhealthy on prod (existing tracker)",
       "#190 — env-write block dedup (Aisha during deploy#189 review 2026-04-30)",
-      "#191 — bootstrap-vps CHANGE-ME placeholder UX (Nino during deploy#189 review 2026-04-30)"
+      "#191 — bootstrap-vps CHANGE-ME placeholder UX (Nino during deploy#189 review 2026-04-30)",
+      "#193 — W11: Phase 3 state-resident secret rotation (filed 2026-04-30 from #172 close)",
+      "#194 — W11: lifecycle rule on noorinalabs-terraform-state (filed 2026-04-30 from #172)",
+      "#195 — W11: services.yaml bucket-name normalization (filed 2026-04-30 from #172, Nino-offered)"
     ],
     "open_prs_list": [],
-    "last_updated": "2026-04-30T03:25:00Z"
+    "recent_closures_2026_04_30": [
+      "#126 CLOSED 03:54Z — USER_REDIS/POSTGRES passwords rotated to URL-safe (4 secrets)",
+      "#170 CLOSED 04:53Z — CLOUDFLARE_API_TOKEN narrowed to noorinalabs.com only",
+      "#172 CLOSED 04:33Z — SSE-B2 enabled + 13 plaintext state versions scrubbed"
+    ],
+    "last_updated": "2026-04-30T05:00:00Z"
   },
   "data-acquisition": {
     "status": "active",
@@ -164,52 +175,76 @@
     "last_updated": "2026-04-24T21:30:00Z"
   },
   "user-service": {
-    "status": "active — W10 section A item #61 closed 2026-04-30",
+    "status": "active — W10 #61 + #81 both closed 2026-04-30",
     "open_prs": 0,
     "open_issues_notable": [
-      "#84 — provision DEPLOY_REPO_PAT secret for notify-deploy job (US#83 follow-up; W10)",
-      "#81 — tech-debt(ci): ci.yml trigger doesn't fire on deployments/** branches — W10 PRs bypass CI"
+      "#84 — provision DEPLOY_REPO_PAT secret for notify-deploy job (US#83 follow-up; W10)"
     ],
     "recent_closures_2026_04_30": [
-      "#87 MERGED 03:04Z — fix(ci): trigger GHCR Publish on pull_request for pre-merge Trivy validation (closes #61)",
-      "#61 auto-CLOSED 03:04Z"
+      "#87 MERGED 03:04Z — GHCR Publish PR-trigger fix (closes #61)",
+      "#61 auto-CLOSED 03:04Z",
+      "#88 MERGED 04:00Z — ci.yml trigger on deployments/** (closes #81); Anya + Idris Approved",
+      "#81 auto-CLOSED 04:00Z"
     ],
-    "last_updated": "2026-04-30T03:25:00Z"
+    "last_updated": "2026-04-30T05:00:00Z"
   },
   "noorinalabs-main": {
-    "status": "active — W10 coordination; Hook 14 fan-out closed; W11 backlog accumulating",
+    "status": "active — W10 Section D fully closed (3/3); W11 backlog accumulating",
     "open_prs": 0,
     "open_issues_notable": [
       "#141 — W10 meta (OPEN; auto-resolves on wave wrap)",
-      "#182 — W10 section D last open: investigate branch-protection gating (PR #178 merged red)",
       "#212 — RESOLVED 2026-04-29: full topology captured; remaining work tracked at #225",
-      "#214–#226 — p2-wave-11 tech-debt/audit candidates (latest: #226 matcher-substring sibling)"
+      "#214–#228 — p2-wave-11 tech-debt/audit candidates (3 new sibling-family items filed 2026-04-30: #226 #227 #228)"
     ],
     "p2_wave_11_candidates_filed_recent": [
       "#223 — block_no_verify substring false-positive (annunaki-attack, sibling of #216)",
       "#224 — Steven French roster email typo (annunaki-attack; CLOSED — applied as fix)",
       "#225 — secrets-audit doc sweep (§3.0.a row 3 TODO marker + §3.4/§3.8 back-references)",
-      "#226 — validate_commit_identity matcher slurps unquoted -c user.email value (sibling of #216 #223 #134 #118; filed 2026-04-30 with Idris repro + meta-instance: label-validator slurped body-file path while filing #226 itself)"
+      "#226 — validate_commit_identity matcher slurps unquoted -c user.email value (sibling of #216 #223 #134 #118; Idris repro 2026-04-30; meta-instance: label-validator slurped body-file path while filing #226 itself)",
+      "#227 — validate_branch_freshness uses dispatcher cwd for `gh pr create --repo X` (cross-repo misattribution; Mateo repro from PR #88; sibling of #226)",
+      "#228 — validate_pr_review hook doesn't honor charter's Single-Reviewer Exception (hook stricter than charter; surfaced trying to merge PR #88 with 1 reviewer)"
     ],
     "recent_closures_2026_04_30": [
-      "#194 CLOSED 02:57Z — Hook 14 fan-out fully complete (7/7 child repos)"
+      "#194 CLOSED 02:57Z — Hook 14 fan-out fully complete (7/7 child repos)",
+      "#182 CLOSED 03:54Z — branch-protection investigation: 1/8 protected (only isnad-graph/main); remediation continues at #222"
     ],
-    "last_updated": "2026-04-30T03:25:00Z"
+    "last_updated": "2026-04-30T05:00:00Z"
   },
   "session_2026_04_30_summary": {
     "hook_14_fan_out_completed": "main#194 closed; isnad-graph#845 merged after #850 (cherry-pick pip 26.1 from wave-10 #847 to main) cleared CVE-2026-3219 security-audit blocker; #848 superseded; 7/7 child repos covered (deploy + isnad-graph copy-resident; design-system + data-acquisition + landing-page + user-service + ingest-platform parent-canonical). Pattern split rationalized by W11 #214.",
     "user_service_61_closed": "PR #87 merged 03:04Z. Anya Approved (architecture). Idris Changes-Requested on Q2 (script-injection sink in Resolve-Trivy-image-reference step text-substituting `${{ steps.meta.outputs.tags }}` into shell), Mateo applied env-var fix verbatim, Idris re-Approved. Self-validating: build-and-push workflow ran on the PR itself, GREEN.",
     "phase_c_dispatched": "deploy#86 routine trig_01Bif8T51pdaYFjkbM5bERyL created. Cron 0 13 */2 * * (every 2 days at 9am ET DST). First run 2026-05-01T13:04Z. Branches: A (#86 closed→dormant), B (wave-10 still active→retry), C (wave-10 wrapped+#86 open→verify 5 prereqs→spawn deploy implementer for cutover). Hetzner-API delete + envs/prod TF apply (NOT terraform destroy — corrected plan).",
     "matcher_substring_family_extended": "Idris's hook-trip during isnad-graph#850 commit attempt (greedy regex on -c user.email=value with no closing-quote fallback) filed as main#226 — sibling of #216 (block_git_config / heredoc) #223 (block_no_verify / heredoc) #134 #118. Body includes meta-instance: filing #226 itself tripped the dispatcher's label-validator (parsed body-file path as label). All same root anti-pattern; suggested fix shape: shared sanitization helper.",
-    "agents_spawned_this_session": "5 — Idris Yusuf (isnad-graph + user-service security), Mateo Salazar (user-service eng, two passes), Anya Kowalczyk (isnad-graph TL), Anya Kowalczyk - user-service (TL), Jelani Mwangi (isnad-graph DevOps Architect). All wound down clean.",
+    "agents_spawned_this_session": "8 total — Idris Yusuf (isnad-graph + user-service security; 4 passes including hook-trip repro), Mateo Salazar (user-service eng; 3 passes for #87 + #88 + Q2 fix), Anya Kowalczyk (isnad-graph TL), Anya Kowalczyk - user-service (TL), Jelani Mwangi (isnad-graph DevOps Architect), Aisha Idrissi (deploy SRE for #170 audit), Nino Kavtaradze (deploy Security for #172 audit). All wound down clean.",
     "items_remaining_in_w10": [
-      "user-service#84 — DEPLOY_REPO_PAT secret",
-      "user-service#81 — ci.yml deployments/** trigger gap",
-      "deploy#126 — password rotation",
-      "deploy#170 — Cloudflare token scope narrow",
-      "deploy#172 — B2 state bucket SSE",
-      "deploy#151 — [MANUAL] TF state migration",
-      "main#182 — branch-protection gating investigation"
-    ]
+      "user-service#84 — DEPLOY_REPO_PAT secret (gated on US#83)",
+      "deploy#86 — Phase C VPS decom (DISPATCHED to routine)",
+      "deploy#151 — [MANUAL] TF state migration (owner-driven)"
+    ],
+    "second_batch_2026_04_30T03_30Z_to_05_00Z": {
+      "items_addressed": "5 active operational + 2 owner inline + 3 W11 followups filed",
+      "closures": [
+        "user-service#81 + PR#88 — ci.yml deployments/** trigger; 4-min spawn-to-merge with one CR cycle (Idris Q2 sink) caught; hook bumped exception filing (#228)",
+        "deploy#126 — 4 secrets rotated 03:53Z (43-char URL-safe, no /+= chars); structural fix in user-service deferred to W11",
+        "main#182 — investigation: 1/8 repos protected; 7 unprotected including main; sibling-family with #222 remediation track",
+        "deploy#170 — CF token narrowed to .com only; verified via tokens/verify + zones API; old 3-zone token revoked",
+        "deploy#172 — Phase 1 (SSE-B2 enable, owner) + Phase 2 (13 plaintext versions deleted via b2 rm by-fileId, 11 more than initial estimate; legacy hetzner/terraform.tfstate fully expunged)"
+      ],
+      "w11_followups_filed": [
+        "main#226 — validate_commit_identity matcher slurps -c user.email (Idris repro)",
+        "main#227 — validate_branch_freshness cross-repo misattribution (Mateo repro from PR#88)",
+        "main#228 — validate_pr_review hook doesn't honor charter Single-Reviewer Exception",
+        "deploy#193 — Phase 3 state-resident secret rotation (JWT, GHCR PAT, pipeline B2 keys)",
+        "deploy#194 — lifecycle rule on noorinalabs-terraform-state",
+        "deploy#195 — services.yaml bucket-name normalization (Nino-offered)"
+      ],
+      "tooling_added": "b2 CLI v4.6.0 installed via `uv tool install b2`; cli-readonly-tf-state + write-scoped key configured",
+      "key_findings": [
+        "noorinalabs-terraform-state had 13 plaintext state versions (vs Nino's pre-audit estimate); lifecycle rules empty",
+        "main is the unprotected branch — and 7 of 8 repos org-wide are unprotected; only isnad-graph/main has any protection",
+        "Charter Single-Reviewer Exception is W8-ratified but the validate_pr_review hook doesn't honor it — strict 2-reviewer block on mechanical PRs (hook stricter than charter)",
+        "Multi-instance dispatcher matcher-substring family: 5 known instances now (#118 #134 #216 #223 #226), plus 3 different-shape siblings (#227 cross-repo scope, #228 stricter-than-charter, label-validator meta-instance)"
+      ]
+    }
   }
 }
