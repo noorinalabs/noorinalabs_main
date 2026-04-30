@@ -77,6 +77,17 @@ Updated by `/ontology-rebuild`. Manual edits require `checksums.json` update.
 - Two Co-Authored-By trailers required (team member + Claude)
 - Enforced by `validate_commit_identity.py` hook
 
+### SSH topology (owner workstation → VPSes)
+- **Two keys on owner workstation:**
+  - `~/.ssh/id_ed25519` (comment `parametrization@gmail.com`) — root user on both VPSes
+  - `~/.ssh/noorinalabs_deploy` (comment `deploy@isnad-graph`, fingerprint `SHA256:UP42OaHWXymDpno0mnQ4vfJV902h3K6eYQ3XdrCR4Uo`) — `deploy` user. **Renamed from `isnad_deploy` 2026-04-24** to align with secrets-audit §3.0.a (PR #213).
+- **`~/.ssh/config`** uses 4 role-explicit Host aliases (no silent default-fallback): `noorinalabs-stg-{root,deploy}`, `noorinalabs-prod-{root,deploy}`. Each entry sets `IdentitiesOnly yes` to force the declared key only.
+- **Per-user authorization on VPSes:**
+  - `root`'s `authorized_keys`: `id_ed25519` only (root-only key)
+  - `deploy`'s `authorized_keys`: BOTH `id_ed25519` AND `noorinalabs_deploy` (mirrors prod pattern; lets owner reach `deploy@*` from either key, but `root@*` only via root-only key)
+- **Per-VPS + per-role key separation tech-debt** tracked in deploy#164. Current shared-key posture is the prod baseline; W10 should not introduce new asymmetry between stg and prod, but the longer-term goal is per-env keys with `DEPLOY_SSH_PRIVATE_KEY` env-scoped via deploy#155 GH Environments.
+- **Custodial paths for value-preservation** (per secrets-audit §3.0.a, PR #213 merged): `~/.ssh/noorinalabs_deploy` (DEPLOY_SSH_PRIVATE_KEY), `~/.ssh/jwt_private.pem` + `~/.ssh/jwt_public.pem` (JWT_PRIVATE_KEY/JWT_PUBLIC_KEY).
+
 ### Branching
 - Feature branches: `{FirstInitial}.{LastName}/{IIII}-{issue-name}`
 - Wave branches: `deployments/phase{N}/wave-{M}`
@@ -85,14 +96,16 @@ Updated by `/ontology-rebuild`. Manual edits require `checksums.json` update.
 
 ### PR workflow
 - Minimum 2 reviewers per PR (comment-based, not API reviews)
-- Charter-format review comments (Requestor/Requestee/RequestOrReplied)
+- Charter-format review comments (Requestor/Requestee/RequestOrReplied/TechDebt)
 - Must-fix items block merge; tech-debt items get GitHub Issues
 - CI must be green before merge (enforced by hooks)
+- Cross-contract PRs (shared Kafka topics, Parquet schemas, wire formats): first PR opened must include a `## Contract` section; subsequent PRs link to it and document divergence (P2W9 retro, 2026-04-22)
 
 ### Wave lifecycle
 - `/wave-start` → `/wave-kickoff` → work → `/wave-wrapup` → `/wave-retro`
 - Wrapup includes: PR merge sequencing, ontology rebuild, Annunaki attack, memory audit
 - Retro includes: ontology staleness check, per-engineer assessments, trust matrix updates
+- **Open-item audit before "concluded" claims** (charter `skills.md`): every wave-wrapup / handoff / retro that claims a wave or workstream is complete MUST first run the cross-repo open-item count; zero open or an explicit carry-forward list is required. Promotion-target: hook.
 
 ### Session continuity
 - **Auto-handoff** (`session_handoff.py` Stop hook): Fires on every session exit (throttled to 5 min). Captures git state, open PRs/issues, wave status, ontology staleness. Writes to project memory for next session pickup.
@@ -117,6 +130,9 @@ Updated by `/ontology-rebuild`. Manual edits require `checksums.json` update.
 | `validate_wave_context.py` | PreToolUse (Agent) | Warn if agent spawned without wave context or ontology context in prompt |
 | `block_shutdown_without_retro.py` | PreToolUse (SendMessage) | Block agent shutdown before retro |
 | `auto_add_issue_to_board.py` | PostToolUse (Bash) | Auto-add new issues to project board |
+| `validate_pr_ci_status.py` | PreToolUse (Bash) | Block `gh pr merge` when any CI check is failing/cancelled/timed-out |
+| `enforce_librarian_consulted.py` | PreToolUse (Edit/Write/NotebookEdit) | Block edits unless `/ontology-librarian` consulted earlier in session |
+| `no_worktree_self_delete.py` | PreToolUse (Bash) | Block `git worktree remove` when cwd is inside target worktree |
 | `annunaki_log.py` | Utility (imported by hooks) | Shared logging for PreToolUse block events to Annunaki error log |
 | `annunaki_monitor.py` | PostToolUse (Bash) | Capture failed commands to error log |
 | `ontology_tracker.py` | PostToolUse (Edit/Write) | Track file checksums for ontology changes |

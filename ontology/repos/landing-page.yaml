@@ -71,3 +71,11 @@ build_commands:
   e2e: "npm run test:e2e"
   lint: "npm run lint"
   typecheck: "npx astro check"
+
+ci:
+  deploy_workflow:
+    workflow: .github/workflows/deploy.yml
+    pr: "landing-page#71 (Kofi)"
+    issue: "#68"
+    status: merged
+    description: "Image-tag Contract v6 replica. Emits 4 tags on push to main: sha-<short>, latest, stg-<short>, stg-latest. No notify-deploy step — landing-page deploy flows through deploy/promote.yml registry retag, not push-time dispatch (intentional architectural divergence from isnad-graph/user-service per Cédric's review note)."

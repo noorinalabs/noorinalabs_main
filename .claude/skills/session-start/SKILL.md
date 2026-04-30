@@ -32,6 +32,8 @@ Stale team state from prior sessions causes "does not exist" / "already leading"
 
 Never try to reuse an existing team. Never skip this step.
 
+> **Single-leader constraint:** This `TeamCreate` call establishes THE session team. Additional `TeamCreate` calls in this session will fail with "Already leading team." All managers and implementers spawned during the session — regardless of which repo they work on — join this single `noorinalabs` team. See charter `agents.md` § Single-Leader Constraint for the delegation pattern (team lead is sole `Agent`-tool caller; managers `SendMessage` the team lead to request implementer spawns).
+
 ### Step 2 — Handoff check
 
 Read the session handoff file from project memory:

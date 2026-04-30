@@ -17,6 +17,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from annunaki_log import append_jsonl_record
+
 # Where we log errors — JSONL for easy dedup and processing
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 ERRORS_FILE = REPO_ROOT / ".claude" / "annunaki" / "errors.jsonl"
@@ -152,13 +154,7 @@ def main() -> None:
         "_dedup_hash": dedup_hash,
     }
 
-    # Ensure directory exists and append
-    ERRORS_FILE.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        with open(ERRORS_FILE, "a", encoding="utf-8") as f:
-            f.write(json.dumps(record) + "\n")
-    except OSError:
-        pass  # Never fail the hook
+    append_jsonl_record(ERRORS_FILE, record)
 
     sys.exit(0)
 

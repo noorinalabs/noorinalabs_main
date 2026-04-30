@@ -185,3 +185,38 @@ Each repo defines its own `team_name` in its repo charter. Use that name for all
 | Cross-repo coordination | `noorinalabs` |
 
 > **Agent tool limitation:** Spawned agents (including the Program Director and team members) do NOT have access to the Agent tool. They cannot spawn other agents. All agent spawning must be done by the orchestrating Claude instance.
+
+## Single-Leader Constraint: One Team Per Orchestrator Session <!-- promotion-target: none -->
+
+The harness enforces **one team per orchestrator session** — `TeamCreate` fails with "Already leading team" if a team already exists. Combined with the Agent-tool limitation above, this shapes how waves run:
+
+### What this means in practice
+
+- **The `Team Names` table above is only operative when you open a session dedicated to one repo.** If a session is opened in `noorinalabs-main` to run a cross-repo wave, `TeamCreate("noorinalabs")` fires at session start and no other team can be created in that session. Agents for deploy, isnad-graph, user-service, landing-page, etc. are all spawned as members of the single `noorinalabs` team.
+- **Cross-repo waves always use `team_name: "noorinalabs"`** for every agent — managers AND implementers — because the single-team constraint makes anything else technically impossible.
+- **Per-repo team names** (`noorinalabs-isnad-graph`, `noorinalabs-deploy`, etc.) only apply when a session is run in isolation in that repo — not the common case for wave-kickoff work orchestrated from `noorinalabs-main`.
+
+### Delegation mechanics (reinforcement of § Hub-and-Spoke)
+
+1. **Orchestrator** calls `TeamCreate("noorinalabs")` at session start. Spawns managers (Program Director + per-repo managers) as members of this single team.
+2. **Managers** do NOT have the Agent tool. When they need implementers, they `SendMessage` the orchestrator (team-lead) with a spawn request: "please spawn {Name} from {repo}/{roster-card} for {issue}, branch {X}, reviewers {Y, Z}."
+3. **Orchestrator spawns implementers** with the context the manager provided PLUS the Ontology Context bake (per `enforce_ontology_context.py` hook — see § Orchestrator checklist below) PLUS the MANDATORY `/ontology-librarian` first-action instruction (per Hook 15 in `hooks.md`).
+4. **Implementers report** back to their assigning manager via `SendMessage`. Cross-manager coordination is in-band (`SendMessage`) plus on-GitHub (meta-issue comments + Cross-Contract PRs).
+5. **Per-repo rosters remain canonical** for commit identity, domain ownership, and reviewer pairing — the session team is a logical overlay on top of them.
+
+### Orchestrator checklist when spawning an implementer
+
+Every implementer spawn prompt MUST include:
+
+1. **`## Ontology Context`** section (literal heading) with librarian output baked in — `enforce_ontology_context.py` scans for this heading and blocks the spawn if absent.
+2. **MANDATORY first-action** instruction to run `/ontology-librarian {topic}` in the spawned agent's own session — Hook 15 scans the agent's transcript independently and blocks Edit/Write otherwise.
+3. **Git identity** flags (`git -c user.name="..." -c user.email="parametrization+FirstName.LastName@gmail.com"`).
+4. **Branch name** matching `{FirstInitial}.{LastName}/{IIII}-{slug}` and **PR target** (typically `deployments/phase-{N}/wave-{M}`).
+5. **Reviewer pairings** (2 named reviewers, charter format).
+6. **Cross-Contract rule** reference if the PR is part of a cross-contract cluster (charter `pull-requests.md`).
+7. **Charter enforcement reminders** (2 reviewers, CI green before merge, no `--no-verify`, no global/repo git config, `/ontology-librarian` per agent).
+8. **Reporting pattern** — who they report to (usually their manager) and when (draft open, CI green, blocker, merge).
+
+### Origin
+
+Documented during P2W10 kickoff 2026-04-23. Prior charter already had the spawn-delegation mechanics (§ Hub-and-Spoke Orchestration Model), but not the explicit single-leader constraint that eliminates multi-team orchestration as an option. The § Team Names table was ambiguous on whether "Work in noorinalabs-isnad-graph" meant a dedicated isnad-graph-only session or any session touching that repo — this section resolves it in favor of the single-session-team pattern for cross-repo work.

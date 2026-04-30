@@ -17,6 +17,27 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 ERRORS_FILE = REPO_ROOT / ".claude" / "annunaki" / "errors.jsonl"
 
 
+def append_jsonl_record(path: Path, record: dict) -> None:
+    """Append one JSONL record. Skips empty records and guarantees exactly
+    one trailing newline per line — never a bare blank line. Shared by
+    annunaki_log.py and annunaki_monitor.py so writer hardening stays in
+    one place."""
+    if not isinstance(record, dict) or not record:
+        return
+    # json.dumps with default settings does not emit newlines, so the
+    # serialized form is guaranteed single-line. Strip any stray ones
+    # defensively anyway.
+    line = json.dumps(record, ensure_ascii=False).replace("\n", " ").strip()
+    if not line:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(line + "\n")
+    except OSError:
+        pass  # Never fail the hook
+
+
 def log_pretooluse_block(
     hook_name: str, command: str, reason: str, tool_name: str = "Bash"
 ) -> None:
@@ -32,10 +53,4 @@ def log_pretooluse_block(
         "error_lines": [reason[:500]],
         "stderr_excerpt": "",
     }
-
-    ERRORS_FILE.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        with open(ERRORS_FILE, "a", encoding="utf-8") as f:
-            f.write(json.dumps(record) + "\n")
-    except OSError:
-        pass  # Never fail the hook
+    append_jsonl_record(ERRORS_FILE, record)
