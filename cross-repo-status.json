@@ -26,15 +26,11 @@
       "user-service#63 — alembic merge migration (unblocks deploy#85 live gate)"
     ],
     "section_a_open": [
-      "deploy#83 — Cloudflare stg.noorinalabs.com + per-service subdomains",
-      "deploy#84 — stg auto-deploy + prod manual-approval workflow",
-      "deploy#85 — alembic upgrade head pre-deploy + stg-first gate",
-      "deploy#86 — decommission hand-made isnad-graph-prod VPS",
-      "deploy#87 — split verify-deploy (stg full suite, prod smoke)",
-      "user-service#64 — image tagging for stg/prod promotion",
-      "user-service#61 — GHCR Publish workflow must trigger on PRs",
-      "landing-page#68 — image tagging for stg/prod promotion"
+      "deploy#86 — decommission hand-made isnad-graph-prod VPS (Phase C cutover; well-scoped after main#212 walkthrough 2026-04-29)",
+      "user-service#61 — GHCR Publish workflow must trigger on PRs"
     ],
+    "section_a_closure_correction_2026_04_29": "Earlier session refresh listed 8 items as open; live verification 2026-04-30T00:45 shows 6 of 8 closed (deploy#83/#84/#85 closed 2026-04-27; deploy#87 closed 2026-04-28; user-service#64 closed 2026-04-27; landing-page#68 closed 2026-04-27). Only #86 (Phase C) and user-service#61 (CI bug) actually open.",
+    "section_a_apply_followup_filed_2026_04_29": "deploy#192 — apply Cloudflare stg subdomain tree (with prod-posture-preserving TF amendment). Not part of original section A; filed as the apply-lifecycle counterpart to closed deploy#83 (which covered the code-write only).",
     "section_b_precursors_open": [
       "deploy#116 — inventory all env vars across repos/envs",
       "main#148 — migrate overlapping repo-level GH secrets to org-level scope (secrets-audit runbook in docs/secrets-audit-2026-04-24.md)"
@@ -191,12 +187,13 @@
       "#194 — W10 section D, Hook 14 fan-out, in flight via isnad-graph#845",
       "#195, #182 — W10 section D retro-mandated, OPEN",
       "#211 — CLOSED 2026-04-24 (PR #213); row 3 fully resolved 2026-04-29 via #212 walkthrough",
-      "#212 — RESOLVED 2026-04-29: full topology captured; remaining work = small W11 doc-sweep PR for §3.0.a TODO marker",
-      "#214–#224 — p2-wave-11 tech-debt/audit candidates"
+      "#212 — RESOLVED 2026-04-29: full topology captured; remaining work tracked at #225 (small doc sweep)",
+      "#214–#225 — p2-wave-11 tech-debt/audit candidates (incl. #225 secrets-audit doc sweep filed 2026-04-29)"
     ],
     "p2_wave_11_candidates_filed_2026_04_29": [
       "#223 — block_no_verify substring false-positive (annunaki-attack, sibling of #216)",
-      "#224 — Steven French roster email typo (annunaki-attack; applied as fix this session, CLOSED)"
+      "#224 — Steven French roster email typo (annunaki-attack; applied as fix this session, CLOSED)",
+      "#225 — secrets-audit doc sweep (§3.0.a row 3 TODO marker + §3.4/§3.8 back-references; deferred from main#212 walkthrough)"
     ],
     "last_updated": "2026-04-30T00:30:00Z"
   },
