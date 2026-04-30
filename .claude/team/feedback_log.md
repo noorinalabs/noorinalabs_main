@@ -1166,3 +1166,177 @@ No memory has crossed thresholds for auto-promotion this wave. The four supersed
 ### Charter changes proposed (require user approval)
 
 None this retro. Process changes above are skill-level (wave-wrapup step 8) and convention-level (same-file PR sequencing) — both can be applied without charter amendment if approved.
+
+
+---
+
+## Retrospective: Phase 3 Wave 1 — 2026-04-30
+
+**Theme:** "Promotion pipeline goes prod" — owner directive: pipeline running seamlessly so team can refocus on product + process.
+
+**Wave shape:** ~2.5h elapsed (21:00Z kickoff → 23:15Z final merge). 5 Tier-1 + 2 Tier-2 + 1 followup-of-spec. 8/8 wave PRs merged into `deployments/phase-3/wave-1`. Pure single-team delegation (orchestrator + 4 implementers + 1 manager); no spawned managers from child rosters per single-team-delegation memory.
+
+### Team Performance
+
+- **PRs merged:** 8 (#197, #198, #201, #202, #206, #207, #208, #210). All squash-merge to wave branch.
+- **Issues closed:** 8 (#67, #179, #160, #178, #73, #205, #183, #161).
+- **CI health:** 0 red merges. All 8 PRs landed with CI green (multiple PRs hit the dedicated 11-12-check terraform-validate gate cleanly post-#210 cloud-init introduction).
+- **Tech-debt followups filed:** 9 (#199, #200, #203, #204, #209, #211, #212 in deploy + main#232 + main#233).
+- **Carry-forwards remaining:** 3 — all operationally gated, not implementer-deliverable (deploy#86 Phase C VPS decom routine; deploy#151 manual SRE B2 tfstate-key migration; user-service#84 DEPLOY_REPO_PAT secret).
+
+### Per-Engineer Assessments
+
+#### Aisha Idrissi (deploy SRE) — Severity: positive (none)
+
+- **PRs authored:** #198 (gate), #202 (integration-tests remote-mode), #207 (verify-stg flip), #210 (alembic textfile metrics).
+- **PRs reviewed:** #197 (Caddyfile evidence-receipts catching false-positive bug), #201 (3-pattern review with hot-spot 4 design pushback), #208 (cross-PR collision flag).
+- **CI failures:** 0.
+- **Must-fix items received:** 1 (Bereket on #210 — bootstrap-permissions race; addressed via cloud-init wiring + alert design refinement sharper than spec).
+- **Tech-debt items filed:** 0 directly; participated in #199, #200, #203, #204 follow-up filings during reviews.
+- **Pattern A data points:** #198 lines 232-258 design-rationale block.
+- **Pattern B data points:** Pre-implementation verification on #161 — caught 3-x scope expansion before pushing dead code.
+- **Pattern C data points:** 2 self-acknowledged (silent-idle without team-lead handoff at #202; post-merge state-stale push at #210 `684f1b2`).
+
+#### Lucas Ferreira (deploy SRE) — Severity: positive (none); standout reviewer-class delivery
+
+- **PRs authored:** #197 (rollback expand with bundled per-service env-var fix), #201 (db-migrate wiring with 5-path retag-gate truth table), #206 (verify-deploy multi-trigger with Reality-post-#87 mapping table).
+- **PRs reviewed:** #198 (filed #199 + #200 follow-ups), #202, #207, #210 (drift-catch on runbook L161 + compose 614-621 staleness that Bereket missed).
+- **CI failures:** 0.
+- **Must-fix items received:** 1 (Aisha on #206 USER_SERVICE_URL/SITE_URL fallback bug; addressed via fix (a) — skip /health fallback when USER_SERVICE_URL == SITE_URL).
+- **Tech-debt items filed:** 6 (review followups + flagged drift cleanup #211 + promtool gate #212).
+- **Standout signal:** Three substantive reviewer-class bug-catches in one wave + clean self-correction discipline on #210 first-comment header inversion (within 2 minutes via re-post). Reality-post-#87 mapping table on #206 PR body is the canonical worked example for Pattern B reviewer-side discipline.
+- **Process gap (minor):** Pushed #206 before #205 merged against explicit "wait" instruction. Technical merit sound (textually disjoint sections of verify-deploy.yml; both MERGEABLE simultaneously); instruction-non-compliance noted.
+
+#### Bereket Tadesse (deploy Infrastructure Manager) — Severity: positive net; manager-class coverage gaps named
+
+- **Reviews:** 8 manager-passes (manager-direct on #161 + #183, manager-pass second-review on #197/#198/#201/#202/#206/#207/#210).
+- **Pattern A data points:** 5-path retag-gate truth table on #201 endorsed Aisha's design-rationale block on #198.
+- **Pattern B data points:** Scope-rationalization on #161 atomic Option 1 call; cloud-init Bereket-axiom-zero override (snowflake-infra prevention).
+- **Pattern B-mirror data points:** Implementer pushback discipline guidance on Aisha's freshness-filter pushback (accept-when-bug, push-back-when-preference).
+- **Charter-delta synthesis:** 4-pattern retro readout drafted before retro skill invoked.
+- **Manager-class coverage failures (negative):** 6 self-violations of `feedback_refresh_before_status_claim` in one wave. Highest-consequence: drift-catch failure on #210 v3 manager-pass — claimed comprehensive coverage on a load-bearing review while Lucas caught the runbook L161 + compose 614-621 drift. Self-flagged each violation; honest-audit-before-concluded-claims memory he is named on was the violation-target.
+- **Net assessment:** Strong delivery + honest self-correction discipline balances the manager-class-amplifier coverage failures. Hold at trust 4. Worth reassessing next wave if pattern persists.
+
+#### Weronika Zielinska (deploy Platform Architect) — Severity: positive (none)
+
+- **PRs authored:** #208 (blackbox-exporter — 4-artifact delivery: compose service + module config + scrape config + 3 alert rules + Grafana dashboard + amtool runbook).
+- **CI failures:** 0.
+- **Must-fix items received:** 0 (Bereket's review observations all non-blocking; she folded (b) hairpin-NAT + (c) cert-expiry-non-HTTPS into the PR and filed (a) double-pager guard as #209 follow-up — multi-layer-gap discipline applied correctly).
+- **Pattern A data points:** Load-bearing assertion module comments per blackbox config.
+- **Process gap (minor):** Initial header-convention inversion on #208 first review. Corrected via re-post by orchestrator in #208 merge cycle.
+
+#### Orchestrator — Severity: minor
+
+- **Coordination:** Spawned 4 implementer-agents (deploy-aisha, deploy-lucas, deploy-weronika fresh + bereket-tadesse coordinator). Pure single-team-delegation pattern. 8 PRs landed via 3 sequential rounds (Round 1: #197/#198, Round 2: #201/#202, Round 3: #206/#207/#208/#210).
+- **Followup filing:** 9 followups filed during wave (#199 #200 #203 #204 #209 #211 #212 + main#232 fan-out + main#233).
+- **Worktree cleanup:** 9 stale worktrees pruned at wrapup (8 wave + 1 stale-locked /tmp/hotfix-deploy from prior session).
+- **Process gaps (minor):**
+  - 1 Pattern C self-instance: premature "2/2 cleared" status claim on #208 before reviewer count was actually verified (caught when merge blocked at 1/2; resolved by reposting reviewer comments with corrected directionality).
+  - main#233 charter-ambiguity framing initially wrong — proposed two-readings interpretation that Bereket then corrected after wire-artifact verification (only Reading 1 in actual use). Issue body amended via comment.
+
+### Top 3 Going Well
+
+1. **Manager-direct review pattern doing real work.** Bereket's manager-pass on every PR (8 total) was not a rubber-stamp slot — it caught design issues, established sequencing rules, and unblocked merges via the 2-reviewer hook. Three substantive manager-direct interventions (#161 must-fix bootstrap-permissions race, scope rationalization on #161, cloud-init Bereket-axiom-zero override) materially shaped delivery.
+2. **Cross-pair review discipline.** Aisha + Lucas as authors-and-reviewers of each other's work surfaced two real bugs (Aisha's USER_SERVICE_URL/SITE_URL fallback catch on #206, Lucas's drift-catch on #210). Cross-pair beats lone-reviewer + manager-rubber-stamp shape.
+3. **Pattern A discipline holding under wave pressure.** 4 PRs (#198, #201, #208, #210) shipped explicit design-rationale blocks in PR bodies / inline file comments. Reviewer reaction was uniformly positive; future incident-response readability uplift visible.
+
+### Top 3 Pain Points
+
+1. **Pattern C — refresh-state-before-claim discipline degraded under high-tempo cycles.** 9 distinct instances across 3 people in one wave (6 Bereket + 2 Aisha + 1 orchestrator). Manager-class was the most-violation-prone — counter-intuitive to role-authority assumptions. The manager-self-overconfidence-after-attention-fatigue failure mode on Bereket's #210 v3 manager-pass (where Lucas caught drift Bereket missed) was the highest-consequence instance because the manager-pass is the gate-clearing review.
+2. **Header-convention enforcement gap in `validate_pr_review`.** The hook accepts inverted Requestor/Requestee directionality without complaint; reviewers used inconsistent conventions across the wave (Reading 1 on most reviews, Reading 2 on Lucas's first #210 comment + Bereket's pre-correction reposts). Hook should enforce header-identity-vs-author-coherence (per filed `main#233`); the wave's gate-clearing relied on author/reviewer self-correction discipline rather than enforcement.
+3. **Charter Requestor/Requestee directionality** — initially framed as a two-readings ambiguity by orchestrator + Bereket; after wire-artifact verification it's actually consistent in practice (Reading 1 only). The framing churn cost retro-prep cycles that should have gone elsewhere.
+
+### Proposed Process Changes
+
+1. **Charter delta — Pattern A: PRs touching critical-path workflow DAGs MUST include a design-rationale block in PR body or inline file comments at the load-bearing decision point.** — Rationale: 4 corroborating data points (#198, #201, #208, #210) all earned positive reviewer reaction; high-leverage for review readability AND incident-response readability AND retro evidence. Proposed location: charter `pull-requests.md` § Cross-Contract PRs OR new § Design-Rationale Blocks.
+
+2. **Charter delta — Pattern B (unified): verify spec assumptions / PR-body framing against ground truth before action.** — Rationale: 4 corroborating data points across two roles. Implementer side: Aisha's #161 3-x scope catch + Lucas's #206 stale-issue-body scope rationalization. Reviewer side: Aisha's #206 Caddyfile evidence-receipts. Same axis (verify-vs-artifact), two roles. Charter language should specify: "Read the diff against the actual artifact (Caddyfile, compose env-vars, terraform state, alert YAML), not against the PR body's framing." Lucas's #206 Caddyfile review is the canonical worked example.
+
+3. **Charter delta — Pattern C: `feedback_refresh_before_status_claim` extends to manager-class with explicit no-exemption clause.** — Rationale: 9 wave instances across 3 people. Manager-class was MOST-violation-prone (Bereket 6 self-violations). The manager-pass review's authoritative-coverage posture amplifies downstream consequence when the discipline fails. Charter language: "Before any state-claim ('X/Y cleared', 'comprehensive coverage', 'all items addressed'), perform a fresh `gh api` verification with manual eyeball-check of distinct identities. The manager class is NOT exempt — manager-pass review-coverage claims propagate further than implementer-class state claims and deserve the same or stricter discipline."
+
+4. **Hook fix (gated on Pattern C charter language landing) — extend `validate_pr_review` with header-identity-vs-author-coherence check.** — Rationale: Lucas's #210 first comment with inverted Requestor/Requestee header cleared the gate without complaint; Bereket's pre-correction comments did the same on #208. Hook should reject if Requestor's lastname ≠ branch-author's lastname. Tracked at `main#233`.
+
+5. **Wave-wrapup process change — manager-pass review re-verification when revision-cycles exceed 2.** — Rationale: Bereket's drift-catch failure on #210 v3 (which had been through 2 revision cycles) showed that comprehensive-coverage discipline degrades after attention-fatigue from multiple revision rounds. Suggested: when a PR receives ≥3 revision cycles, the manager-pass review should explicitly enumerate-and-verify each prior must-fix item against the new head, not rely on holistic re-read.
+
+### Charter changes proposed (require user approval)
+
+1. Pattern A charter delta (proposed change #1 above)
+2. Pattern B unified charter delta (proposed change #2 above)
+3. Pattern C charter delta with manager-class no-exemption clause (proposed change #3 above)
+
+Bereket has draft language for #1 and #2 ready (~3-5 sentences each). User to decide which to adopt, modify, or reject before next wave.
+
+
+
+## Promotion Audit — p3-wave-1 (2026-04-30)
+
+**Summary:** 0 AUTO · 0 DECIDE · 55 KEPT · 4 SUPERSEDED/ALREADY-PROMOTED
+
+### AUTO-PROMOTED (artifacts generated this run)
+_None this run._
+
+### REQUIRES DECISION (issues filed)
+_None this run._
+
+### KEPT (no action — informational)
+- `feedback_actionlint_needs_shellcheck.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_canonical_source_via_git_show.md` (memory): promotion_target=none (informational memory) [retro_citations=2]
+- `feedback_child_repo_implementer_rule.md` (memory): promotion_target=none (informational memory) [retro_citations=2]
+- `feedback_cross_repo_wave_ref_resolution.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_drift_evidence_to_existing_rationalization_issue.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_gh_pr_edit_silent_noop.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_heredoc_in_git_commit.md` (memory): promotion_target=none (informational memory) [retro_citations=2]
+- `feedback_honest_audit_over_conclusion_claim.md` (memory): promotion_target=none (informational memory) [retro_citations=2]
+- `feedback_live_trace_over_synthetic_acceptance.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_multi_layer_gap_filing.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_origin_over_local_for_still_has_claims.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_pr_review_comment_only.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `feedback_pr_state_in_refresh.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_pr_vs_runtime_acceptance_criteria.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_refresh_before_status_claim.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_review_against_artifact_not_framing.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_reviewer_techdebt_line_required.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `feedback_role_class_specific_boundaries.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_runtime_gate_scoping.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_search_before_filing.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `feedback_security_guard_inline_not_followup.md` (memory): promotion_target=none (informational memory) [retro_citations=2]
+- `feedback_single_team_delegation.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_stale_inbox_manager.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_tmp_msg_file_stale.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_verify_diagnosis_before_delegating.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `feedback_verify_third_party_integrity_claims.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_wave_branch_issue_close.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `feedback_wave_planning_from_board.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `project_bootstrap_repo.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `project_bug_bash_2026_04_21.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `project_current_state.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `project_data_pipeline_architecture.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `project_i18n_scope.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `project_ontology_system.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `project_w10_image_tag_contract.md` (memory): promotion_target=none (informational memory) [retro_citations=0]
+- `project_w10_user_service_alembic.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `reference_ssh_topology.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `user_steven.md` (memory): promotion_target=none (informational memory) [retro_citations=1]
+- `annunaki` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `annunaki-attack` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `close-stale-issues` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `handoff` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `ontology-librarian` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `ontology-rebuild` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `plan-phase` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `promotion-audit` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `retro` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `review-pr` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `session-start` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `team-reset` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `wave-audit` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `wave-kickoff` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `wave-retro` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `wave-start` (skill): Skill not opted into hook promotion [promotion-target != hook]
+- `wave-wrapup` (skill): Skill not opted into hook promotion [promotion-target != hook]
+
+### SUPERSEDED / ALREADY-PROMOTED (no action — informational)
+- `feedback_disable_followup_load_bearing.md` (memory): Memory explicitly marked superseded [superseded_by: charter:pull-requests.md § Load-Bearing Followups for Disabled CI Jobs]
+- `feedback_enforcement_hierarchy.md` (memory): Source codified via Promotion provenance entry [provenance block in charter/hooks.md]
+- `feedback_repo_independence.md` (memory): Memory enforced via another artifact (charter / hook) [enforced-elsewhere -> cross-repo roster lookup hook]
+- `feedback_settings_permission.md` (memory): Memory enforced via another artifact (charter / hook) [enforced-elsewhere -> settings.json permission rules]

@@ -430,3 +430,41 @@ The org was restructured in Session 3 with new repo-level teams. The matrix abov
 | **Aino Virtanen** (SQL) | Hook 17 ship + charter updates. | None this wave. |
 | **Nadia Khoury** (PD) | 5-repo wave-merge ceremony coordination + ghcr-publish.yml conflict resolution. | None this wave. |
 | **Orchestrator** | Wave-wrapup ceremony executed end-to-end (ontology, annunaki, 45-worktree sweep, 5-repo wave-merge sequence, conflict resolution, retro). | Initial `git merge` on user-service local wave-10 was at a stale ref (3 behind origin); local-ref-staleness check before merge would have been cleaner. |
+
+
+---
+
+## Phase 3 Wave 1 Trust Updates (2026-04-30) — Promotion Pipeline Goes Prod
+
+### Org-Level Team (noorinalabs-main)
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Aino Virtanen (SQL) | 5 | 5 | Not actively spawned this wave; ontology rebuild + commit identity attribution on session-start + wave-wrapup commits. Already at max. |
+| Nadia Khoury (PD) | 4 | 4 | Not actively spawned this wave (single-team pattern; orchestrator drove dispatch directly). No change. |
+| Wanjiku Mwangi (TPM) | 5 | 5 | Not actively spawned this wave. No change. |
+| Santiago Ferreira (RC) | 5 | 5 | Not actively spawned this wave. No change. |
+
+### Child-Repo Teams — P3W1 Updates
+
+#### noorinalabs-deploy team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Aisha Idrissi (SRE) | 5 | 5 | Heavy lifter again: 4 PRs authored (#198 promote.yml stg-verify gate, #202 integration-tests remote-mode, #207 verify-stg flip, #210 alembic textfile metrics) + 3 reviewed (#197, #201, #208). Pattern B implementer-side founding data point: caught 3-x scope expansion on #161 pre-implementation (alert never landed in #153, textfile collector not configured) — saved a dead-code-at-merge round-trip. Pattern A data point: design-rationale block at #198 lines 232-258 (gate-stg-verify rationale). Judgment sharper than spec on three calls (#161 alert split into Failure + Stale, #198 freshness filter defense, #210 cloud-init wiring choice). Already at max. |
+| Lucas Ferreira (SRE) | 4 | **5** ↑ | Reviewer-class standout this wave. Three substantive interventions: (1) Caddyfile evidence-receipts at lines 88-89 / 101 catching real false-positive bug on Aisha's #206 USER_SERVICE_URL/SITE_URL fallback; (2) Drift-catch on #210 v3 manager-pass that Bereket missed (runbook L161 + compose 614-621 staleness vs cloud-init/0755 reality); (3) Reality-post-#87 mapping table on #206 PR body — issue body's "Deploy noorinalabs-isnad-graph" trigger names were stale; honest scope reframe + delivery of actual non-legacy work. Plus 3 PRs authored (#197 rollback expand with bundled per-service env-var fix, #201 db-migrate wiring with 5-path retag-gate truth table, #206 verify-deploy multi-trigger) and clean self-correction discipline on his own #210 first-comment header inversion (within 2 minutes via re-post). Promoted to named-primitive author tier. |
+| Bereket Tadesse (Infra Mgr) | 4 | 4 | Strong manager-pass review pattern (8 manager-direct + manager-pass second-reviews this wave) + Pattern A data point (5-path retag-gate truth table on #201) + scope-rationalization rigor. Pattern B-mirror data point: implementer pushback discipline guidance on Aisha's freshness-filter pushback. Authored four-pattern retro synthesis ahead of retro skill. **Negative signal**: 6 self-violations of `feedback_refresh_before_status_claim` in one wave (manager-class self-overconfidence-after-attention-fatigue), plus drift-catch failure on #210 v3 manager-pass that Lucas caught (claimed comprehensive coverage on a load-bearing review). Net: positive contribution + honest self-correction discipline (each violation self-flagged) balances the manager-class-amplifier coverage failures. Hold at 4. Worth reassessing next wave if pattern persists. |
+| Weronika Zielinska (PA) | 4 | 4 | Clean blackbox-exporter delivery (#208) — 4-artifact scope (compose service + module config + scrape config + alert rules + Grafana dashboard + runbook + amtool silence recipe). Fold-in of Bereket's (b) hairpin-NAT + (c) cert-expiry-non-HTTPS observations into PR; filed (a) double-pager guard as #209 follow-up — multi-layer-gap discipline applied correctly. Pattern A data point: load-bearing assertion comments per module file. Initial header-convention inversion on #208 first review (corrected via re-post by orchestrator in #208 merge cycle). Hold at 4. |
+| Nino Kavtaradze (Sec Eng) | 4 | 4 | Not actively spawned this wave. No change. |
+| Nurul Hakim (Observability Eng) | 3 | 3 | Pinged by Aisha for textfile-collector path/UID consultation on #161; did not respond inside the 5-minute window. Aisha defaulted to runbook-step recipe per orchestrator's fallback, then Bereket override-amended to cloud-init wiring per Bereket-axiom-zero (no snowflake infra). No change — single pinged-but-non-responsive signal; not enough to move trust either direction. Worth flagging to ensure she's reachable for future observability surface decisions. |
+
+### Done Well / Needs Improvement (Phase 3 Wave 1)
+
+| Member | Done Well | Needs Improvement |
+|--------|-----------|-------------------|
+| **Aisha Idrissi** (deploy SRE) | 4 PRs + 3 reviews + 3-x scope catch on #161 + dual-alert design (Failure + Stale) sharper than spec + freshness-filter pushback on #198 review (push-back-when-preference, accept-when-bug discipline) | Pattern C: 2 instances — silent-idle without team-lead handoff message at #202 PR-open + post-merge state-stale push at #210 (`684f1b2` rebase landed AFTER #210 squash merged); accepted both as Pattern C self-application |
+| **Lucas Ferreira** (deploy SRE) | 3 PRs + 4 reviews + 3 substantive bug-catches + clean self-correction within 2 min on #210 first-comment header inversion + Reality-post-#87 mapping table on #206 (honest audit against stale issue body) | Pushed #206 before #205 merged against explicit "wait" instruction; technical merit sound (textually disjoint sections of verify-deploy.yml; both PRs MERGEABLE simultaneously) but instruction-non-compliance worth retro note |
+| **Bereket Tadesse** (deploy Mgr) | 8 manager-passes + Pattern A 5-path retag-gate truth table on #201 + scope rationalization on #161 (atomic three-part Option 1 call) + cloud-init Bereket-axiom-zero override + 4-pattern retro synthesis before retro skill ran | 6 Pattern C self-violations including drift-catch failure on #210 v3 (claimed comprehensive coverage; Lucas caught the runbook L161 + compose 614-621 drift); self-named on `feedback_refresh_before_status_claim` memory but most-violation-prone role this wave |
+| **Weronika Zielinska** (PA) | Clean blackbox-exporter delivery + Pattern A load-bearing-assertion module comments + multi-layer-gap discipline on (a)/(b)/(c) review observations | Initial header-convention inversion on #208 first review (corrected via re-post in merge cycle) |
+| **Orchestrator** | 8/8 PRs landed; 9 follow-ups filed during wave (#199 #200 #203 #204 #209 #211 #212 + main#232 + main#233); Pattern A/B/C synthesis converged with Bereket's; honest acknowledgment of 1 Pattern C instance on self (2/2-cleared misclaim); 9 worktree cleanup; ontology resolved | 1 Pattern C instance (premature "2/2 cleared" status claim on #208 before reviewer count was actually verified); main#233 charter-clarification framing initially wrong — corrected after Bereket's wire-artifact verification (originally proposed 2-readings ambiguity that didn't exist; only Reading 1 in actual use) |
+
