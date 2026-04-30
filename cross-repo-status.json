@@ -102,58 +102,65 @@
   "wave_7_work": {
     "status": "complete — merged 2026-04-13"
   },
-  "owner_decision_gated": [
-    "deploy#100 — Kafka image migration off bitnami/bitnamilegacy (choose apache/kafka, confluentinc/cp-kafka, or other)",
-    "isnad-graph#840 — design-system v0.0.1→v0.0.2/v0.0.3 bump (visual regression risk)",
-    "main#211 — four TODO(santiago) markers blocking secrets-audit §3.4/3.8/3.9 (JWT custody, SSH custody, VPS env-file path, Kafka cluster ID)",
-    "main#148 — populate 12 org-secret values tonight (external consoles only owner can access)"
+  "owner_decision_gated": [],
+  "owner_decision_gated_resolved_2026_04_29": [
+    "deploy#100 — RESOLVED: apache/kafka selected. W11 analysis pass next (8 side-effects items), then implementation issue + PR. Comment: deploy#100 issuecomment-4348962093.",
+    "isnad-graph#840 — RESOLVED: Strategy (a) selected — push design-system#57 to publish to GH Packages npm registry, then bump consumers (isnad-graph#840 + new landing-page#73). All three tagged p2-wave-11. Comments: ds#57 issuecomment-4348499770, ig#840 issuecomment-4348500107.",
+    "main#211 — RESOLVED 2026-04-24: closed via PR #213 (commit a9f4133) for 3 of 4 TODO(santiago) markers; row 3 carried forward to main#212 and resolved 2026-04-29 (env-file path = /opt/noorinalabs-deploy/.env on both VPSes).",
+    "main#148 — RESOLVED 2026-04-26 for Tier A/B/C/D (15 org-scoped + 30 env-scoped on deploy stg/prod + 3 deploy-only); 0 per-repo duplicates remain. Tier E (5 PIPELINE_B2_*) deferred to W11 pending data-acquisition / ingest-platform CI.",
+    "main#212 — RESOLVED 2026-04-29: two-VPS topology fully captured (1box-stg=staging, 1box-prod=production-rebuild, env-file=/opt/noorinalabs-deploy/.env, DNS=stg-only-add-with-prod-posture-preserved). Comment: main#212 issuecomment-4348554171."
   ],
   "design-system": {
-    "latest_version": "0.0.2",
-    "status": "published",
+    "latest_version": "0.0.1",
+    "status": "published-but-source-ahead",
+    "notes": "v0.0.1 only release per `gh release list` 2026-04-29. The earlier status claim of `latest_version: 0.0.2` was stale — no v0.0.2 ever published. design-system#58 (Inter-fallback cleanup) merged into source 2026-04-21 but never published. Strategy (a) approved 2026-04-29: build #57 publish workflow → bump source to v0.0.3 → tag/publish → consumer bumps in isnad-graph#840 + landing-page#73.",
     "open_prs": 0,
     "open_issues_notable": [
-      "#57 — publish design-system to GitHub Packages npm registry (unmerged as of status last refresh)"
+      "#57 — publish to GH Packages npm registry (owner-approved 2026-04-29 for W11)"
     ],
-    "last_updated": "2026-04-24T21:30:00Z"
+    "last_updated": "2026-04-29T20:30:00Z"
   },
   "isnad-graph": {
     "status": "active — Hook 14 sync PR open",
     "open_prs": 1,
     "open_issues_notable": [
       "#815 CLOSED via W10",
-      "#840 — owner-gated design-system consumer bump"
+      "#840 — design-system consumer bump (W11, blocked on ds#57 publish; owner-decided Strategy a 2026-04-29)",
+      "#848 — tracking(ci): ignore CVE-2026-3219 in pip-audit until upstream pip fix (filed 2026-04-29 via /annunaki-attack; Load-Bearing Followups for #845)"
     ],
     "open_prs_list": [
-      "#845 — chore(hooks): sync validate_pr_ci_status (Hook 14) from parent (#194); BLOCKED: security-audit failure on CVE-2026-3219 in pip 26.0.1 (no upstream fix yet) — needs Load-Bearing Followups path: file tracking issue + add --ignore-vuln to ci.yml security-audit job"
+      "#845 — chore(hooks): sync validate_pr_ci_status (Hook 14) from parent (#194); BLOCKED: security-audit failure on CVE-2026-3219 in pip 26.0.1 (no upstream fix yet) — Load-Bearing Followups tracker filed at #848"
     ],
-    "last_updated": "2026-04-29T20:00:00Z"
+    "last_updated": "2026-04-29T20:30:00Z"
   },
   "landing-page": {
     "status": "active",
     "open_prs": 0,
-    "deploy_status": "live",
+    "deploy_status": "live (running on 1box-prod per main#212 verification 2026-04-29)",
     "open_issues_notable": [
-      "#68 OPEN — image tagging for stg/prod (W10 section A)"
+      "#68 OPEN — image tagging for stg/prod (W10 section A)",
+      "#73 OPEN — design-system consumer bump to ^0.0.3 (filed 2026-04-29; W11; sibling of isnad-graph#840; blocked on ds#57)"
     ],
-    "last_updated": "2026-04-24T21:30:00Z"
+    "last_updated": "2026-04-29T20:30:00Z"
   },
   "deploy": {
-    "status": "active — W10 section A in-flight; Phase B (stg rebuild) closed 2026-04-27; secret-provisioning PR open",
-    "open_prs": 1,
+    "status": "active — W10 section A in-flight; Phase B (stg rebuild) closed 2026-04-27; deploy#189 merged 2026-04-30",
+    "open_prs": 0,
     "open_issues_notable": [
-      "#83, #84, #85, #86, #87 — W10 section A open",
-      "#116 — W10 section B precursor (env-var inventory)",
-      "#100 — owner-decision-gated (Kafka image)",
+      "#83 — Cloudflare stg.noorinalabs.com + per-service subdomains (W10 sec A; SCOPE-CLARIFIED 2026-04-29: stg-only with TF amendment to preserve prod CF-proxied posture before apply)",
+      "#84, #85, #86, #87 — W10 section A open",
+      "#116 — W10 section B precursor (env-var inventory; main#212 supplies env-file-path row)",
+      "#100 — RESOLVED: apache/kafka selected 2026-04-29 (W11 analysis pass next per issue acceptance rule)",
       "#141, #126, #96, #93, #121, #122 — W10 section E direct blockers",
       "#173 — Phase B follow-up (6 cloud-init/module hardening gaps)",
       "#165 — single-pubkey injection (parent of #173 gap A; updated with Phase B evidence)",
-      "#188 — to-be-closed by deploy#189 merge"
+      "#137 — caddy healthcheck unhealthy on prod (re-confirmed via main#212 SSH 2026-04-29; existing tracker, no new ticket)",
+      "#188 — CLOSED 2026-04-30 by deploy#189 merge",
+      "#190 — env-write block dedup (filed by Aisha during deploy#189 review 2026-04-30)",
+      "#191 — bootstrap-vps CHANGE-ME placeholder UX (filed by Nino during deploy#189 review 2026-04-30)"
     ],
-    "open_prs_list": [
-      "#189 — infra(secrets): provision BACKUP_B2_* end-to-end (closes #188); GREEN CI, MERGEABLE, awaiting 2 peer reviews from deploy roster"
-    ],
-    "last_updated": "2026-04-29T20:00:00Z"
+    "open_prs_list": [],
+    "last_updated": "2026-04-30T00:30:00Z"
   },
   "data-acquisition": {
     "status": "active",
@@ -176,27 +183,34 @@
     "last_updated": "2026-04-24T21:30:00Z"
   },
   "noorinalabs-main": {
-    "status": "active — W10 coordination; W11 backlog accumulating (10+ p2-wave-11 candidates)",
+    "status": "active — W10 coordination; W11 backlog accumulating",
     "open_prs": 0,
     "open_issues_notable": [
       "#141 — W10 meta (OPEN)",
-      "#148 — W10 secrets migration precursor (OPEN, partially executed 2026-04-23)",
+      "#148 — W11 carry-forward (Tier A-D done 2026-04-26; only Tier E PIPELINE_B2_* deferred pending data-acq/ingest CI)",
       "#194 — W10 section D, Hook 14 fan-out, in flight via isnad-graph#845",
       "#195, #182 — W10 section D retro-mandated, OPEN",
-      "#211 — owner-gated TODO(santiago) markers, 3 of 4 resolved 2026-04-29 (#213 merged via main commit a9f4133), 1 remaining",
-      "#212 — owner-gated two-VPS topology discussion",
-      "#214–#224 — 11 p2-wave-11 tech-debt/audit candidates accumulated since W10 mid-cycle"
+      "#211 — CLOSED 2026-04-24 (PR #213); row 3 fully resolved 2026-04-29 via #212 walkthrough",
+      "#212 — RESOLVED 2026-04-29: full topology captured; remaining work = small W11 doc-sweep PR for §3.0.a TODO marker",
+      "#214–#224 — p2-wave-11 tech-debt/audit candidates"
     ],
     "p2_wave_11_candidates_filed_2026_04_29": [
       "#223 — block_no_verify substring false-positive (annunaki-attack, sibling of #216)",
-      "#224 — Steven French roster email typo (annunaki-attack, applied as fix in this session)"
+      "#224 — Steven French roster email typo (annunaki-attack; applied as fix this session, CLOSED)"
     ],
-    "last_updated": "2026-04-29T20:00:00Z"
+    "last_updated": "2026-04-30T00:30:00Z"
   },
   "session_2026_04_29_summary": {
     "ontology_rebuild": "27 dirty → 10 stale aino-* worktree paths pruned, 17 ingest-platform team / aino-ig-0194 / draft files marked resolved (commit 7d3088b)",
     "annunaki_sweep": "83 errors deduplicated to 30 unique groups; 27 noise (hooks working as designed), 3 actionable: #223 filed, #224 filed + applied, #216 evidence comment added",
     "roster_fix": "Applied #224 inline this session: parameterization → parametrization for Steven French in parent roster.json (only place affected — child rosters do not list owner)",
-    "owner_decisions_pending_walkthrough": "User to walk through owner-gated items in next message: deploy#100, isnad-graph#840, main#211 (1 remaining TODO), main#148 (12 secret values)"
+    "owner_decisions_pending_walkthrough": "RESOLVED — full walkthrough completed in this session. See owner_decision_gated_resolved_2026_04_29 array.",
+    "deploy_189_merged": "Reviewed by Aisha (SRE) + Nino (security), 2 follow-up tech-debts filed (#190 env-write dedup, #191 CHANGE-ME UX), squash merge 28e80edf at 2026-04-30T00:07Z to wave-10 branch, #188 manually closed (wave-branch merges don't auto-close).",
+    "isnad_graph_845_diagnosed": "security-audit blocked on CVE-2026-3219 in pip 26.0.1 (no upstream fix). Tracking issue isnad-graph#848 filed; small W11 PR will add --ignore-vuln per Load-Bearing Followups.",
+    "owner_walkthrough_outcomes": {
+      "design_system_57_840_landing73": "Strategy (a) — build publish workflow, publish v0.0.3, parallel consumer bumps in isnad-graph + landing-page. All tagged p2-wave-11.",
+      "main_212": "Stg=staging, prod=production (rebuild, no preserve), env-file=/opt/noorinalabs-deploy/.env, DNS=stg-only-add with TF amendment to preserve prod CF-proxied posture before deploy#83 apply.",
+      "deploy_100": "apache/kafka selected. W11 analysis pass (8 side-effects items) before implementation issue is filed."
+    }
   }
 }
