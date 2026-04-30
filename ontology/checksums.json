@@ -200,10 +200,10 @@
       "tracked_at": "2026-04-16T21:36:05.052302+00:00"
     },
     "cross-repo-status.json": {
-      "last_resolved": "6f49c57ba6c18a61967c99a9fb323efc24f610f3c89336e586ff7de8298e61b7",
-      "last_tracked": "6f49c57ba6c18a61967c99a9fb323efc24f610f3c89336e586ff7de8298e61b7",
-      "resolved_at": "2026-04-28T02:37:45.326465+00:00",
-      "tracked_at": "2026-04-27T04:01:16.453622+00:00"
+      "last_tracked": "21cdd59692b03295588c66222caa9bc372f90f41668228355840846584490ce6",
+      "last_resolved": "21cdd59692b03295588c66222caa9bc372f90f41668228355840846584490ce6",
+      "tracked_at": "2026-04-29T23:58:05.149710+00:00",
+      "resolved_at": "2026-04-29T23:59:35.101790Z"
     },
     "dependencies.yml": {
       "last_resolved": "f4b53ffd3e1f81e055130ae2f53ff08ba9b5f651782434bbf3ac8b3eab4276e8",
@@ -624,6 +624,12 @@
       "last_resolved": "e5004b0097522789de12d087ed242b0d8161f1a993a9aae0fa4c246b8ae654a7",
       "tracked_at": "2026-04-28T13:32:19.516556+00:00",
       "resolved_at": "2026-04-29T23:42:13.267098Z"
+    },
+    ".claude/team/roster.json": {
+      "last_tracked": "5640a48b771d4fb1fb71b81e7d4701e0513ab64baaa5d8b360604674e1ebcfe0",
+      "last_resolved": "5640a48b771d4fb1fb71b81e7d4701e0513ab64baaa5d8b360604674e1ebcfe0",
+      "tracked_at": "2026-04-29T23:56:46.673864+00:00",
+      "resolved_at": "2026-04-29T23:59:35.101790Z"
     }
   },
   "last_cleanup": {
