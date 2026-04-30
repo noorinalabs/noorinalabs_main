@@ -6,10 +6,10 @@
   "last_completed_wave": "wave-9",
   "last_completed_at": "2026-04-23T00:00:00Z",
   "wave_started": "2026-04-23T00:00:00Z",
-  "last_updated": "2026-04-24T21:30:00Z",
+  "last_updated": "2026-04-29T20:00:00Z",
   "deployments_branch": "deployments/phase-2/wave-10",
-  "wave_branch_status": "wave-9 retro merged 2026-04-23 (commit 28348fe). wave-10 active — stg/prod environment split + promotion pathway (meta: main#141, section A kickoff 2026-04-23).",
-  "open_prs_total": 0,
+  "wave_branch_status": "wave-9 retro merged 2026-04-23 (commit 28348fe). wave-10 active — stg/prod environment split + promotion pathway (meta: main#141). Phase B (stg fresh-start rebuild) closed 2026-04-27: out-of-band Hetzner delete + fresh TF apply via envs/stg/, IP retained at 87.99.137.225 (lucky reallocation), 6 cloud-init/module gaps surfaced and tracked at deploy#173, chomp() PR deploy#174 CLOSED unmerged (superseded). Hook 14 sync fan-out (#194) in progress: isnad-graph#845 OPEN (security-audit blocked on CVE-2026-3219 in pip 26.0.1, no upstream fix yet); deploy#189 OPEN (BACKUP_B2_* secret-provisioning, GREEN, awaiting 2 peer reviews).",
+  "open_prs_total": 2,
   "historical_phases": {
     "note": "wave-c phase tracking (phases 1-4) is superseded by phase-2 wave numbering",
     "wave_c_status": "complete — all tracked work merged or superseded"
@@ -52,8 +52,32 @@
       "deploy#121 — backup service reads stale path (pre-#86 cutover)",
       "deploy#122 — bootstrap-vps.sh:191 stale --build hint"
     ],
-    "open_prs": [],
-    "secrets_migration_tonight": "2026-04-23 scope: 6 of 8 Tier-B sections (§3.1, 3.2, 3.3, 3.5, 3.6, 3.7). §3.4 JWT + §3.8 SSH + §3.9 Tier C deferred to weekend pending main#211 TODO(santiago) resolution. Runbook: docs/secrets-audit-2026-04-24.md. Draft runbook: .claude/drafts/secrets-migration-tonight-2026-04-23.md."
+    "open_prs": ["deploy#174 — chomp() ssh pubkey fix (extends #173 gap A; validated against stg via Phase B)"],
+    "secrets_migration_tonight": "2026-04-23 scope: 6 of 8 Tier-B sections (§3.1, 3.2, 3.3, 3.5, 3.6, 3.7). §3.4 JWT + §3.8 SSH + §3.9 Tier C deferred to weekend pending main#211 TODO(santiago) resolution. Runbook: docs/secrets-audit-2026-04-24.md. Draft runbook: .claude/drafts/secrets-migration-tonight-2026-04-23.md.",
+    "phase_b_outcome": {
+      "completed": "2026-04-27T03:55:00Z",
+      "scope": "Stg fresh-start rebuild as Phase C dry-run (out-of-band Hetzner delete + fresh TF apply, no IP preservation)",
+      "results": [
+        "stg VPS rebuilt clean: noorinalabs-stg id 128100194, cpx21, 87.99.137.225 (same IP retained via lucky pool reallocation), fresh cloud-init",
+        "TF state at hetzner/stg.tfstate (legacy hetzner/terraform.tfstate cleaned)",
+        "vars.VPS_HOST env-scope set to 87.99.137.225 on staging (was empty); orphan DEPLOY_VPS_IP env-secret deleted",
+        "production env-scope cleanup deferred (vars.VPS_HOST still empty + DEPLOY_VPS_IP orphan still exists)",
+        "noorinalabs_deploy.pub manually appended to /home/deploy/.ssh/authorized_keys post-cloud-init (deploy#82 multi-key gap workaround)"
+      ],
+      "phase_c_plan_correction": "ORIGINAL plan said 'terraform destroy prod'. CORRECTED: prod is hand-made (noorinalabs-1box-prod, id 124917846, 87.99.134.161), NOT in any TF state. Phase C must use Hetzner-API delete (same technique as Phase B) + apply via envs/prod/. Phase C also depends on wave-10 merging to main first (deploy-prod.yml + cloudflare prod TF live on wave-10 only).",
+      "follow_up_artifacts": [
+        "deploy#173 — 6 cloud-init/module hardening gaps documented (chomp permadrift, write_files-vs-users, sshd vs ssh on 24.04, debconf whiptail, ephemeral CI key path, async-delete poll, fingerprint-precheck)",
+        "deploy#174 — chomp() PR (gap A from #173, validated against stg)",
+        "Comment added to deploy#165 with empirical evidence on cloud-init multi-key gap"
+      ],
+      "cpx21_capacity_signal": "Bare-system baseline captured: 3.7 GiB total, 3.2 GiB available, no swap, 225 MiB system overhead. Full-stack signal deferred to organic auto-deploy that fires when wave-10 merges to main. Aisha estimate: full deploy stack likely needs 3.5-4.5 GiB; cpx21 may not fit.",
+      "owner_followups_post_phase_b": [
+        "After wave-10 merges to main: capture cpx21 fit verdict from natural auto-deploy; decide cpx21-keeps-shrinking-prod vs upsize-stg-to-cpx41",
+        "Production env-scope: set vars.VPS_HOST=87.99.134.161 + delete orphan DEPLOY_VPS_IP env-secret (when ready to make prod-deploy work)",
+        "SSH config IdentitiesOnly bug fix (workstation-side tech-debt)",
+        "Phase C runbook draft incorporating Phase B's 6 gaps + async-delete poll + fingerprint-precheck"
+      ]
+    }
   },
   "wave_9_work": {
     "theme": "Data pipeline + user-service cutover + deploy infra",
@@ -94,13 +118,16 @@
     "last_updated": "2026-04-24T21:30:00Z"
   },
   "isnad-graph": {
-    "status": "active",
-    "open_prs": 0,
+    "status": "active — Hook 14 sync PR open",
+    "open_prs": 1,
     "open_issues_notable": [
       "#815 CLOSED via W10",
       "#840 — owner-gated design-system consumer bump"
     ],
-    "last_updated": "2026-04-24T21:30:00Z"
+    "open_prs_list": [
+      "#845 — chore(hooks): sync validate_pr_ci_status (Hook 14) from parent (#194); BLOCKED: security-audit failure on CVE-2026-3219 in pip 26.0.1 (no upstream fix yet) — needs Load-Bearing Followups path: file tracking issue + add --ignore-vuln to ci.yml security-audit job"
+    ],
+    "last_updated": "2026-04-29T20:00:00Z"
   },
   "landing-page": {
     "status": "active",
@@ -112,15 +139,21 @@
     "last_updated": "2026-04-24T21:30:00Z"
   },
   "deploy": {
-    "status": "active — W10 section A in-flight",
-    "open_prs": 0,
+    "status": "active — W10 section A in-flight; Phase B (stg rebuild) closed 2026-04-27; secret-provisioning PR open",
+    "open_prs": 1,
     "open_issues_notable": [
       "#83, #84, #85, #86, #87 — W10 section A open",
       "#116 — W10 section B precursor (env-var inventory)",
       "#100 — owner-decision-gated (Kafka image)",
-      "#141, #126, #96, #93, #121, #122 — W10 section E direct blockers"
+      "#141, #126, #96, #93, #121, #122 — W10 section E direct blockers",
+      "#173 — Phase B follow-up (6 cloud-init/module hardening gaps)",
+      "#165 — single-pubkey injection (parent of #173 gap A; updated with Phase B evidence)",
+      "#188 — to-be-closed by deploy#189 merge"
     ],
-    "last_updated": "2026-04-24T21:30:00Z"
+    "open_prs_list": [
+      "#189 — infra(secrets): provision BACKUP_B2_* end-to-end (closes #188); GREEN CI, MERGEABLE, awaiting 2 peer reviews from deploy roster"
+    ],
+    "last_updated": "2026-04-29T20:00:00Z"
   },
   "data-acquisition": {
     "status": "active",
@@ -143,15 +176,27 @@
     "last_updated": "2026-04-24T21:30:00Z"
   },
   "noorinalabs-main": {
-    "status": "active — W10 coordination + secrets migration tonight",
+    "status": "active — W10 coordination; W11 backlog accumulating (10+ p2-wave-11 candidates)",
     "open_prs": 0,
     "open_issues_notable": [
       "#141 — W10 meta (OPEN)",
-      "#148 — W10 secrets migration precursor (OPEN, tonight's scope)",
-      "#194, #195, #182 — W10 section D retro-mandated",
-      "#211 — owner-gated TODO(santiago) markers",
-      "#200-210 — tech-debt, several tagged p2-wave-11"
+      "#148 — W10 secrets migration precursor (OPEN, partially executed 2026-04-23)",
+      "#194 — W10 section D, Hook 14 fan-out, in flight via isnad-graph#845",
+      "#195, #182 — W10 section D retro-mandated, OPEN",
+      "#211 — owner-gated TODO(santiago) markers, 3 of 4 resolved 2026-04-29 (#213 merged via main commit a9f4133), 1 remaining",
+      "#212 — owner-gated two-VPS topology discussion",
+      "#214–#224 — 11 p2-wave-11 tech-debt/audit candidates accumulated since W10 mid-cycle"
     ],
-    "last_updated": "2026-04-24T21:30:00Z"
+    "p2_wave_11_candidates_filed_2026_04_29": [
+      "#223 — block_no_verify substring false-positive (annunaki-attack, sibling of #216)",
+      "#224 — Steven French roster email typo (annunaki-attack, applied as fix in this session)"
+    ],
+    "last_updated": "2026-04-29T20:00:00Z"
+  },
+  "session_2026_04_29_summary": {
+    "ontology_rebuild": "27 dirty → 10 stale aino-* worktree paths pruned, 17 ingest-platform team / aino-ig-0194 / draft files marked resolved (commit 7d3088b)",
+    "annunaki_sweep": "83 errors deduplicated to 30 unique groups; 27 noise (hooks working as designed), 3 actionable: #223 filed, #224 filed + applied, #216 evidence comment added",
+    "roster_fix": "Applied #224 inline this session: parameterization → parametrization for Steven French in parent roster.json (only place affected — child rosters do not list owner)",
+    "owner_decisions_pending_walkthrough": "User to walk through owner-gated items in next message: deploy#100, isnad-graph#840, main#211 (1 remaining TODO), main#148 (12 secret values)"
   }
 }
