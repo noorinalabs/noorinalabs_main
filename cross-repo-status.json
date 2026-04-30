@@ -6,10 +6,10 @@
   "last_completed_wave": "wave-9",
   "last_completed_at": "2026-04-23T00:00:00Z",
   "wave_started": "2026-04-23T00:00:00Z",
-  "last_updated": "2026-04-29T20:00:00Z",
+  "last_updated": "2026-04-30T03:25:00Z",
   "deployments_branch": "deployments/phase-2/wave-10",
-  "wave_branch_status": "wave-9 retro merged 2026-04-23 (commit 28348fe). wave-10 active — stg/prod environment split + promotion pathway (meta: main#141). Phase B (stg fresh-start rebuild) closed 2026-04-27: out-of-band Hetzner delete + fresh TF apply via envs/stg/, IP retained at 87.99.137.225 (lucky reallocation), 6 cloud-init/module gaps surfaced and tracked at deploy#173, chomp() PR deploy#174 CLOSED unmerged (superseded). Hook 14 sync fan-out (#194) in progress: isnad-graph#845 OPEN (security-audit blocked on CVE-2026-3219 in pip 26.0.1, no upstream fix yet); deploy#189 OPEN (BACKUP_B2_* secret-provisioning, GREEN, awaiting 2 peer reviews).",
-  "open_prs_total": 2,
+  "wave_branch_status": "wave-9 retro merged 2026-04-23 (commit 28348fe). wave-10 active — stg/prod environment split + promotion pathway (meta: main#141). Phase B (stg fresh-start rebuild) closed 2026-04-27. Hook 14 sync fan-out main#194 CLOSED 2026-04-30T02:57Z (7 of 7 child repos covered; isnad-graph#845 merged after fast-follow #850 cherry-picked pip 26.0.1→26.1 from #847 to main, clearing CVE-2026-3219). user-service#61 CLOSED 2026-04-30T03:04Z (PR #87 — GHCR Publish PR-trigger fix; Anya Approved arch, Idris Changes-Requested then Approved on Q2 env-var script-injection fix). Phase C VPS decom (deploy#86) dispatched to remote routine trig_01Bif8T51pdaYFjkbM5bERyL — fires every 2 days at 13:00 UTC, kicks off when wave-10 wraps to main and 5 prereqs verify.",
+  "open_prs_total": 0,
   "historical_phases": {
     "note": "wave-c phase tracking (phases 1-4) is superseded by phase-2 wave numbering",
     "wave_c_status": "complete — all tracked work merged or superseded"
@@ -23,32 +23,27 @@
       "deploy#117 — terraform/cloudflare module (section B precursor)",
       "deploy#118 — cloud-init VPS baseline (section B precursor)",
       "isnad-graph#815 — image tagging for stg/prod promotion",
-      "user-service#63 — alembic merge migration (unblocks deploy#85 live gate)"
+      "user-service#63 — alembic merge migration (unblocks deploy#85 live gate)",
+      "user-service#61 — GHCR Publish on PR trigger (closed 2026-04-30 via PR #87)"
     ],
     "section_a_open": [
-      "deploy#86 — decommission hand-made isnad-graph-prod VPS (Phase C cutover; well-scoped after main#212 walkthrough 2026-04-29)",
-      "user-service#61 — GHCR Publish workflow must trigger on PRs"
+      "deploy#86 — decommission hand-made noorinalabs-1box-prod VPS (Phase C cutover; DISPATCHED to routine trig_01Bif8T51pdaYFjkbM5bERyL — kicks off after wave-10 → main wrap when 5 prereqs verify)"
     ],
-    "section_a_closure_correction_2026_04_29": "Earlier session refresh listed 8 items as open; live verification 2026-04-30T00:45 shows 6 of 8 closed (deploy#83/#84/#85 closed 2026-04-27; deploy#87 closed 2026-04-28; user-service#64 closed 2026-04-27; landing-page#68 closed 2026-04-27). Only #86 (Phase C) and user-service#61 (CI bug) actually open.",
-    "section_a_apply_followup_filed_2026_04_29": "deploy#192 — apply Cloudflare stg subdomain tree (with prod-posture-preserving TF amendment). Not part of original section A; filed as the apply-lifecycle counterpart to closed deploy#83 (which covered the code-write only).",
+    "section_a_apply_followup_filed_2026_04_29": "deploy#192 — apply Cloudflare stg subdomain tree (with prod-posture-preserving TF amendment). Not part of original section A; filed as the apply-lifecycle counterpart to closed deploy#83 (which covered the code-write only). Currently UNLABELED p2-wave-10 — verify intended wave.",
     "section_b_precursors_open": [
-      "deploy#116 — inventory all env vars across repos/envs",
-      "main#148 — migrate overlapping repo-level GH secrets to org-level scope (secrets-audit runbook in docs/secrets-audit-2026-04-24.md)"
+      "deploy#116 — inventory all env vars across repos/envs (currently UNLABELED p2-wave-10 — verify)",
+      "main#148 — RESOLVED 2026-04-26 for Tier A-D; Tier E PIPELINE_B2_* deferred to W11"
     ],
     "section_d_retro_mandated_open": [
-      "main#195 — validate_wave_audit hook",
-      "main#194 — sync validate_pr_ci_status.py (Hook 14) to 7 child repos",
-      "main#182 — investigate branch-protection gating (PR #178 merged with red CI)"
+      "main#182 — investigate branch-protection gating (PR #178 merged with red CI). LAST OPEN of 3 — main#194 CLOSED 2026-04-30, main#195 CLOSED 2026-04-28 via #218."
     ],
     "section_e_direct_blockers_open": [
-      "deploy#141 — alembic in compose up (init container)",
-      "deploy#126 — rotate USER_REDIS/POSTGRES passwords to URL-safe",
-      "deploy#96 — compose-validate paths-filter watches workflows/*",
-      "deploy#93 — TF bootstrap runbook (key-provisioning prereqs)",
-      "deploy#121 — backup service reads stale path (pre-#86 cutover)",
-      "deploy#122 — bootstrap-vps.sh:191 stale --build hint"
+      "deploy#126 — rotate USER_REDIS/POSTGRES passwords to URL-safe (still p2-wave-10)"
     ],
-    "open_prs": ["deploy#174 — chomp() ssh pubkey fix (extends #173 gap A; validated against stg via Phase B)"],
+    "section_e_direct_blockers_closed_or_relabeled": [
+      "deploy#141, #96, #93, #121, #122 — closed or retagged out of p2-wave-10 since last refresh; verify per-issue"
+    ],
+    "open_prs": [],
     "secrets_migration_tonight": "2026-04-23 scope: 6 of 8 Tier-B sections (§3.1, 3.2, 3.3, 3.5, 3.6, 3.7). §3.4 JWT + §3.8 SSH + §3.9 Tier C deferred to weekend pending main#211 TODO(santiago) resolution. Runbook: docs/secrets-audit-2026-04-24.md. Draft runbook: .claude/drafts/secrets-migration-tonight-2026-04-23.md.",
     "phase_b_outcome": {
       "completed": "2026-04-27T03:55:00Z",
@@ -60,16 +55,16 @@
         "production env-scope cleanup deferred (vars.VPS_HOST still empty + DEPLOY_VPS_IP orphan still exists)",
         "noorinalabs_deploy.pub manually appended to /home/deploy/.ssh/authorized_keys post-cloud-init (deploy#82 multi-key gap workaround)"
       ],
-      "phase_c_plan_correction": "ORIGINAL plan said 'terraform destroy prod'. CORRECTED: prod is hand-made (noorinalabs-1box-prod, id 124917846, 87.99.134.161), NOT in any TF state. Phase C must use Hetzner-API delete (same technique as Phase B) + apply via envs/prod/. Phase C also depends on wave-10 merging to main first (deploy-prod.yml + cloudflare prod TF live on wave-10 only).",
+      "phase_c_plan_correction": "ORIGINAL plan said 'terraform destroy prod'. CORRECTED: prod is hand-made (noorinalabs-1box-prod, id 124917846, 87.99.134.161), NOT in any TF state. Phase C must use Hetzner-API delete (same technique as Phase B) + apply via envs/prod/. Phase C also depends on wave-10 merging to main first (deploy-prod.yml + cloudflare prod TF live on wave-10 only). DISPATCHED to routine trig_01Bif8T51pdaYFjkbM5bERyL on 2026-04-30.",
       "follow_up_artifacts": [
-        "deploy#173 — 6 cloud-init/module hardening gaps documented (chomp permadrift, write_files-vs-users, sshd vs ssh on 24.04, debconf whiptail, ephemeral CI key path, async-delete poll, fingerprint-precheck)",
-        "deploy#174 — chomp() PR (gap A from #173, validated against stg)",
+        "deploy#173 — 6 cloud-init/module hardening gaps documented",
+        "deploy#174 — chomp() PR (gap A from #173, validated against stg) — CLOSED unmerged (superseded)",
         "Comment added to deploy#165 with empirical evidence on cloud-init multi-key gap"
       ],
       "cpx21_capacity_signal": "Bare-system baseline captured: 3.7 GiB total, 3.2 GiB available, no swap, 225 MiB system overhead. Full-stack signal deferred to organic auto-deploy that fires when wave-10 merges to main. Aisha estimate: full deploy stack likely needs 3.5-4.5 GiB; cpx21 may not fit.",
       "owner_followups_post_phase_b": [
         "After wave-10 merges to main: capture cpx21 fit verdict from natural auto-deploy; decide cpx21-keeps-shrinking-prod vs upsize-stg-to-cpx41",
-        "Production env-scope: set vars.VPS_HOST=87.99.134.161 + delete orphan DEPLOY_VPS_IP env-secret (when ready to make prod-deploy work)",
+        "Production env-scope: set vars.VPS_HOST=87.99.134.161 + delete orphan DEPLOY_VPS_IP env-secret (Phase C prereq #4 + #5)",
         "SSH config IdentitiesOnly bug fix (workstation-side tech-debt)",
         "Phase C runbook draft incorporating Phase B's 6 gaps + async-delete poll + fingerprint-precheck"
       ]
@@ -100,63 +95,63 @@
   },
   "owner_decision_gated": [],
   "owner_decision_gated_resolved_2026_04_29": [
-    "deploy#100 — RESOLVED: apache/kafka selected. W11 analysis pass next (8 side-effects items), then implementation issue + PR. Comment: deploy#100 issuecomment-4348962093.",
-    "isnad-graph#840 — RESOLVED: Strategy (a) selected — push design-system#57 to publish to GH Packages npm registry, then bump consumers (isnad-graph#840 + new landing-page#73). All three tagged p2-wave-11. Comments: ds#57 issuecomment-4348499770, ig#840 issuecomment-4348500107.",
-    "main#211 — RESOLVED 2026-04-24: closed via PR #213 (commit a9f4133) for 3 of 4 TODO(santiago) markers; row 3 carried forward to main#212 and resolved 2026-04-29 (env-file path = /opt/noorinalabs-deploy/.env on both VPSes).",
-    "main#148 — RESOLVED 2026-04-26 for Tier A/B/C/D (15 org-scoped + 30 env-scoped on deploy stg/prod + 3 deploy-only); 0 per-repo duplicates remain. Tier E (5 PIPELINE_B2_*) deferred to W11 pending data-acquisition / ingest-platform CI.",
-    "main#212 — RESOLVED 2026-04-29: two-VPS topology fully captured (1box-stg=staging, 1box-prod=production-rebuild, env-file=/opt/noorinalabs-deploy/.env, DNS=stg-only-add-with-prod-posture-preserved). Comment: main#212 issuecomment-4348554171."
+    "deploy#100 — RESOLVED: apache/kafka selected. W11 analysis pass next (8 side-effects items), then implementation issue + PR.",
+    "isnad-graph#840 — RESOLVED: Strategy (a) selected — push design-system#57 to publish to GH Packages npm registry, then bump consumers (isnad-graph#840 + new landing-page#73). All three tagged p2-wave-11.",
+    "main#211 — RESOLVED 2026-04-24: closed via PR #213 (commit a9f4133) for 3 of 4 TODO(santiago) markers; row 3 carried forward to main#212 and resolved 2026-04-29.",
+    "main#148 — RESOLVED 2026-04-26 for Tier A/B/C/D (15 org-scoped + 30 env-scoped on deploy stg/prod + 3 deploy-only); 0 per-repo duplicates remain. Tier E (5 PIPELINE_B2_*) deferred to W11.",
+    "main#212 — RESOLVED 2026-04-29: two-VPS topology fully captured (1box-stg=staging, 1box-prod=production-rebuild, env-file=/opt/noorinalabs-deploy/.env, DNS=stg-only-add-with-prod-posture-preserved)."
   ],
   "design-system": {
     "latest_version": "0.0.1",
     "status": "published-but-source-ahead",
-    "notes": "v0.0.1 only release per `gh release list` 2026-04-29. The earlier status claim of `latest_version: 0.0.2` was stale — no v0.0.2 ever published. design-system#58 (Inter-fallback cleanup) merged into source 2026-04-21 but never published. Strategy (a) approved 2026-04-29: build #57 publish workflow → bump source to v0.0.3 → tag/publish → consumer bumps in isnad-graph#840 + landing-page#73.",
+    "notes": "v0.0.1 only release per `gh release list` 2026-04-29. Strategy (a) approved 2026-04-29: build #57 publish workflow → bump source to v0.0.3 → tag/publish → consumer bumps in isnad-graph#840 + landing-page#73.",
     "open_prs": 0,
     "open_issues_notable": [
       "#57 — publish to GH Packages npm registry (owner-approved 2026-04-29 for W11)"
     ],
-    "last_updated": "2026-04-29T20:30:00Z"
+    "last_updated": "2026-04-30T03:25:00Z"
   },
   "isnad-graph": {
-    "status": "active — Hook 14 sync PR open",
-    "open_prs": 1,
+    "status": "active — Hook 14 sync MERGED 2026-04-30",
+    "open_prs": 0,
     "open_issues_notable": [
-      "#815 CLOSED via W10",
-      "#840 — design-system consumer bump (W11, blocked on ds#57 publish; owner-decided Strategy a 2026-04-29)",
-      "#848 — tracking(ci): ignore CVE-2026-3219 in pip-audit until upstream pip fix (filed 2026-04-29 via /annunaki-attack; Load-Bearing Followups for #845)"
+      "#840 — design-system consumer bump (W11, blocked on ds#57 publish; owner-decided Strategy a 2026-04-29)"
     ],
-    "open_prs_list": [
-      "#845 — chore(hooks): sync validate_pr_ci_status (Hook 14) from parent (#194); BLOCKED: security-audit failure on CVE-2026-3219 in pip 26.0.1 (no upstream fix yet) — Load-Bearing Followups tracker filed at #848"
+    "open_prs_list": [],
+    "recent_closures_2026_04_30": [
+      "#845 MERGED 02:56Z — chore(hooks): sync validate_pr_ci_status (Hook 14) from parent (#194)",
+      "#850 MERGED 02:54Z — security(deps): cherry-pick pip 26.0.1→26.1 to clear CVE-2026-3219 on main (closes #849)",
+      "#849 auto-CLOSED 02:54Z (closed by #850)",
+      "#848 CLOSED 02:50Z — superseded by #850 (no `--ignore-vuln` will be added)"
     ],
-    "last_updated": "2026-04-29T20:30:00Z"
+    "last_updated": "2026-04-30T03:25:00Z"
   },
   "landing-page": {
     "status": "active",
     "open_prs": 0,
     "deploy_status": "live (running on 1box-prod per main#212 verification 2026-04-29)",
     "open_issues_notable": [
-      "#68 OPEN — image tagging for stg/prod (W10 section A)",
-      "#73 OPEN — design-system consumer bump to ^0.0.3 (filed 2026-04-29; W11; sibling of isnad-graph#840; blocked on ds#57)"
+      "#73 OPEN — design-system consumer bump to ^0.0.3 (W11; sibling of isnad-graph#840; blocked on ds#57)"
     ],
-    "last_updated": "2026-04-29T20:30:00Z"
+    "last_updated": "2026-04-30T03:25:00Z"
   },
   "deploy": {
     "status": "active — W10 section A in-flight; Phase B (stg rebuild) closed 2026-04-27; deploy#189 merged 2026-04-30",
     "open_prs": 0,
     "open_issues_notable": [
-      "#83 — Cloudflare stg.noorinalabs.com + per-service subdomains (W10 sec A; SCOPE-CLARIFIED 2026-04-29: stg-only with TF amendment to preserve prod CF-proxied posture before apply)",
-      "#84, #85, #86, #87 — W10 section A open",
-      "#116 — W10 section B precursor (env-var inventory; main#212 supplies env-file-path row)",
-      "#100 — RESOLVED: apache/kafka selected 2026-04-29 (W11 analysis pass next per issue acceptance rule)",
-      "#141, #126, #96, #93, #121, #122 — W10 section E direct blockers",
+      "#86 — Phase C VPS decom (DISPATCHED to routine trig_01Bif8T51pdaYFjkbM5bERyL)",
+      "#126 — rotate USER_REDIS/POSTGRES passwords to URL-safe (W10 active)",
+      "#170 — narrow CLOUDFLARE_API_TOKEN scope to noorinalabs.com only (W10 security)",
+      "#172 — verify B2 state bucket has SSE-B2 encryption (W10 security)",
+      "#151 — [MANUAL] TF state migration hetzner/terraform.tfstate → hetzner/prod.tfstate (post-#150 merge)",
+      "#100 — RESOLVED: apache/kafka selected 2026-04-29 (W11 analysis pass next)",
       "#173 — Phase B follow-up (6 cloud-init/module hardening gaps)",
-      "#165 — single-pubkey injection (parent of #173 gap A; updated with Phase B evidence)",
-      "#137 — caddy healthcheck unhealthy on prod (re-confirmed via main#212 SSH 2026-04-29; existing tracker, no new ticket)",
-      "#188 — CLOSED 2026-04-30 by deploy#189 merge",
-      "#190 — env-write block dedup (filed by Aisha during deploy#189 review 2026-04-30)",
-      "#191 — bootstrap-vps CHANGE-ME placeholder UX (filed by Nino during deploy#189 review 2026-04-30)"
+      "#137 — caddy healthcheck unhealthy on prod (existing tracker)",
+      "#190 — env-write block dedup (Aisha during deploy#189 review 2026-04-30)",
+      "#191 — bootstrap-vps CHANGE-ME placeholder UX (Nino during deploy#189 review 2026-04-30)"
     ],
     "open_prs_list": [],
-    "last_updated": "2026-04-30T00:30:00Z"
+    "last_updated": "2026-04-30T03:25:00Z"
   },
   "data-acquisition": {
     "status": "active",
@@ -169,45 +164,52 @@
     "last_updated": "2026-04-24T21:30:00Z"
   },
   "user-service": {
-    "status": "active — W10 section A in-flight",
+    "status": "active — W10 section A item #61 closed 2026-04-30",
     "open_prs": 0,
     "open_issues_notable": [
-      "#63 CLOSED — alembic merge migration (unblocks deploy#85 live gate)",
-      "#64 OPEN — image tagging for stg/prod",
-      "#61 OPEN — GHCR Publish on PR trigger"
+      "#84 — provision DEPLOY_REPO_PAT secret for notify-deploy job (US#83 follow-up; W10)",
+      "#81 — tech-debt(ci): ci.yml trigger doesn't fire on deployments/** branches — W10 PRs bypass CI"
     ],
-    "last_updated": "2026-04-24T21:30:00Z"
+    "recent_closures_2026_04_30": [
+      "#87 MERGED 03:04Z — fix(ci): trigger GHCR Publish on pull_request for pre-merge Trivy validation (closes #61)",
+      "#61 auto-CLOSED 03:04Z"
+    ],
+    "last_updated": "2026-04-30T03:25:00Z"
   },
   "noorinalabs-main": {
-    "status": "active — W10 coordination; W11 backlog accumulating",
+    "status": "active — W10 coordination; Hook 14 fan-out closed; W11 backlog accumulating",
     "open_prs": 0,
     "open_issues_notable": [
-      "#141 — W10 meta (OPEN)",
-      "#148 — W11 carry-forward (Tier A-D done 2026-04-26; only Tier E PIPELINE_B2_* deferred pending data-acq/ingest CI)",
-      "#194 — W10 section D, Hook 14 fan-out, in flight via isnad-graph#845",
-      "#195, #182 — W10 section D retro-mandated, OPEN",
-      "#211 — CLOSED 2026-04-24 (PR #213); row 3 fully resolved 2026-04-29 via #212 walkthrough",
-      "#212 — RESOLVED 2026-04-29: full topology captured; remaining work tracked at #225 (small doc sweep)",
-      "#214–#225 — p2-wave-11 tech-debt/audit candidates (incl. #225 secrets-audit doc sweep filed 2026-04-29)"
+      "#141 — W10 meta (OPEN; auto-resolves on wave wrap)",
+      "#182 — W10 section D last open: investigate branch-protection gating (PR #178 merged red)",
+      "#212 — RESOLVED 2026-04-29: full topology captured; remaining work tracked at #225",
+      "#214–#226 — p2-wave-11 tech-debt/audit candidates (latest: #226 matcher-substring sibling)"
     ],
-    "p2_wave_11_candidates_filed_2026_04_29": [
+    "p2_wave_11_candidates_filed_recent": [
       "#223 — block_no_verify substring false-positive (annunaki-attack, sibling of #216)",
-      "#224 — Steven French roster email typo (annunaki-attack; applied as fix this session, CLOSED)",
-      "#225 — secrets-audit doc sweep (§3.0.a row 3 TODO marker + §3.4/§3.8 back-references; deferred from main#212 walkthrough)"
+      "#224 — Steven French roster email typo (annunaki-attack; CLOSED — applied as fix)",
+      "#225 — secrets-audit doc sweep (§3.0.a row 3 TODO marker + §3.4/§3.8 back-references)",
+      "#226 — validate_commit_identity matcher slurps unquoted -c user.email value (sibling of #216 #223 #134 #118; filed 2026-04-30 with Idris repro + meta-instance: label-validator slurped body-file path while filing #226 itself)"
     ],
-    "last_updated": "2026-04-30T00:30:00Z"
+    "recent_closures_2026_04_30": [
+      "#194 CLOSED 02:57Z — Hook 14 fan-out fully complete (7/7 child repos)"
+    ],
+    "last_updated": "2026-04-30T03:25:00Z"
   },
-  "session_2026_04_29_summary": {
-    "ontology_rebuild": "27 dirty → 10 stale aino-* worktree paths pruned, 17 ingest-platform team / aino-ig-0194 / draft files marked resolved (commit 7d3088b)",
-    "annunaki_sweep": "83 errors deduplicated to 30 unique groups; 27 noise (hooks working as designed), 3 actionable: #223 filed, #224 filed + applied, #216 evidence comment added",
-    "roster_fix": "Applied #224 inline this session: parameterization → parametrization for Steven French in parent roster.json (only place affected — child rosters do not list owner)",
-    "owner_decisions_pending_walkthrough": "RESOLVED — full walkthrough completed in this session. See owner_decision_gated_resolved_2026_04_29 array.",
-    "deploy_189_merged": "Reviewed by Aisha (SRE) + Nino (security), 2 follow-up tech-debts filed (#190 env-write dedup, #191 CHANGE-ME UX), squash merge 28e80edf at 2026-04-30T00:07Z to wave-10 branch, #188 manually closed (wave-branch merges don't auto-close).",
-    "isnad_graph_845_diagnosed": "security-audit blocked on CVE-2026-3219 in pip 26.0.1 (no upstream fix). Tracking issue isnad-graph#848 filed; small W11 PR will add --ignore-vuln per Load-Bearing Followups.",
-    "owner_walkthrough_outcomes": {
-      "design_system_57_840_landing73": "Strategy (a) — build publish workflow, publish v0.0.3, parallel consumer bumps in isnad-graph + landing-page. All tagged p2-wave-11.",
-      "main_212": "Stg=staging, prod=production (rebuild, no preserve), env-file=/opt/noorinalabs-deploy/.env, DNS=stg-only-add with TF amendment to preserve prod CF-proxied posture before deploy#83 apply.",
-      "deploy_100": "apache/kafka selected. W11 analysis pass (8 side-effects items) before implementation issue is filed."
-    }
+  "session_2026_04_30_summary": {
+    "hook_14_fan_out_completed": "main#194 closed; isnad-graph#845 merged after #850 (cherry-pick pip 26.1 from wave-10 #847 to main) cleared CVE-2026-3219 security-audit blocker; #848 superseded; 7/7 child repos covered (deploy + isnad-graph copy-resident; design-system + data-acquisition + landing-page + user-service + ingest-platform parent-canonical). Pattern split rationalized by W11 #214.",
+    "user_service_61_closed": "PR #87 merged 03:04Z. Anya Approved (architecture). Idris Changes-Requested on Q2 (script-injection sink in Resolve-Trivy-image-reference step text-substituting `${{ steps.meta.outputs.tags }}` into shell), Mateo applied env-var fix verbatim, Idris re-Approved. Self-validating: build-and-push workflow ran on the PR itself, GREEN.",
+    "phase_c_dispatched": "deploy#86 routine trig_01Bif8T51pdaYFjkbM5bERyL created. Cron 0 13 */2 * * (every 2 days at 9am ET DST). First run 2026-05-01T13:04Z. Branches: A (#86 closed→dormant), B (wave-10 still active→retry), C (wave-10 wrapped+#86 open→verify 5 prereqs→spawn deploy implementer for cutover). Hetzner-API delete + envs/prod TF apply (NOT terraform destroy — corrected plan).",
+    "matcher_substring_family_extended": "Idris's hook-trip during isnad-graph#850 commit attempt (greedy regex on -c user.email=value with no closing-quote fallback) filed as main#226 — sibling of #216 (block_git_config / heredoc) #223 (block_no_verify / heredoc) #134 #118. Body includes meta-instance: filing #226 itself tripped the dispatcher's label-validator (parsed body-file path as label). All same root anti-pattern; suggested fix shape: shared sanitization helper.",
+    "agents_spawned_this_session": "5 — Idris Yusuf (isnad-graph + user-service security), Mateo Salazar (user-service eng, two passes), Anya Kowalczyk (isnad-graph TL), Anya Kowalczyk - user-service (TL), Jelani Mwangi (isnad-graph DevOps Architect). All wound down clean.",
+    "items_remaining_in_w10": [
+      "user-service#84 — DEPLOY_REPO_PAT secret",
+      "user-service#81 — ci.yml deployments/** trigger gap",
+      "deploy#126 — password rotation",
+      "deploy#170 — Cloudflare token scope narrow",
+      "deploy#172 — B2 state bucket SSE",
+      "deploy#151 — [MANUAL] TF state migration",
+      "main#182 — branch-protection gating investigation"
+    ]
   }
 }
