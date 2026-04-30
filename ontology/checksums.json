@@ -182,10 +182,10 @@
       "tracked_at": "2026-04-22T02:53:25.065010+00:00"
     },
     "CLAUDE.md": {
-      "last_resolved": "fc33f42e4f80a14fad7ec9de07de304bff3b0cfb1e9016ea3b3b3ccbaf493dde",
-      "last_tracked": "fc33f42e4f80a14fad7ec9de07de304bff3b0cfb1e9016ea3b3b3ccbaf493dde",
-      "resolved_at": "2026-04-21T01:14:29.412621+00:00",
-      "tracked_at": "2026-04-19T22:30:10.380074+00:00"
+      "last_tracked": "bfc77a5f81fad7cb2c3d427f85b6b5c6a0ac9d44f8da4da31a1c529630c9bea8",
+      "last_resolved": "bfc77a5f81fad7cb2c3d427f85b6b5c6a0ac9d44f8da4da31a1c529630c9bea8",
+      "tracked_at": "2026-04-30T22:05:07.402036+00:00",
+      "resolved_at": "2026-04-30T23:20:21.264004+00:00"
     },
     "Makefile": {
       "last_resolved": "ab83cf7d5b737362e62fe74382f1a56fb36d7610ca6e69369f51b454b980fafe",
@@ -200,9 +200,9 @@
       "tracked_at": "2026-04-16T21:36:05.052302+00:00"
     },
     "cross-repo-status.json": {
-      "last_tracked": "46d16a60384810dfec57f366db2b7e8663badeaa640a9f2a5bdb3569567fb22a",
+      "last_tracked": "742815a8ce400375ab233de5ce6212e55d2612ff42e0f21b9d1a4edd8fb27640",
       "last_resolved": "46d16a60384810dfec57f366db2b7e8663badeaa640a9f2a5bdb3569567fb22a",
-      "tracked_at": "2026-04-30T21:42:28.768817+00:00",
+      "tracked_at": "2026-04-30T23:21:15.777783+00:00",
       "resolved_at": "2026-04-30T21:45:22.232993+00:00"
     },
     "dependencies.yml": {
@@ -513,9 +513,9 @@
     },
     "ontology/repos/user-service.yaml": {
       "last_tracked": "c65db1d071a6995d3781272054b305247b7c00230d39294612ccdb6361df681c",
-      "last_resolved": "e0612f0417e483e219aaacbc3621a7062e9849969919a520db7fb12e145e6d9a",
+      "last_resolved": "c65db1d071a6995d3781272054b305247b7c00230d39294612ccdb6361df681c",
       "tracked_at": "2026-04-30T21:45:14.854949+00:00",
-      "resolved_at": "2026-04-24T01:27:45.382939+00:00"
+      "resolved_at": "2026-04-30T23:20:21.264004+00:00"
     },
     "ontology/services.yaml": {
       "last_resolved": "ec477dffc7b92ddb367af3f3cee17ff5e84f3962d43a83a2faa58234d8e4b72a",

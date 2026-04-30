@@ -6,7 +6,9 @@
   "last_completed_wave": "wave-10",
   "last_completed_at": "2026-04-30T20:47:41Z",
   "wave_started": "2026-04-30T21:00:00Z",
-  "last_updated": "2026-04-30T21:00:00Z",
+  "wave_1_wrap_started": "2026-04-30T23:18:00Z",
+  "wave_1_wrap_status": "wrapup_in_progress — 5/5 Tier-1 + 2/2 Tier-2 + #205 followup all merged to deployments/phase-3/wave-1; 8 deploy worktrees pruned; 2 ontology files resolved; 9 annunaki errors all known patterns (already tracked at main#227 and #228); pending /wave-retro before wave-merge ceremony",
+  "last_updated": "2026-04-30T23:18:00Z",
   "deployments_branch": "deployments/phase-3/wave-1",
   "wave_1_theme": "Promotion pipeline goes prod — owner directive: pipeline running seamlessly so team can refocus on product + process",
   "wave_1_scope": {
