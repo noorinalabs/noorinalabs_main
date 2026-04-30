@@ -369,3 +369,64 @@ The org was restructured in Session 3 with new repo-level teams. The matrix abov
 | **Nadia Khoury** (PD) | Strategic sentinel-pattern review on #174 with followup filing discipline. | None this wave. |
 | **Bereket Tadesse** (Infra Mgr) | Clean #177 verification with honest intermittency caveat. | None this wave. |
 | **Orchestrator** | Volume execution across 4 repos; team-simulation scaled cleanly. | 2 red-CI merges (main#178, deploy#146); late design call for ip#18/#21 mismatch; premature "wave-9 concluded" handoff claim requiring user correction. |
+
+
+---
+
+## Phase 2 Wave 10 Trust Updates (2026-04-30) — Stg/Prod Environment Split + Promotion Pathway
+
+### Org-Level Team (noorinalabs-main)
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Aino Virtanen (SQL) | 5 | 5 | Hook 17 `validate_wave_audit` shipped in `main#218` — load-bearing wave-conclusion gate. Charter updates (agents.md single-session-team delegation, hooks.md, issues.md) plus continued ontology hygiene. Already at max. |
+| Nadia Khoury (PD) | 4 | 4 | Drove 5-repo wave-merge ceremony, resolved `user-service#89` ghcr-publish.yml union conflict, filed `main#222` branch-protection remediation tracker. Coordination-class output. No change. |
+| Wanjiku Mwangi (TPM) | 5 | 5 | Cross-repo wave-coordination + project-board hygiene. Already at max. |
+| Santiago Ferreira (RC) | 5 | 5 | §3.0.a TODO marker resolution closing `main#211`; secrets-audit migration runbook contributions. Already at max. |
+| Bereket Tadesse (Infra Mgr) | 3 | **4** ↑ | Drafted comprehensive 278-line W10 retro readout (`.claude/drafts/w10-retro-readout-bereket.md`) before retro skill ran — ahead-of-the-game discipline. Five new feedback primitives surfaced and saved as memories during the wave (multi-layer gap, refresh-before-status-claim 4-site application, integrity-claim independent verification, runtime-gate scoping, live-trace acceptance). Promoted to "named-primitive author" tier. |
+
+### Child-Repo Teams — New Entries / Updates
+
+#### noorinalabs-deploy team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Aisha Idrissi (SRE) | 4 | **5** ↑ | W10 heavy lifter: 8 PRs (#150 Hetzner per-env, #157 CF stg, #155 promote, #168 auth→users, #175 bootstrap GHCR pull, #185 TF sensitive(), #177 B2 runbook, #189 BACKUP_B2_*). Drove Phase B fresh-start rebuild and captured 6 cloud-init/module hardening gaps in `deploy#173`. Sustained Section A delivery. |
+| Lucas Ferreira (SRE) | 3 | **4** ↑ | 4 W10 PRs (alembic pre-deploy gate, verify-deploy split stg/prod, compose-validate paths + actionlint, integration-tests branch trigger fix). No CI-red merges this wave — W9 ding does not recur. Multiple tech-debt followups filed during reviews. |
+| Weronika Zielinska (PA / Kafka) | 4 | 4 | 2 deploy PRs on kafka-kraft work + parent-repo design contribution. No change. |
+| Nino Kavtaradze (Sec Eng) | 4 | 4 | Ongoing security enumeration patterns. No new wave-specific incident. No change. |
+
+#### noorinalabs-user-service team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Anya Kowalczyk (TL) | 3 | **4** ↑ | Drove `user-service#80` alembic merge migration — load-bearing for deploy alembic pre-deploy gate. Tech-lead review depth scaled with the wave's cross-repo dependency requirements. |
+| Mateo Salazar (Eng) | 4 | 4 | 2-3 W10 PRs (#83 Contract v6 image-tag, #87 GHCR PR Trivy trigger, #88 ci.yml deployments/** fix). Security-fixup-inline pattern continues. Same-file PR sequencing on `ghcr-publish.yml` (#83 + #87 on different branches) led to wave-merge conflict — minor process gap; tractably resolved. Holding at 4. |
+| Idris Yusuf (Sec Eng) | 4 | 4 | No new wave-specific security incident. Holding at 4 from W9. |
+
+#### noorinalabs-isnad-graph team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Idris Yusuf (Sec Eng — isnad-graph member) | — | **4** (new) | `isnad-graph#847` pip 26.0.1 → 26.1 CVE-2026-3219 with parallel cherry-pick `#850` to main — multi-branch security coverage handled correctly. Pip CVE bump landed twice (wave + main); merge-collapse worked cleanly. |
+| Linh Pham (Frontend) | — | **3** (new) | `isnad-graph#844` Contract v6 image-tag emission. First W10 contribution; appropriate-scope. |
+
+#### noorinalabs-landing-page team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| K. Mensah-Williams | — | **3** (new) | `landing-page#71` Contract v6 image-tag. First entry. Appropriate-scope. |
+
+### Done Well / Needs Improvement (Phase 2 Wave 10)
+
+| Member | Done Well | Needs Improvement |
+|--------|-----------|-------------------|
+| **Aisha Idrissi** (deploy SRE) | 8 PRs sustained across 7 days. Phase B fresh-start rebuild executed end-to-end. 6 hardening-gap items filed in `deploy#173`. | None this wave. |
+| **Bereket Tadesse** (deploy Mgr) | Pre-retro 278-line readout. 5 named primitives saved as memories. | None this wave. |
+| **Lucas Ferreira** (deploy SRE) | 4 clean PRs with no CI-red repeat from W9. Tech-debt-followup filing discipline. | None this wave. |
+| **Anya Kowalczyk** (user-service TL) | Alembic merge migration #80 unblocked deploy alembic gate. Tech-lead review depth on cross-repo dependency. | None this wave. |
+| **Mateo Salazar** (user-service Eng) | Multi-PR scope discipline; #87 PR-Trivy trigger added good defensive depth. | Same-file PR sequencing on `ghcr-publish.yml` led to wave-merge conflict; rebase-before-second-merge would have prevented. |
+| **Idris Yusuf** (Sec Eng) | Pip CVE bump multi-branch coverage (#847 wave + #850 main cherry-pick) handled cleanly. | None this wave. |
+| **Aino Virtanen** (SQL) | Hook 17 ship + charter updates. | None this wave. |
+| **Nadia Khoury** (PD) | 5-repo wave-merge ceremony coordination + ghcr-publish.yml conflict resolution. | None this wave. |
+| **Orchestrator** | Wave-wrapup ceremony executed end-to-end (ontology, annunaki, 45-worktree sweep, 5-repo wave-merge sequence, conflict resolution, retro). | Initial `git merge` on user-service local wave-10 was at a stale ref (3 behind origin); local-ref-staleness check before merge would have been cleaner. |
