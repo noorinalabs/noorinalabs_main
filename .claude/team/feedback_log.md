@@ -1340,3 +1340,85 @@ _None this run._
 - `feedback_enforcement_hierarchy.md` (memory): Source codified via Promotion provenance entry [provenance block in charter/hooks.md]
 - `feedback_repo_independence.md` (memory): Memory enforced via another artifact (charter / hook) [enforced-elsewhere -> cross-repo roster lookup hook]
 - `feedback_settings_permission.md` (memory): Memory enforced via another artifact (charter / hook) [enforced-elsewhere -> settings.json permission rules]
+
+
+### Post-retro refinements (2026-04-30 23:30Z)
+
+The team continued sharpening retro inputs after the initial retro commit (`5cdfc4c`). Refinements driven by Bereket + Lucas; preserved here rather than amending the original entry above so the timeline of precision-acquisition is visible in the artifact.
+
+#### Pattern C / Pattern D split — shared umbrella, separate remediation paths
+
+The original entry conflated two different failure shapes under "Pattern C." Lucas's analysis decisively split them:
+
+- **Pattern C — claim-state-staleness:** burden on the asserter. Fix via `gh api` / wire-check before claims. **Discipline-class** remediation.
+- **Pattern D — message-ordering-race:** burden on the system. Fix via mutex on issue# OR send-ack-acts-as-acquire protocol. **Architecture-class** remediation.
+
+Lumping them would have resulted in "verify more!" being the only takeaway when message-races are a backpressure-protocol gap that no individual discipline fix addresses. Shared umbrella ("async coordination failures") preserves the cross-cutting signal without conflating remediation paths.
+
+Updated wave tallies (11 + ~4 instead of original 9):
+
+- **Pattern C:** 7 Bereket + 2 Aisha + 2 orchestrator + 0 Lucas = **11 instances** in one wave. (Bereket's tally bumped from 6 to 7 after his own main#233 charter-ambiguity-framing self-acknowledgment as a Pattern C instance — claimed two-readings ambiguity without exhaustively reading wire artifacts first.)
+- **Pattern D candidate:** ~4 Lucas-side message-ordering races (implementer ships work; team-lead ships task_assignment for the same work; messages cross in the bus). Real but distinct from Pattern C.
+
+#### Lucas's muscle attribution refined to three orthogonal disciplines
+
+Original entry credited Lucas with "self-detected format error + re-posted within 2 minutes" on his #210 first comment. Lucas himself corrected this in stand-down: the actual sequence was orchestrator-caught-the-inversion-in-his-task-assignment-at-23:15 → he-verified-against-wire-(saw all prior comments using PR-author-as-Requestor) → he-reposted-at-23:16:27. Different muscle than self-detection.
+
+Corrected attribution — three orthogonal disciplines:
+
+1. **Trust-the-artifact-not-the-framing** (reading discipline) — Caddyfile evidence-receipts on #206, Reality-post-#87 mapping table on his own #206 PR body.
+2. **Search-before-filing** — declined to file parallel issue when promtool gate already at #212.
+3. **Adversarial-recall-when-credited** (reactive trigger) — external prompt asserting "you did X" → memory-check → correction if mismatch. Exercised on the muscle-attribution itself when Bereket credited him for self-detection.
+
+NOT exercised this wave by ANYONE: **post-publish audit absent external prompt** (proactive trigger; no external prompt; self-check of own previously-published claims). Honest team-wide gap.
+
+The fact that Lucas raised the credit-attribution correction unprompted — distinguishing demonstrated vs exercised discipline on his own credit — is itself the strongest "adversarial-recall-when-credited" data point I've seen this wave. Worth feedback_log preservation as the canonical worked example.
+
+#### Memory cluster reframe — "Trust the artifact, not the framing"
+
+Bereket + Lucas converged on a unifying name for the existing memory cluster:
+
+- `feedback_verify_third_party_integrity_claims.md`
+- `feedback_origin_over_local_for_still_has_claims.md`
+- `feedback_refresh_before_status_claim.md`
+- (proposed new) Lucas-named entry capturing the reading-vs-framing discipline
+
+All four are instances of the same axis — distrust-the-narrative-trust-the-artifact. Worth folding under one header for memory-system maintenance and charter cross-reference clarity. Renaming or grouping is a charter-skill-level cleanup; not blocking but worth time.
+
+#### Structural safeguard options sketched
+
+For Pattern C (charter language alone insufficient given recurrence-after-self-naming pattern):
+
+1. **Hook at SendMessage boundary** — parse outgoing SendMessage content for state-claim phrases ("verified", "X/Y cleared", "merged at", "head SHA"); block if no recent `gh api` call in transcript window. Heavyweight tooling for a discipline that should be culture; risk of false positives.
+2. **Pre-write checklist** — any state claim about another teammate's or PR's state requires a `gh api` call in the same tool-block. Lightweight, agent-side discipline. **Bereket's lean.**
+3. **Independent verification routing** — when manager-class claims need to be load-bearing for downstream decisions, require independent verification by a second agent before the claim propagates. Honest about the recurrence shape but expensive operationally.
+
+For Pattern D (architecture-class):
+
+1. **Orchestrator-poll-before-task-assignment** — orchestrator MUST `gh pr list` / `gh issue view` before any TaskCreate or task_assignment SendMessage; if implementer's work is already shipped, no-op the assignment.
+2. **Implementer-blocks-on-task-assignment** — implementer waits for explicit task_assignment ack from orchestrator before starting work, even when scope is obvious from prior context.
+
+Both have throughput costs. Worth retro discussion on whether to adopt vs accept message-races as cost-of-throughput.
+
+#### Inverted role-authority observation expanded
+
+"Manager-class actually being the most-violation-prone this wave (which is the inverse of what role-authority traditionally implies)" — Bereket explored why:
+
+1. **Information-volume** — manager tracks all 8 PRs simultaneously; more state than any single role.
+2. **Comprehensive-claim posture** — managers default to "I've reviewed everything" framing; implementers default to "I touched X" framing. The first is more vulnerable to incomplete-coverage-claims.
+3. **Asymmetric verification incentives** — a missed implementer detail surfaces in PR-review; a missed manager detail propagates because the manager-pass IS the verification.
+
+The implementer Pattern-B discipline (verify-before-implementing) has a natural verification gate (the implementer faces their own diff at code-write-time); the manager-pass discipline has no such gate. That's the shape worth structural-safeguard work — option 2 or option 3 above directly addresses the asymmetric-verification gap.
+
+#### Final tallies (post-refinement)
+
+| Pattern | Count | Remediation class | Charter-delta-ready? |
+|---------|-------|-------------------|----------------------|
+| A — design-rationale block | 4 data points | Charter | YES |
+| B unified — verify-vs-artifact | 4 data points (3 implementer + 1 reviewer) | Charter | YES |
+| B-mirror — implementer pushback (bug-vs-preference) | 1 data point | Capture-and-watch | NO; wait for next-wave |
+| C — claim-state-staleness | 11 instances | Charter + structural-safeguard option | YES |
+| D — message-ordering-race | ~4 instances | Architecture | NO; needs design discussion |
+
+Plus charter-aspiration mention for proactive post-publish audit (no enforcement, no mandate; flag as known gap).
+
