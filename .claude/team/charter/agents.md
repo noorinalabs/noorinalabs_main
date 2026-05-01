@@ -220,3 +220,47 @@ Every implementer spawn prompt MUST include:
 ### Origin
 
 Documented during P2W10 kickoff 2026-04-23. Prior charter already had the spawn-delegation mechanics (§ Hub-and-Spoke Orchestration Model), but not the explicit single-leader constraint that eliminates multi-team orchestration as an option. The § Team Names table was ambiguous on whether "Work in noorinalabs-isnad-graph" meant a dedicated isnad-graph-only session or any session touching that repo — this section resolves it in favor of the single-session-team pattern for cross-repo work.
+
+
+## Pre-Spawn State Check + Crossed-Message Race Protocol <!-- promotion-target: none -->
+
+Phase 3 Wave 1 surfaced a recurring failure shape: implementer ships work + status report → orchestrator's task_assignment for that same work was already in flight in the message bus → implementer receives "do X" message AFTER having shipped X. This is **architecturally distinct from `feedback_refresh_before_status_claim`** — no individual discipline fix prevents the race; verification-before-claim doesn't help when the message bus delivers messages in the order they were *queued*, not the order events resolved.
+
+### Default protocol — accept as cost-of-throughput
+
+The implementer-anticipates-context discipline (implementers reading upstream charter/brief aggressively and starting work before the formal `task_assignment` lands) is high-leverage for wave throughput. P3W1 delivered 8/8 PRs in ~2.5 hours partly because Lucas + Aisha both anticipated Round-2/3 charters from coordinator briefs and started implementing during the team-lead's compose window.
+
+Killing that anticipation to eliminate the race would cost more than the race costs. So the default is to ACCEPT the race and standardize the implementer's response shape:
+
+```
+ack — task #N — already shipped at PR #M at YYYY-MM-DDTHH:MM:SSZ; no action needed
+```
+
+The implementer who finds themselves in this race posts the canonical-shape ack and idles. No retraction of the orchestrator's task_assignment is needed — it is informationally redundant with the implementer's status report, not contradictory.
+
+### Narrow trigger — orchestrator poll before SPAWN assignments
+
+When the orchestrator is about to send an assignment that **spawns a new implementer instance** OR **changes branch/worktree paths** (i.e., assignments where the consequences of duplicate work are non-trivial), the orchestrator MUST first verify the work is not already done:
+
+```bash
+gh pr list --repo <repo> --search "in:title <issue-keyword>" --state all --json number,state,mergedAt --limit 5
+gh issue view <N> --repo <repo> --json state,closedAt
+```
+
+If the work is already shipped (PR open or merged, issue closed), the orchestrator no-ops the assignment + sends a "noted, work already done" acknowledgment instead of spawning a new instance.
+
+Assignments to **already-active implementers in known-active scope** (e.g., follow-on tasks within an existing worktree) skip the poll — the throughput cost on those is not justified by the small noise cost.
+
+### Severity
+
+- Crossed-in-flight race on already-active implementer (covered by default protocol): minor noise, no feedback log entry.
+- Spawn duplication (orchestrator spawns a new implementer for work already shipped): moderate — the duplicate spawn wastes context and may produce conflicting PRs. Pre-spawn poll prevents this.
+- Implementer who fails to use canonical-shape ack and produces ambiguous duplicate-work messages: minor; correct-the-shape feedback in retro.
+
+### Adoption signal
+
+Track instance count at each retro. If the count grows materially (e.g., crossed-in-flight races trigger downstream coordination overhead that consumes >5% of wave time), revisit and consider Option 1 (full orchestrator-poll-before-every-assignment) or Option 2 (implementer-blocks-on-task-assignment) at that point.
+
+### Why
+
+P3W1 saw ~4 Lucas-side message-ordering races plus ≥1 analogous Aisha-side instance, all professionally handled but each costing ~30s of attention overhead. None caused duplicate work or wrong-direction shipping. The narrow trigger captures the high-consequence variant (spawn duplication) without sacrificing the wave-throughput-positive implementer-anticipates-context discipline.
