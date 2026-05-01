@@ -209,3 +209,74 @@ After creating a PR, **every team member** must follow this process:
 4. **If the failure cannot be resolved:** Do **NOT** merge the PR. Notify the project owner immediately and pause all dependent work until the issue is resolved.
 
 Violating this process (e.g., merging with red CI, ignoring failures, or failing to escalate) is treated as a **moderate feedback event** per the Feedback System.
+
+## Design-Rationale Block for Critical-Path PRs (Mandatory) <!-- promotion-target: skill -->
+
+PRs that touch critical-path workflow DAGs, observability stacks, or alert-rule definitions MUST include a design-rationale block at the load-bearing decision point.
+
+### When this requirement applies
+
+- PRs touching `.github/workflows/promote.yml`, `deploy-stg.yml`, `deploy-prod.yml`, or any other workflow whose failure-mode propagates to prod gates.
+- PRs touching `infra/prometheus/alerts.yml`, `infra/prometheus/prometheus.yml`, blackbox/textfile-exporter configs, or any other observability artifact whose silence vs. firing has operator consequence.
+- PRs introducing a new gate, predicate, or DAG ordering whose correctness depends on a specific multi-path outcome matrix.
+
+### What the block must contain
+
+- Either an inline file comment at the gate/predicate/decision point (preferred when the rationale binds to a specific code site), OR a section in the PR body labeled `Design rationale` / `Outcome matrix` / `Sequencing rationale`.
+- A walk of the predicate algebra OR an outcome truth table OR a design-rationale-vs-alternatives comparison — whichever load-bears the decision.
+- Citations to the issue body's spec (or a `Reality post-#N` mapping if the spec has drifted from current state).
+
+### Worked examples (Phase 3 Wave 1)
+
+- `noorinalabs-deploy#198` lines 232-258 — gate-stg-verify rationale block walking three failure modes (missing artifact, stale artifact, schema-version mismatch).
+- `noorinalabs-deploy#201` PR body — 5-path retag-gate truth table (success/skipped/failure crosses + break-glass).
+- `noorinalabs-deploy#208` `infra/blackbox-exporter/blackbox.yml` — load-bearing assertion comments per module.
+- `noorinalabs-deploy#210` `infra/prometheus/alerts.yml` — dual-alert design comment (Failure vs Stale split rationale).
+
+### Reviewer enforcement
+
+Absence of a design-rationale block on an applicable PR is grounds for Changes-Requested. The block's quality (rather than its mere presence) is what reviewers should engage with.
+
+### Severity if violated
+
+Minor — but recurrence is moderate. The discipline is high-leverage for incident-response readability and retro-evidence quality; both pay dividends across multiple waves.
+
+### Why
+
+Phase 3 Wave 1 produced 4 corroborating data points (above) where the design-rationale block earned positive reviewer engagement, surfaced design alternatives during review, and provided the canonical retro evidence later. Without it, gate-DAG correctness is invisible to anyone reading the PR after merge.
+
+## Trust the Artifact, Not the Framing (Mandatory) <!-- promotion-target: skill -->
+
+Both implementer and reviewer disciplines on the same axis: verify spec assumptions and PR-body framing against ground truth before action.
+
+### Implementer side
+
+Before implementing per a spec, issue body, or upstream brief, verify the spec's load-bearing claims against the actual artifact:
+
+- Issue body says "alert exists at X / read it, don't re-implement" → check `git log -- X` and `grep` the file before assuming.
+- Spec says "extend Y to add Z" → check Y's current shape (post-prior-merges) before drafting; the spec may predate later changes.
+- Brief from manager says "use convention K" → check `git branch -a` / `git grep` for K-shaped artifacts before encoding it as truth.
+
+If the spec's load-bearing claims diverge from ground truth, surface the gap to the manager BEFORE implementing — do not silently absorb the divergence.
+
+**Authoritative example:** `noorinalabs-deploy#161` 3-x scope catch (issue body said alert exists at `#153`, alert had been deferred and never landed; verified via `git log` + `grep` before pushing dead code).
+
+### Reviewer side
+
+Read the diff against the actual artifact (Caddyfile, compose env-vars, terraform state, alert YAML, runbook, etc.), not against the PR body's framing of what the diff does. PR-body framing is a useful navigation aid; the diff against the artifact is the ground truth.
+
+**Authoritative example:** `noorinalabs-deploy#206` review caught a false-positive bug by walking `caddy/Caddyfile` lines 88-89 + 101 against the PR's section 3b dual-route logic. The PR-body framing said "user-service /health probe via Caddy rewrite + post-#156 subdomain fallback"; the artifact showed the fallback would route to isnad-graph instead of user-service, producing a silent false positive on user-service availability if user-service goes down.
+
+### How to apply
+
+- **Implementer:** before any Edit/Write inside a worktree, run `gh issue view`, `git log -- <load-bearing-path>`, and `grep` for any spec claim about existing artifacts.
+- **Reviewer:** before posting Approved, walk at least one load-bearing claim in the PR body against the actual artifact via `gh api .../contents` or `git show <head>:<path>`.
+
+### Severity if violated
+
+- Implementer: silent absorption of a spec-vs-reality gap that produces dead code or wrong defaults is minor; producing a security regression (route mismatch, env-var leak, etc.) is severe.
+- Reviewer: rubber-stamping based on PR-body framing alone is minor; missing a false-positive bug because reviewer read the framing but not the artifact is moderate.
+
+### Why
+
+Phase 3 Wave 1 produced 4 corroborating data points across two roles. Implementer side: `#161` scope catch + `#206` Reality-post-#87 mapping table. Reviewer side: `#206` Caddyfile evidence-receipts. Both halves of the same discipline.
