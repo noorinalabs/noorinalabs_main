@@ -64,7 +64,7 @@ This is the **org-level coordination team** for `noorinalabs-main`. Each child r
 - **GitHub Issues** — story/task/bug tracking (created by Program Director, assigned to team members)
 - **GitHub Actions** — CI/CD pipelines, automated tests, linting, deployment
 - These three (Projects, Issues, Actions) are the **core orchestration layer** — do not introduce alternative tools for these concerns
-- **Branching strategy:** Feature branches named `{FirstInitial}.{LastName}\{IIII}-{issue-name}` (e.g., `N.Khoury\0042-update-charter`) merged to `main` via PR
+- **Branching strategy:** Feature branches named `{FirstInitial}.{LastName}/{IIII}-{issue-name}` (e.g., `N.Khoury/0042-update-charter`) merged to `main` via PR
 
 ## Cross-Repo Coordination
 
