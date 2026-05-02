@@ -1422,3 +1422,64 @@ The implementer Pattern-B discipline (verify-before-implementing) has a natural 
 
 Plus charter-aspiration mention for proactive post-publish audit (no enforcement, no mandate; flag as known gap).
 
+
+---
+
+## Retrospective: Phase 3 Wave 2 — Emergency Restore + OAuth Stand-up (2026-05-01 → 2026-05-02)
+
+**Caveat:** Not a planned wave. No `/wave-kickoff`, no wave branch, no team simulation spawned. The orchestrator + owner ran the entire thread direct. Per-engineer ratings reflect *committed identity* on the work, not actual agent participation — the named agents (Aisha, Lucas, Bereket) did not run as agents during this thread. Retro run after-the-fact at owner request.
+
+### Wave shape
+
+| Metric | Value |
+|---|---|
+| Duration | 6h emergency window (2026-05-01 23:13Z → 2026-05-02 05:12Z), plus #215 the night before |
+| PRs merged in deploy | 13 (#215, #217, #219, #223, #226, #228, #232, #236, #240, #241, #246, #247, #248) |
+| Author identity | 13/13 `parametrization` (owner self-merge) |
+| Formal `gh pr review` | 0 |
+| Charter-format comments | Phase 1 (#215–#241): 2–4 per PR · Phase 2 (#246–#248): zero |
+| New issues filed | 16 (#216 #218 #220c #222 #224 #225 #229 #231 #234 #235 #237 #238 #239c #242 #243 #244 #245) |
+| Issues closed | US#84, deploy#151 (P3W2 prereqs); deploy#220, #239 (in-wave) |
+| Architectural changes | TF SSH-key removal, Caddyfile per-env templating, CF reconciled into TF, per-env OAuth apps, users.* vhost carve-out, break-glass workflow inputs |
+
+### Two-phase escalation signature
+
+**Phase 1 (emergency-with-process)** — #215 → #241. Charter `Requestor/Requestee/RequestOrReplied` comments attempted; some real Changes-Requested interaction on #215 (Lucas, then both Approved). Discipline mostly held.
+
+**Phase 2 (process-collapse)** — triggered when owner manually decommissioned 1box-prod (id 124917846) while CF DNS still pointed at it → **prod went down**. PRs #246/#247/#248 each merged within 4–25 seconds of creation. Zero comments. Pure restore-mode. Discipline silently collapsed without an in-band signal that the team had moved out of standard mode.
+
+### Per-engineer assessments
+
+Skipped — the named agents did not actually run during this thread. Holding everyone at P3W1 trust levels.
+
+### Top 3 going well
+
+1. **Root-fix discipline held under pressure** — every bug discovered (terraform.yml ephemeral keys, promote.yml retag-token, TOCTOU, multi-arch parity, db-migrate.yml driver) was root-fixed not patched-around. No tech-debt deferred.
+2. **Honest issue-filing during the fire** — 16 new issues filed *while* the emergency was running, capturing tracking work for later (deploy#231, #242, #243, #244, #245). The "search-before-filing" + "multi-layer-gap" memories visibly held.
+3. **Break-glass discoverability** — adding `skip_alembic_gate` + `allow_stg_tags` workflow inputs (#232) was the right shape: the bypass is documented, gated, auditable, not a one-off shell command.
+
+### Top 3 pain points
+
+1. **Five workflow bugs surfaced only under live emergency** — terraform.yml ephemeral-keypairs, promote.yml retag wrong-token, promote.yml stg-latest TOCTOU race, promote.yml multi-arch assumption, db-migrate.yml psycopg-vs-asyncpg URL. None caught by W10 reviews. These are first-deploy / cold-start bugs that no PR-time review would have found — they need cold-rebuild dry-run as an acceptance gate.
+2. **Owner-manual-action with no orchestrator handoff** — prod outage was caused by owner deleting a Hetzner box while CF DNS still pointed at it, with no signal to the orchestrator. Orchestrator had no state-model of "which infra is owner-mutable," so couldn't pre-flight DNS state.
+3. **Silent process-discipline collapse** — comment density and merge times degraded monotonically through the emergency without anyone naming the bypass. Charter assumed standard mode the whole way.
+
+### Charter changes applied (post-retro)
+
+1. **New sub-doc `charter/emergency-mode.md`** — covers Emergency Mode (trigger conditions, allowed bypasses, `[EMERGENCY]` PR prefix, post-emergency catchup) AND Owner-Manual-Action Protocol (`[OWNER-ACTION]` one-line state-delta posting). Linked from main charter sub-doc table.
+2. **New memory `feedback_pattern_e_emergency_process_collapse.md`** — recognition primitive for the silent-collapse signature; complements the charter sub-doc by giving the agent-side detection rule.
+
+### Action items
+
+- File deploy issue: cold-start workflow dry-run as acceptance gate for promotion-pathway / migration / TF-apply workflows.
+- Post-emergency catchup pass on the 13 emergency PRs (per new charter sub-doc) — async review, TechDebt enumeration, runbook updates.
+
+### Pattern tally (running)
+
+| Pattern | Class | This wave |
+|---|---|---|
+| A — design-rationale block | Implementer | n/a (no team agents ran) |
+| B unified — verify-vs-artifact | Implementer + reviewer | n/a |
+| C — claim-state-staleness | Manager-class amplifier | n/a |
+| D — message-ordering-race | Architecture | n/a |
+| **E — process collapse under fire** (new) | Orchestrator-class | 1 wave-scale data point (this thread) |

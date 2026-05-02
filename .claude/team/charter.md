@@ -157,3 +157,4 @@ Detailed rules are organized into focused sub-documents. Agents load only the se
 | [Hooks](charter/hooks.md) | All 5 automated enforcement hooks |
 | [Tech Decisions](charter/tech-decisions.md) | Tech preferences, debate, tie-breaking (LCA) |
 | [Communication Protocol](charter/communication.md) | Cross-repo messaging, shared state, dependency contracts, event-driven spawns |
+| [Emergency Mode](charter/emergency-mode.md) | DR / restore / security-incident escape valve; `[EMERGENCY]` PR prefix; owner-manual-action protocol; post-emergency catchup |
