@@ -129,9 +129,9 @@
     },
     ".claude/team/charter.md": {
       "last_tracked": "a572ba52385b8ed797904abd53b9b35a5f0ffb80f7288193270db7408e53f848",
-      "last_resolved": "a79e60476eb72af6689a5af1c3a09e0d5878c67b26ab8f5ab3516ee26ff717d3",
+      "last_resolved": "a572ba52385b8ed797904abd53b9b35a5f0ffb80f7288193270db7408e53f848",
       "tracked_at": "2026-05-02T17:14:13.421085+00:00",
-      "resolved_at": "2026-04-16T21:36:05.052302+00:00"
+      "resolved_at": "2026-05-03T16:59:38.573672+00:00"
     },
     ".claude/team/charter/agents.md": {
       "last_resolved": "791f49adadd0065103aeb3b808252d2204b61c35b9ca2eb0cb4a5faf93757f89",
@@ -464,10 +464,10 @@
       "tracked_at": "2026-04-16T21:36:05.052302+00:00"
     },
     "ontology/conventions.md": {
-      "last_resolved": "c3b9c216a229639111499ee44452920c16a0ff8b4ae7cffb3e0a216e48459c58",
-      "last_tracked": "c3b9c216a229639111499ee44452920c16a0ff8b4ae7cffb3e0a216e48459c58",
-      "resolved_at": "2026-04-25T04:26:20.060747+00:00",
-      "tracked_at": "2026-04-25T04:26:20.060747+00:00"
+      "last_tracked": "b204a757947bbd62430a599908ad342294625438d23b5bcc1ea4fcc9bd48c291",
+      "last_resolved": "b204a757947bbd62430a599908ad342294625438d23b5bcc1ea4fcc9bd48c291",
+      "tracked_at": "2026-05-03T16:59:38.573672+00:00",
+      "resolved_at": "2026-05-03T16:59:38.573672+00:00"
     },
     "ontology/domain.yaml": {
       "last_resolved": "6fedad509f80b9570d0385fb5759e861d8b6f7b219ecc425b8dd472173ca536c",
@@ -639,9 +639,9 @@
     },
     ".claude/team/charter/emergency-mode.md": {
       "last_tracked": "0c38ede7c43879c5033128dfaacd970f46b4ea4de44895fa3c0ab853ee940b6d",
-      "last_resolved": "",
+      "last_resolved": "0c38ede7c43879c5033128dfaacd970f46b4ea4de44895fa3c0ab853ee940b6d",
       "tracked_at": "2026-05-02T17:14:03.670117+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-05-03T16:59:38.573672+00:00"
     }
   },
   "last_cleanup": {

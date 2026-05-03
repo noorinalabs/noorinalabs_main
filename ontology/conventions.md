@@ -112,6 +112,14 @@ Updated by `/ontology-rebuild`. Manual edits require `checksums.json` update.
 - **Manual handoff** (`/handoff` skill): Richer version that includes conversational context — what was discussed, decisions made, blockers encountered.
 - **Session start protocol**: Charter-mandated automatic steps — (0) check handoff file, (1) team cleanup (TeamDelete + TeamCreate), (2) ontology rebuild, (3) Annunaki check, (4) wave/phase orientation, (5) charter freshness check.
 
+### Emergency Mode (charter `charter/emergency-mode.md`)
+- **Triggers:** prod-down / active security incident / DR or first-deploy. Discomfort or urgency are NOT triggers.
+- **Allowed bypasses:** single- or zero-reviewer merge; `[EMERGENCY]` PR-title prefix; direct-to-main commits with `[EMERGENCY]` subject when a PR cannot be opened. Charter-format review comments may be skipped in favor of one-line PR body context.
+- **Not bypassed:** commit-identity / no-verify / secrets hooks, root-fix discipline, honest-audit-before-concluded.
+- **Entering / exiting:** in-band declaration ("Entering Emergency Mode … trigger: {…}" / "Exiting Emergency Mode — {…}").
+- **Post-emergency catchup (24h):** async charter-format review on every `[EMERGENCY]` PR, file TechDebt items, update runbooks/hooks, Aino sign-off. `/wave-kickoff` blocked until catchup is complete.
+- **Owner-Manual-Action Protocol:** when the owner takes infra action outside the orchestrator's tool scope (Hetzner console, secret rotation, local `terraform apply`, etc.), they post a one-line `[OWNER-ACTION] {what was done} — {what state changed} — {what now points where}` to the active session BEFORE proceeding. Orchestrator acknowledges by enumerating the dependent state it will pre-flight check.
+
 ### Automation hooks (org-level)
 | Hook | Event | Purpose |
 |------|-------|---------|
