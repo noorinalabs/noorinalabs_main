@@ -11,14 +11,26 @@
   "wave_3_theme": "Post-emergency stabilization + frontend-API absolute-URLs phase 2",
   "wave_3_branch": "deployments/phase-3/wave-3",
   "wave_3_length_estimate_days": "7-9",
+  "wave_3_repos_in_scope": ["noorinalabs-deploy", "noorinalabs-main", "noorinalabs-isnad-graph", "noorinalabs-landing-page"],
+  "wave_3_branches_per_repo": {
+    "noorinalabs-main": "f962b0f→27ba9e6 (planning + kickoff)",
+    "noorinalabs-deploy": "0b3b214 (created at first-implementer-spawn 2026-05-03; Aisha-252 caught the orchestrator gap)",
+    "noorinalabs-isnad-graph": "fae69d4 (created at first-implementer-spawn 2026-05-03; orchestrator-correction post-Aisha-catch)",
+    "noorinalabs-landing-page": "2ebf1d3 (created post-Idris-242-scope-correction 2026-05-03; 4th repo added to scope)"
+  },
+  "wave_3_kickoff_corrections": [
+    "Aisha-252 caught missing wave-3 branch in noorinalabs-deploy 2026-05-03; option A (push branch + ship time-critical fix) accepted. Tracked main#238 (skill gap).",
+    "Idris-853 caught deploy#242 sibling-of-isnad-graph mis-attribution 2026-05-03; #242 actual scope is noorinalabs-landing-page (per issue body's table); landing-page added as 4th wave-scope repo; correction Reply posted on deploy#242 (issuecomment-4366836610).",
+    "Idris-853 flagged misrouted task-system assignments (tasks #2,#3,#9,#10,#11 — deploy#252 work routed to isnad-graph implementer); confirmed task system stale-routing; ignore."
+  ],
   "wave_3_scope": {
     "tier_1_emergency_exposed_gaps": [
       {"id": "noorinalabs-deploy#252", "title": "smoke tests pointing at destroyed isnad-graph.noorinalabs.com hostname", "priority": "bug,priority-high", "assignee": "Aisha Idrissi", "reviewer": "Bereket Tadesse"},
-      {"id": "noorinalabs-isnad-graph#853", "title": "Publish to GHCR red — Trivy HIGH on nghttp2-libs CVE-2026-27135 (frontend image)", "priority": "bug,priority-high", "assignee": "Idris Yusuf", "reviewer": "Linh Pham", "added_at_kickoff": "2026-05-03 — surfaced by pre-wave CI triage; blocker for #245 frontend artifact promotion"},
+      {"id": "noorinalabs-isnad-graph#853", "title": "Publish to GHCR red — Trivy HIGH on nghttp2-libs CVE-2026-27135 (frontend image)", "priority": "bug,priority-high", "assignee": "Idris Yusuf", "reviewer": "Linh Pham", "added_at_kickoff": "2026-05-03 — surfaced by pre-wave CI triage; blocker for #245 frontend artifact promotion", "pr": "noorinalabs-isnad-graph#854 OPEN, MERGEABLE/CLEAN, base=deployments/phase-3/wave-3, head=f091e11. Combined nginx digest-pin (sha256:0272e460) + RUN apk upgrade --no-cache. nghttp2-libs 1.68.0-r0→1.69.0-r0 verified locally. Image size 93.5→95.2MB (+1.8%). Awaiting Linh Pham review."},
       {"id": "noorinalabs-deploy#249", "title": "cold-rebuild dry-run as acceptance gate for promotion-pathway / migration / TF-apply workflows", "assignee": "Aisha Idrissi", "reviewer": "Lucas Ferreira"},
       {"id": "noorinalabs-deploy#250", "title": "wire terraform/cloudflare into CI apply matrix (#226 ran locally only)", "assignee": "Lucas Ferreira", "reviewer": "Aisha Idrissi"},
       {"id": "noorinalabs-deploy#251", "title": "alert/audit on break-glass workflow input usage (skip_alembic_gate / allow_stg_tags)", "assignee": "Weronika Zielinska", "reviewer": "Bereket Tadesse"},
-      {"id": "noorinalabs-deploy#242", "title": "standardize all 4 services on multi-arch images (root-fix promote.yml multi-arch assumption)", "assignee": "Lucas Ferreira", "reviewer": "Aisha Idrissi", "sibling": "noorinalabs-isnad-graph#853 (same Dockerfile pipeline)"}
+      {"id": "noorinalabs-deploy#242", "title": "standardize all 4 services on multi-arch images (root-fix promote.yml multi-arch assumption)", "assignee": "Lucas Ferreira", "reviewer": "Aisha Idrissi", "actual_repo_for_changes": "noorinalabs-landing-page (the only single-arch outlier per #242 issue body table; remaining work is its ghcr-publish.yml + a follow-up promote.yml branch deletion in noorinalabs-deploy). Sibling-of isnad-graph#853 corrected at kickoff 2026-05-03 (Idris-853 catch via issue-body re-read; see issuecomment-4366836610)."}
     ],
     "tier_2_frontend_absolute_urls_phase_2": [
       {"id": "noorinalabs-deploy#243", "title": "Caddy CSP / COOP / CORP for users.${BASE_DOMAIN} API surface", "assignee": "Lucas Ferreira", "reviewer": "Bereket Tadesse", "ships_before": "noorinalabs-deploy#245 (CORS gate)"},
