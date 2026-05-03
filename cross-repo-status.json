@@ -52,7 +52,8 @@
       "noorinalabs-deploy#231 (Phase C runbook reframe — owner-driven supersedes routine; direct emergency-thread lesson)",
       "noorinalabs-deploy#193 (rotate state-resident secrets — Phase 3 of #172)",
       "noorinalabs-deploy#180 (ADR for B2 state-bucket IaC + key rotation strategy)",
-      "noorinalabs-main#226 noorinalabs-main#227 noorinalabs-main#223 noorinalabs-main#216 (4-PR substring-matcher hook root-fix bundle)"
+      "noorinalabs-main#226 noorinalabs-main#227 noorinalabs-main#223 noorinalabs-main#216 (4-PR substring-matcher hook root-fix bundle)",
+      "noorinalabs-deploy#263 (split prometheus.yml per-env so stg blackbox stops probing prod hostnames; surfaced by Weronika-255 during PR#259 work; owner-decision 2026-05-03)"
     ],
     "deliberately_not_in_w3": [
       "Per-repo backlogs in isnad-graph (~30), user-service (~16), landing-page (~20), design-system (~8), data-acquisition (~4), ingest-platform (~14) — fold-in deferred to post-W3 cross-repo phase-3 re-plan per owner addendum 2026-05-03",
