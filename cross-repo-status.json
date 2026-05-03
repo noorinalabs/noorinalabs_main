@@ -1,10 +1,56 @@
 {
   "wave_active": false,
   "current_wave": null,
-  "next_wave": null,
+  "next_wave": "wave-3",
   "phase": "phase-3",
   "last_completed_wave": "wave-1",
   "last_completed_at": "2026-05-01T01:49:41Z",
+  "wave_3_planned": true,
+  "wave_3_planned_at": "2026-05-03T00:00:00Z",
+  "wave_3_theme": "Post-emergency stabilization + frontend-API absolute-URLs phase 2",
+  "wave_3_branch": "deployments/phase-3/wave-3",
+  "wave_3_length_estimate_days": "7-9",
+  "wave_3_scope": {
+    "tier_1_emergency_exposed_gaps": [
+      {"id": "noorinalabs-deploy#252", "title": "smoke tests pointing at destroyed isnad-graph.noorinalabs.com hostname", "assignee": "Aisha Idrissi", "reviewer": "Bereket Tadesse"},
+      {"id": "noorinalabs-deploy#249", "title": "cold-rebuild dry-run as acceptance gate for promotion-pathway / migration / TF-apply workflows", "assignee": "Aisha Idrissi", "reviewer": "Lucas Ferreira"},
+      {"id": "noorinalabs-deploy#250", "title": "wire terraform/cloudflare into CI apply matrix (#226 ran locally only)", "assignee": "Lucas Ferreira", "reviewer": "Aisha Idrissi"},
+      {"id": "noorinalabs-deploy#251", "title": "alert/audit on break-glass workflow input usage (skip_alembic_gate / allow_stg_tags)", "assignee": "Weronika Zielinska", "reviewer": "Bereket Tadesse"},
+      {"id": "noorinalabs-deploy#242", "title": "standardize all 4 services on multi-arch images (root-fix promote.yml multi-arch assumption)", "assignee": "Lucas Ferreira", "reviewer": "Aisha Idrissi"}
+    ],
+    "tier_2_frontend_absolute_urls_phase_2": [
+      {"id": "noorinalabs-deploy#244", "title": "provision per-env OAuth apps + move credentials to env-scope (precursor for #245)", "assignee": "Aisha Idrissi", "reviewer": "Lucas Ferreira", "owner_action_dependency": "Google Cloud / GitHub OAuth app provisioning per env"},
+      {"id": "noorinalabs-deploy#245", "title": "frontend uses absolute URLs targeting users.{base}; isnad.{base} can drop /auth proxy", "assignee": "Aisha Idrissi", "reviewer": "Lucas Ferreira", "depends_on": "noorinalabs-deploy#244"},
+      {"id": "noorinalabs-deploy#243", "title": "Caddy CSP / COOP / CORP for users.${BASE_DOMAIN} API surface", "assignee": "Lucas Ferreira", "reviewer": "Bereket Tadesse"}
+    ],
+    "tier_3_process_cleanup_p3w2_retro_outcomes": [
+      {"id": "noorinalabs-main#234", "title": "Pattern D adoption signal-check (tracking audit)", "assignee": "Nadia Khoury", "reviewer": "Aino Virtanen"},
+      {"id": "noorinalabs-main#237", "title": "/tmp/* file race hardening — PreToolUse hook on git commit -F / gh --body-file with stale mtime", "assignee": "Aino Virtanen", "reviewer": "Nadia Khoury"}
+    ],
+    "owner_action_track": [
+      {"id": "A", "task": "Rotate CLOUDFLARE_API_TOKEN", "status": "DONE 2026-05-03 (owner-confirmed)"},
+      {"id": "B", "task": "Rotate TF_STATE_B2_KEY_ID + TF_STATE_B2_APP_KEY", "status": "DONE 2026-05-03 (owner-confirmed)"},
+      {"id": "C", "task": "Disable Cloudflare Web Analytics on noorinalabs.com zone", "status": "DROPPED 2026-05-03 — owner countered with utilize-not-disable. CWA stays enabled. Free-tier utilization tracked as deploy#253 (phase-3 backlog, not W3)."}
+    ],
+    "stretch_if_tier_1_2_finishes_early": [
+      "noorinalabs-deploy#231 (Phase C runbook reframe — owner-driven supersedes routine; direct emergency-thread lesson)",
+      "noorinalabs-deploy#193 (rotate state-resident secrets — Phase 3 of #172)",
+      "noorinalabs-deploy#180 (ADR for B2 state-bucket IaC + key rotation strategy)",
+      "noorinalabs-main#226 noorinalabs-main#227 noorinalabs-main#223 noorinalabs-main#216 (4-PR substring-matcher hook root-fix bundle)"
+    ],
+    "deliberately_not_in_w3": [
+      "Per-repo backlogs in isnad-graph (~30), user-service (~16), landing-page (~20), design-system (~8), data-acquisition (~4), ingest-platform (~14) — fold-in deferred to post-W3 cross-repo phase-3 re-plan per owner addendum 2026-05-03",
+      "8-repo audits noorinalabs-main#221 (auto-close workflows) noorinalabs-main#222 (branch protection) — own wave (large surface)",
+      "~50 deploy issues outside emergency bucket (observability hardening #131 #132, kafka migration #100, backup posture #74) — not gating"
+    ]
+  },
+  "wave_3_decisions": {
+    "scope_signed_off_at": "2026-05-03T00:00:00Z",
+    "reviewer_slate_default": "Lucas 5; Aisha 4; others 3-4 (P3W1 trust matrix held; reshuffle deferred unless wave surfaces new data)",
+    "owner_action_a_b_completed_before_kickoff": true,
+    "owner_action_c_dropped": "CWA stays enabled per owner pushback; utilize-not-disable",
+    "post_w3_addendum": "After W3 close, do cross-repo phase-3 re-plan that brings child-repo backlogs into multi-repo coordinated waves (parent meta-issue + per-repo issue clusters per CLAUDE.md § Cross-Repo Coordination). Pattern documented; not yet exercised in P3."
+  },
   "wave_started": "2026-04-30T21:00:00Z",
   "wave_1_wrap_started": "2026-04-30T23:18:00Z",
   "wave_1_wrap_status": "CLOSED 2026-05-01T01:49:41Z. Both wave-merge PRs landed (deploy#213 merge-commit b6f2cd1; main#235 merge-commit 9a1ef3e). 5/5 Tier-1 + 2/2 Tier-2 + #205 followup-of-spec + #214 wave-tail flake fix (#215 retry-with-backoff JSON-parse classifier) all on main. 8 deploy worktrees pruned. 2 ontology files resolved. 4 charter deltas landed (Patterns A + B unified + C + D). Trust matrix updated (Lucas 4→5; others hold). Promotion audit 0/0/55/4. Wave-tail produced 5 additional retro-pattern data points stress-testing the just-landed charter; all four patterns held. 9 follow-ups filed for next-wave planning (#199 #200 #203 #204 #209 #211 #212 + main#232 + main#233 + main#234). 3 Tier-3 carry-forwards remain operationally gated (deploy#86 async-routine fires post-this-merge; deploy#151 manual SRE B2 tfstate-key migration; user-service#84 manual SRE DEPLOY_REPO_PAT secret).",
