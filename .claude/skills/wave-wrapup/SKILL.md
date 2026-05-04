@@ -197,16 +197,34 @@ Flag any changes to:
 **Next step:** Run `/wave-retro` for full retrospective with assessments and trust updates.
 ```
 
-### 11. Merge to main (final wave only)
+### 11. Merge to main per repo (final wave only)
 
-If this is the final wave of the phase:
+If this is the final wave of the phase, every repo in `wave_{M}_repos_in_scope` has its OWN `deployments/phase-{P}/wave-{M}` branch (created by `/wave-kickoff` step 1) that needs its own PR to main. This is the symmetric counterpart of the multi-repo branch creation gap (main#238).
 
 ```bash
-# Create PR from deployments branch to main
-gh pr create --base main --head "deployments/phase{P}/wave-{M}" \
-    --title "Phase {P} Wave {M} → main" \
-    --body "Final wave merge. All PRs reviewed and merged to deployment branch."
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+WAVE_REPOS_IN_SCOPE=$(jq -r ".wave_{M}_repos_in_scope[]" "$REPO_ROOT/cross-repo-status.json")
+BRANCH="deployments/phase-{P}/wave-{M}"
+
+for R in $WAVE_REPOS_IN_SCOPE; do
+  # Skip repos where the wave branch is already merged or doesn't exist
+  EXISTING=$(gh api "repos/noorinalabs/$R/git/refs/heads/$BRANCH" --jq '.object.sha' 2>/dev/null || true)
+  [ -z "$EXISTING" ] && { echo "$R: no wave branch — skip"; continue; }
+
+  # Check if there's anything to merge (compare branch HEAD vs main HEAD)
+  MAIN_SHA=$(gh api "repos/noorinalabs/$R/git/refs/heads/main" --jq '.object.sha')
+  if [ "$EXISTING" = "$MAIN_SHA" ]; then
+    echo "$R: wave branch ==  main, nothing to merge"; continue
+  fi
+
+  # Create PR from this repo's wave branch to its own main
+  gh pr create --repo "noorinalabs/$R" --base main --head "$BRANCH" \
+    --title "Phase {P} Wave {M} → main ($R)" \
+    --body "Final wave merge for $R. All PRs reviewed and merged to wave branch."
+done
 ```
+
+Print a per-repo PR summary table (PR# or "no merge needed") and **wait for user approval before merging any PR**. Each PR must be merged independently.
 
 **Do NOT merge to main without user approval.** This is a significant action that affects all downstream repos.
 
