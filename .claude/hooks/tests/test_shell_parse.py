@@ -185,6 +185,19 @@ class ExtractDashCPairsTests(unittest.TestCase):
         pairs = sp.extract_dash_c_pairs(["git", "-C", "/repo", "-c", "user.name=Alice", "commit"])
         self.assertEqual(pairs, [("user.name", "Alice")])
 
+    def test_repeated_key_returns_all_pairs_in_source_order(self):
+        """API contract pin: repeated keys returned in source order; callers dedup.
+
+        `git -c user.name=A -c user.name=B commit` is legal git (last wins).
+        Helper returns ALL pairs in source order; callers needing last-wins
+        do `dict(extract_dash_c_pairs(...))` (later-key overwrite-earlier in
+        dict construction).
+        """
+        pairs = sp.extract_dash_c_pairs(["git", "-c", "user.name=A", "-c", "user.name=B", "commit"])
+        self.assertEqual(pairs, [("user.name", "A"), ("user.name", "B")])
+        # dict-cast gives last-wins, matching git semantics.
+        self.assertEqual(dict(pairs), {"user.name": "B"})
+
 
 class ResolveToolCwdTests(unittest.TestCase):
     def test_uses_input_cwd(self):

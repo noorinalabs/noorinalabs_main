@@ -22,6 +22,11 @@ Public API
         shlex.split with posix semantics. Returns None on parse failure
         (unbalanced quotes, etc.) so callers can fall back to a regex path.
 
+        Caller contract: callers MUST handle None explicitly. Never treat
+        None as "allow" for security-relevant matchers like commit-identity
+        validation — fall back to a regex check or a fail-closed decision.
+        For warn-only matchers, fail-open on None is acceptable.
+
     strip_heredocs(cmd) -> str
         Removes <<DELIM .. DELIM, <<'DELIM' .. DELIM, <<"DELIM" .. DELIM and
         <<-DELIM .. DELIM heredoc bodies (delimiter is rfc-shell-style: any
@@ -47,8 +52,15 @@ Public API
 
     extract_dash_c_pairs(segment) -> list[tuple[str, str]]
         Walks a tokenized git segment and returns (key, value) pairs for
-        every `-c key=value` global option. shlex has already unquoted
-        values, so a simple `split('=', 1)` is correct.
+        every `-c key=value` global option, in source order. shlex has
+        already unquoted values, so a simple `split('=', 1)` is correct.
+
+        Repeated-key contract: `git -c user.name=A -c user.name=B commit`
+        is legal (last wins per git semantics). This helper returns ALL
+        pairs in source order; callers needing last-wins semantics can
+        do `dict(extract_dash_c_pairs(...))` (later keys overwrite
+        earlier in dict construction). Do not rely on first-occurrence
+        unless you handle dedup yourself.
 
     resolve_tool_cwd(input_data) -> str
         Returns input_data["cwd"] if the harness supplied it, else

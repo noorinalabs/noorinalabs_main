@@ -136,7 +136,10 @@ def _find_commit_segment(command: str) -> list[str] | None:
     the first segment whose `find_git_subcommand` resolves to subcommand
     `commit`.
 
-    Returns None on tokenization failure (caller treats as "not a commit").
+    Returns None on parse failure OR when there is no commit. The caller
+    distinguishes the two via `_looks_like_git_commit` so a malformed-but-
+    suspicious command falls through to a fail-closed regex path instead
+    of being silently allowed (per `_shell_parse.tokenize` contract).
     """
     cleaned = strip_heredocs(command)
     tokens = tokenize(cleaned)
@@ -152,6 +155,29 @@ def _find_commit_segment(command: str) -> list[str] | None:
     return None
 
 
+# Regex-only heuristic for the parse-failure fallback: did the command,
+# after stripping heredocs, contain `git ... commit` at command position?
+# Anchored at start-of-line or after a shell operator. Liberal on purpose
+# — when shlex fails we want to err on the side of validating identity.
+_COMMIT_FALLBACK_RE = re.compile(
+    r"(?:^|[;&|]\s*|&&\s*|\|\|\s*)\s*git\b[^;&|]*?\bcommit\b",
+    re.MULTILINE,
+)
+
+
+def _looks_like_git_commit(command: str) -> bool:
+    """Regex fallback used when shlex.split fails (unbalanced quotes etc.).
+
+    Strips heredocs, then searches for `git ... commit` in command position.
+    This is a deliberately broad heuristic: a parse-failure-and-no-commit-
+    looking command falls through to allow, but a parse-failure-with-commit-
+    looking command blocks (fail-closed for security-relevant validation,
+    per the `_shell_parse.tokenize` caller contract).
+    """
+    cleaned = strip_heredocs(command)
+    return bool(_COMMIT_FALLBACK_RE.search(cleaned))
+
+
 def check(input_data: dict) -> dict | None:
     """Check commit identity. Returns result dict if blocking, None if allowed."""
     tool_name = input_data.get("tool_name", "")
@@ -162,7 +188,24 @@ def check(input_data: dict) -> dict | None:
 
     commit_segment = _find_commit_segment(command)
     if commit_segment is None:
-        return None
+        # Parse-failure fail-closed path: shlex couldn't tokenize, but the
+        # command LOOKS like it contains a `git commit`. Block with a
+        # parse-failure-specific message so the operator can fix the quoting
+        # and retry. Allowing here would create a hole — paste a malformed
+        # `git commit` and bypass identity validation.
+        if not _looks_like_git_commit(command):
+            return None
+        result = {
+            "decision": "block",
+            "reason": (
+                "BLOCKED: git commit detected but command failed shlex parsing "
+                "(likely unbalanced quotes). Cannot validate `-c user.name=` / "
+                "`-c user.email=` flags from a malformed command. Fix the "
+                "quoting and retry."
+            ),
+        }
+        log_pretooluse_block("validate_commit_identity", command, result["reason"])
+        return result
 
     # Cross-repo support: if the command `cd`s into another repo, load that
     # repo's roster instead of the local one.

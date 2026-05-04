@@ -318,5 +318,57 @@ class MatcherRobustnessTests(unittest.TestCase):
         self.assertIsNone(hook.check(self._input(cmd)))
 
 
+class ParseFailureFailClosedTests(unittest.TestCase):
+    """`tokenize` returns None on shlex parse failure. For commit-identity
+    validation this MUST fail-closed: a malformed-but-commit-shaped command
+    should block, not silently allow. (Per `_shell_parse.tokenize` caller
+    contract pinned with Linh.)
+    """
+
+    @staticmethod
+    def _input(command: str) -> dict:
+        return {"tool_name": "Bash", "tool_input": {"command": command}}
+
+    def test_unbalanced_quote_with_commit_blocks(self):
+        """Unterminated quote + git commit shape → block (don't silently allow)."""
+        cmd = 'git -c user.name="Aino Virtanen -c user.email="a@b.c" commit -m "x"'
+        # Above has an unbalanced quote (the `"Aino Virtanen ` opens and
+        # is never closed before the next `"`, so shlex raises).
+        result = hook.check(self._input(cmd))
+        self.assertIsNotNone(
+            result,
+            "parse failure on a commit-shaped command must block, not allow",
+        )
+        assert result is not None
+        self.assertEqual(result["decision"], "block")
+        self.assertIn("shlex parsing", result["reason"])
+
+    def test_unbalanced_quote_without_commit_allows(self):
+        """Parse failure on a non-commit command → allow (no commit to validate)."""
+        cmd = 'echo "unterminated'
+        # Not a git commit; allow.
+        self.assertIsNone(hook.check(self._input(cmd)))
+
+    def test_repeated_dash_c_user_name_uses_last_value(self):
+        """Repeated -c user.name → last value wins (matches git semantics).
+
+        `dict(extract_dash_c_pairs(...))` overwrites earlier entries with
+        later ones, mirroring how git itself resolves repeated -c flags.
+        """
+        valid_name = next(iter(hook.ROSTER), None)
+        if not valid_name:
+            self.skipTest("local roster is empty")
+        valid_email = hook.ROSTER[valid_name]
+        # First name is bogus, last is valid → must allow (last wins).
+        cmd = (
+            f'git -c user.name="NotInRoster" -c user.name="{valid_name}" '
+            f'-c user.email="{valid_email}" commit -m "x"'
+        )
+        self.assertIsNone(
+            hook.check(self._input(cmd)),
+            "last-wins semantics: bogus earlier value should be overridden",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
