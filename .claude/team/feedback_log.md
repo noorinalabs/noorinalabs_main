@@ -1483,3 +1483,113 @@ Skipped — the named agents did not actually run during this thread. Holding ev
 | C — claim-state-staleness | Manager-class amplifier | n/a |
 | D — message-ordering-race | Architecture | n/a |
 | **E — process collapse under fire** (new) | Orchestrator-class | 1 wave-scale data point (this thread) |
+
+---
+
+## Retrospective: Phase 3 Wave 3 — Post-Emergency Stabilization + Frontend Absolute-URLs Phase 2 (2026-05-03 → 2026-05-04)
+
+### Wave shape
+
+| Metric | Value |
+|---|---|
+| Duration | ~8.5h (kickoff 2026-05-03T17:55Z → wave-merges 2026-05-04T02:32-02:35Z) |
+| Repos in scope | 5 (deploy, isnad-graph, landing-page, user-service, main) — planning record listed only 4; user-service joined mid-wave for cross-repo Option A on #266 |
+| PRs merged into wave branches | 14 (main: 2; deploy: 8; isnad-graph: 2; landing-page: 1; user-service: 1) |
+| Wave-merge PRs to main | 5 (US#93 → deploy#270 → isnad-graph#856 → landing-page#76 → main#243; deploy-order sequenced) |
+| CI failures across all 14 PRs | **0** |
+| Charter-format comments per PR | 4–10 (healthy density) |
+| ChangesRequested cycles resolved | 4 (deploy#259, #261, #266, #267) — all additive, no force-push |
+| Issues closed in wave | deploy#249, #250, #251, #252, #255, #256, #243, #244, #245, #242; isnad-graph#853; user-service#91; main#234, #237 (14 total) |
+| Architectural changes | First composite GH Action in deploy (#261 break-glass-audit); cold-rebuild dry-run gate (#260); CF + B2 in TF CI matrix (#257); frontend `VITE_USER_SERVICE_ORIGIN` cutover (isnad-graph#855); FastAPI prod-`/docs` disable env-gate (US#92) |
+
+### Per-engineer assessments
+
+#### Implementers
+
+**Aisha Idrissi** (deploy SRE) — 4 PRs (#254, #258, #260, #267). Sustained heavy-lifter delivery. Cold-rebuild dry-run gate (#260, +876 lines) closed W2-retro action item at first wave-opportunity. ChangesRequested-on-#267 from Bereket caught wrong workflow input (`image_tag`→`source_sha`) plus 4 secondary items; Aisha shipped 5 fixes in 49-line additive commit (no force-push). 0 CI failures across all 4. Severity: **none**. Trust 5→5 (max).
+
+**Lucas Ferreira** (deploy SRE) — 2 PRs (#257 TF CF+B2 CI matrix, #266 Caddy CSP). Reviewer-class signal: 2nd-review on #266 caught a SHA citation drift in Bereket's review (`3792b97a` cited vs actual unblocker head `fb9d44d3` after Idris-91 force-push) — meta-state-verification (verified the verifier). #257 closed W2-retro action item (CF+B2 in CI plan/apply matrix). 0 CI failures. Severity: **none**. Trust 5→5 (max).
+
+**Bereket Tadesse** (deploy Mgr) — Wave-completion reviewer standout. Caught **5 distinct must-fix items** across 4 wave-completion batch PRs; Pattern B (verify-vs-artifact) applied textbook on every review. P3W1's 6-instance Pattern C self-violation pattern did NOT recur — strong reversal signal. Severity: **none**. Trust 4→**5** ↑.
+
+**Weronika Zielinska** (PA) — 2 PRs (#259, #261). #261 is the first composite GH Action in the repo (+725 lines). Tech-debt self-correction signal: caught own PR-body claim that `TechDebt: #127` was active before Bereket's review started (verified `#127 CLOSED 2026-04-19`); updated PR body in real time. Path-A discipline on #259 (bundled fix vs operational silence-then-unsilence dance). Both ChangesRequested cycles resolved cleanly with additive commits. 0 CI failures. Severity: **none**. Trust 4→**5** ↑.
+
+**Idris Yusuf** (cross-repo Sec — user-service + isnad-graph membership) — 2 PRs in 2 repos: user-service#92 (FastAPI prod-`/docs` disable, +68/-1) emerged DURING the wave to unblock deploy#266 ChangesRequested (Bereket's live-state catch on `users.*` non-JSON-only); isnad-graph#854 (Trivy nghttp2-libs CVE digest-pin + apk upgrade, +9/-1). Cross-repo coverage class signal — single engineer enabling 3 PRs to land. Minimal-surgical fix shape held under cross-repo blocker pressure. 0 CI failures. Severity: **none**. Trust 4→**5** ↑ (single track across both repo memberships).
+
+**Aino Virtanen** (SQL) — main#242 (block stale `/tmp/*` message/body files in `git commit -F` / `gh --body-file`, +384/-0). Largest main# PR in wave; table-driven hook with tests. Closes main#237. 4/4 CI green. Severity: **none**. Trust 5→5 (max).
+
+**Nadia Khoury** (PD) — main#241 (Pattern D adoption signal-check audit, +170/-0). Tracking deliverable, scope-appropriate. Single-cycle Approved. Severity: **none**. Trust 4→4.
+
+**Jiyoung Park** (isnad-graph Frontend, NEW) — isnad-graph#855 first contribution (`+51/-5` frontend absolute URLs via `VITE_USER_SERVICE_ORIGIN`, deploy#245 phase 2 part 1). Surgical scope. Clean ship: 9/9 CI green. Severity: **none**. New entry at 3.
+
+**K. Mensah-Williams** (landing-page) — landing-page#75 (`+16/-0` emit OCI image index for multi-arch parity, closing deploy#242). 2/2 CI green. Severity: **none**. Trust 3→3.
+
+#### Reviewers (in addition to implementer-side reviews above)
+
+**Wanjiku Mwangi** (TPM) — 2nd-reviewer pass on both main# PRs. Held at 5.
+**Aisha Idrissi** — 2nd-reviewer pass on #266 (independent verification of the user-service#92 cross-repo unblocker).
+
+### Top 3 going well
+
+1. **Reviewer-class pattern B made wave-completion catchable.** Bereket's 5 must-fix catches across 4 PRs (#259 operational, #261 perms-shadowing, #261 runbook ref, #266 live-state, #267 wrong-workflow-input + 4 secondary) all came from artifact-first review — `gh api contents` reads, HEAD SHA citations, delta measurements. P3W1's Bereket-named primitive ("review-against-artifact-not-framing", `feedback_review_against_artifact_not_framing.md`) operated as designed in P3W3 across **3 distinct role classes** (Bereket as 1st-reviewer, Lucas as 2nd-reviewer-of-reviewer on #266 catching the SHA citation drift, Aisha as 2nd-reviewer-of-cross-repo-unblocker). Promotion threshold met by tally — see § Promotion Audit caveat below.
+
+2. **ChangesRequested cycles all resolved with additive commits — zero force-pushes.** 4/4 cycles (#259 Path-A bundled, #261 perms+runbook, #266 cross-repo Option A, #267 5-fixes-in-49-lines) shipped as additive commits to the existing PR branch with no `git push --force-with-lease`. This is a noteworthy-positive signal: state-verification at HEAD became byte-stable across the review-fix-rereview cycle, eliminating a class of "review-the-wrong-SHA" risk. Worth codifying.
+
+3. **Cross-repo Option A worked end-to-end for the first time.** deploy#266 ChangesRequested was a live-state correction that needed a code change in a different repo (user-service `/docs` env-gate) before the original PR could merge. Idris-91 (Sec, user-service team) shipped US#92 inside the wave, unblocking #266 before wave-merge. Pattern: cross-repo blocker → mid-wave engineer cross-mapping → unblock-and-ship-in-sequence. CLAUDE.md § Cross-Repo Coordination contract held under live conditions.
+
+### Top 3 pain points
+
+1. **6 orchestrator-class pre-flight gaps caught by downstream layers, not pre-flight.** Wave-branch creation in deploy was missing until Aisha-252 caught it at first-implementer-spawn (main#238 filed). deploy#242 attribution mistake (claimed isnad-graph sibling, was actually landing-page) was caught by Idris-853 reading the issue body (post-issue-comment 4366836610). Child-repo-implementer rule was missed for both landing-page and user-service (mid-wave correction). 2-reviewer planning, agent-naming pattern, and spawn-brief-reviewer-order-inversion all required mid-wave correction. **All 6 are recoverable**, but each is a recurring class of orchestrator-class gap. Pattern: orchestrator skips a pre-flight check, downstream layer (implementer / hook / reviewer) catches it. Need a pre-flight checklist coupled to `/wave-kickoff`.
+
+2. **Wave-merge required `--admin` override on 5/5 wave-merge PRs because validate_pr_review.py is mismatched with charter.** The hook treats `Requestee` as the reviewer and demands 2 reviewer-distinct comments. The wave-completion format used `Requestee=author` in many comments (because the format was Requestor=reviewer-of-prior-comment, Requestee=author-being-reviewed). Net: hook blocked, orchestrator merged with `--admin`. main#244 tracks the hook fix. main#233 tracks the charter-format ambiguity. main#228 tracks Single-Reviewer Exception non-honoring. **Three open issues all describe one tangled validate_pr_review.py bug surface.**
+
+3. **Promotion-audit pipeline has a discoverability gap.** Pattern B (`feedback_review_against_artifact_not_framing.md`) was claimed to have crossed the 5+ instances / 3 role classes promotion threshold in the wave wrap, but the deterministic `/promotion-audit` returned 0 AUTO / 0 DECIDE because the memory's frontmatter has `promotion_target: none`. The audit can't promote a memory that hasn't been opted in via frontmatter. The "tally crossed threshold" claim is human-tracked; the deterministic audit doesn't see the same signal. Either: (a) memories that are clearly headed for charter-promotion should set `promotion_target: charter` proactively, or (b) the audit needs a fall-back signal source (e.g., named-primitive citations in retros) that bypasses frontmatter.
+
+### Proposed process changes
+
+1. **Add a pre-flight checklist to `/wave-kickoff`** — Rationale: 6 of 6 orchestrator-class gaps in P3W3 were recoverable but each cost mid-wave coordination. A standardized pre-flight list (per-repo wave branch created? per-repo implementer rule applied? agent-naming pattern set? attribution sanity check on every issue body? 2-reviewer plan per PR drafted?) coupled to `/wave-kickoff` step output would catch them at planning-time. Not a hook — pre-flight checklist with explicit "yes/no/N-A" entries per repo. Tracks main#238 + 5 siblings.
+
+2. **Codify additive-commit-only on ChangesRequested cycles** — Rationale: 4/4 cycles in P3W3 used additive commits with no force-push, and that was a load-bearing positive (HEAD SHA stable across review-fix-rereview). Add to `charter/pull-requests.md`: "On a ChangesRequested → fix → re-review cycle, the fix MUST be an additive commit on the same branch unless explicitly approved by the requesting reviewer. Force-push during ChangesRequested is a Pattern B violation (resets HEAD-SHA-anchored verification chain)." Distinct from rebase-before-merge which is allowed pre-Approved.
+
+3. **Set `promotion_target: charter` on memories citing-frequency-3+** — Rationale: 5 memories sit at retro_citations=3 (`feedback_heredoc_in_git_commit.md`, `feedback_child_repo_implementer_rule.md`, `feedback_honest_audit_over_conclusion_claim.md`, `feedback_security_guard_inline_not_followup.md`, `feedback_canonical_source_via_git_show.md`) but all have `promotion_target: none` and so cannot be auto-promoted. Either codify them OR explicitly mark them as `promotion_target: never` (informational-only by design). Decide-then-tag.
+
+### Charter changes proposed (require user approval before applying)
+
+1. **`charter/pull-requests.md` — § Additive Commits on ChangesRequested.** New section:
+   > **Additive-only on ChangesRequested.** When a reviewer marks `ChangesRequested`, the fix MUST land as an additive commit on the same branch. Force-push (`git push --force` / `--force-with-lease`) during a ChangesRequested cycle is prohibited because it resets the HEAD-SHA anchor that the reviewer's `gh api contents/<path>?ref=<sha>` verification chain depends on. If a rebase is genuinely needed (e.g., merge conflicts after base advances), open a comment thread BEFORE rebasing, get explicit "rebase OK" from the requesting reviewer, then rebase. Pre-Approved rebase-before-merge is unaffected (HEAD anchor no longer load-bearing once Approved).
+
+2. **`charter/wave-kickoff.md` (or add to `/wave-kickoff` skill) — § Pre-Flight Checklist.** New section. 6 explicit checks per scoped repo:
+   > 1. Wave branch exists in this repo (`git ls-remote origin deployments/phase-{N}/wave-{M}` ≠ empty)
+   > 2. Implementer roster confirmed for this repo (per child-repo-implementer rule)
+   > 3. Every scoped issue's `actual_repo_for_changes` matches its parent-issue repo (re-read every issue body for sibling/attribution mistakes)
+   > 4. 2-reviewer slate drafted per PR before any spawn
+   > 5. Agent naming pattern set: `{FirstInitial}.{LastName}/{IIII}-{slug}` per CLAUDE.md
+   > 6. Spawn-brief includes explicit reviewer-class identity ahead of implementer-class identity (order matters; reviewer-first prevents Pattern B inversion)
+
+3. **`charter/pr-review.md` § Comment Format — disambiguate Requestor/Requestee.** Resolve main#233 ambiguity. Two readings exist; the team consistently uses Requestor=author / Requestee=reviewer (matches main#244 hook reading). Decision needed: codify the actual-usage reading and update validate_pr_review.py to match (closes #244, #233 simultaneously). Alternative: codify charter-original reading (Requestor=reviewer) and update all existing PR comments + hook. Owner-decision required.
+
+### Promotion audit (deterministic — see `.claude/team/promotion_audit_log/wave-3.md`)
+
+```
+Promotion audit wave-3 complete: 0 AUTO · 0 DECIDE · 60 KEPT · 3 SUPERSEDED · 1 ALREADY-PROMOTED
+```
+
+**Caveat:** Pattern B's named-primitive memory (`feedback_review_against_artifact_not_framing.md`) was claimed promotion-threshold-met in the wave wrap (5+ instances across 3 role classes), but the audit reports KEPT because `promotion_target: none` blocks auto-promotion. See pain point #3 above. Decide whether to flip the frontmatter and re-run.
+
+### Action items
+
+1. Apply approved charter changes (after user review) — Aino lead, Wanjiku 2nd-review.
+2. Convert P3W3 + W2 retro action items into the W4 plan: cold-rebuild gate (DONE in W3 #260); pre-flight checklist (NEW, charter §1 above); validate_pr_review.py family (#244 + #228 + #233); /wave-kickoff skill multi-repo branches (#238).
+3. Re-run `/promotion-audit` once memory frontmatters are decided (action item #3 above) — Aino.
+
+### Pattern tally (running)
+
+| Pattern | Class | This wave | Cumulative |
+|---|---|---|---|
+| A — design-rationale block | Implementer | 2 (Aisha #260, Weronika #261 composite-action design) | 6 |
+| B unified — verify-vs-artifact | Implementer + reviewer | 5 across 3 role classes (Bereket 1st-reviewer ×4 + Lucas 2nd-reviewer-of-reviewer ×1 + Aisha 2nd-reviewer-of-cross-repo-unblocker ×1) | **promotion-threshold met by tally; deterministic audit blocked by frontmatter** |
+| C — claim-state-staleness | Manager-class amplifier | 0 (P3W1's 6-violation pattern did NOT recur) | reverted from peak |
+| D — message-ordering-race | Architecture | tracking audit landed (main#241) | 0 violations |
+| E — process collapse under fire | Orchestrator-class | n/a (no emergency this wave) | 1 historical |
+| **F — orchestrator-class pre-flight gap** (new candidate) | Orchestrator-class | 6 instances (wave-branch, attribution, child-repo-implementer ×2, 2-reviewer planning, naming, spawn order) | **founding wave** |
+
