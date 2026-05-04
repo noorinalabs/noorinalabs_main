@@ -238,5 +238,137 @@ class CheckIntegrationTests(unittest.TestCase):
             self.assertEqual(result.get("decision"), "block")
 
 
+class MatcherRobustnessTests(unittest.TestCase):
+    """Negative-match coverage for the substring-bug cluster (#226, #188, #216)."""
+
+    @staticmethod
+    def _input(command: str) -> dict:
+        return {"tool_name": "Bash", "tool_input": {"command": command}}
+
+    def test_unquoted_email_value_bounded_by_whitespace(self):
+        """#226 repro: bare `-c user.email=val` does NOT slurp to EOL.
+
+        Pre-fix: the regex `-c\\s+user\\.email=["']?([^"']+)["']?` slurped
+        from `user.email=` to the next `"` or end-of-line. With a bare value
+        and no closing quote, the entire rest of the command was captured
+        into the email field. Tokenization via shlex bounds at whitespace.
+        """
+        # Use a name that exists in the local roster so we can verify the
+        # email comparison hits the correct value, not the slurped one.
+        valid_name = next(iter(hook.ROSTER), None)
+        if not valid_name:
+            self.skipTest("local roster is empty")
+        valid_email = hook.ROSTER[valid_name]
+        cmd = (
+            f'git -c user.name="{valid_name}" -c user.email={valid_email} '
+            f"commit -F /tmp/commit-msg.txt 2>&1 | tail -20"
+        )
+        result = hook.check(self._input(cmd))
+        self.assertIsNone(
+            result,
+            "#226: unquoted bare email should be allowed, not slurp to EOL",
+        )
+
+    def test_nested_heredoc_in_command_substitution(self):
+        """#188 repro: `git commit -m "$(cat <<'EOF' ... EOF)"` mangles the parser.
+
+        Pre-fix: `_strip_heredocs` + `_strip_quoted_strings` interaction on
+        nested `$(cat <<'EOF' ... EOF)` inside a double-quoted outer string
+        broke the parser's view of `user.name=...`. shlex tokenization
+        treats the entire `"$(cat <<'EOF' ... EOF)"` as one token (the outer
+        quotes are absorbed; the heredoc body is part of the token's value).
+        """
+        valid_name = next(iter(hook.ROSTER), None)
+        if not valid_name:
+            self.skipTest("local roster is empty")
+        valid_email = hook.ROSTER[valid_name]
+        # The nested form: a heredoc inside a command-substitution inside a
+        # double-quoted -m argument.
+        cmd = (
+            f'git -c user.name="{valid_name}" -c user.email="{valid_email}" '
+            "commit -m \"$(cat <<'EOF'\nmulti\nline\nmessage\nEOF\n)\""
+        )
+        result = hook.check(self._input(cmd))
+        self.assertIsNone(
+            result,
+            "#188: nested heredoc-in-command-sub-in-double-quote should not block",
+        )
+
+    def test_heredoc_body_with_git_commit_phrase_does_not_match(self):
+        """#216 sibling: heredoc body containing 'git commit' is not a real commit."""
+        cmd = (
+            "cat > /tmp/x.md <<'EOF'\n"
+            "Here is how to git commit with -c flags:\n"
+            'git -c user.name="X" commit -m "..."\n'
+            "EOF"
+        )
+        # Not a real commit invocation — should not require identity.
+        self.assertIsNone(hook.check(self._input(cmd)))
+
+    def test_label_validator_filename_no_longer_blocks(self):
+        """#226 meta-instance: --body-file path inside --label list.
+
+        The label validator (separate hook) can mistake a file path that
+        appears between `--body-file` and `--label` for a label value. This
+        hook isn't directly affected — covered for adjacency only.
+        """
+        # validate_commit_identity is on git, not gh. Just confirm gh
+        # invocations are not flagged here.
+        cmd = 'gh issue create --body-file /tmp/issue-body.txt --label "tech-debt,infrastructure"'
+        self.assertIsNone(hook.check(self._input(cmd)))
+
+
+class ParseFailureFailClosedTests(unittest.TestCase):
+    """`tokenize` returns None on shlex parse failure. For commit-identity
+    validation this MUST fail-closed: a malformed-but-commit-shaped command
+    should block, not silently allow. (Per `_shell_parse.tokenize` caller
+    contract pinned with Linh.)
+    """
+
+    @staticmethod
+    def _input(command: str) -> dict:
+        return {"tool_name": "Bash", "tool_input": {"command": command}}
+
+    def test_unbalanced_quote_with_commit_blocks(self):
+        """Unterminated quote + git commit shape → block (don't silently allow)."""
+        cmd = 'git -c user.name="Aino Virtanen -c user.email="a@b.c" commit -m "x"'
+        # Above has an unbalanced quote (the `"Aino Virtanen ` opens and
+        # is never closed before the next `"`, so shlex raises).
+        result = hook.check(self._input(cmd))
+        self.assertIsNotNone(
+            result,
+            "parse failure on a commit-shaped command must block, not allow",
+        )
+        assert result is not None
+        self.assertEqual(result["decision"], "block")
+        self.assertIn("shlex parsing", result["reason"])
+
+    def test_unbalanced_quote_without_commit_allows(self):
+        """Parse failure on a non-commit command → allow (no commit to validate)."""
+        cmd = 'echo "unterminated'
+        # Not a git commit; allow.
+        self.assertIsNone(hook.check(self._input(cmd)))
+
+    def test_repeated_dash_c_user_name_uses_last_value(self):
+        """Repeated -c user.name → last value wins (matches git semantics).
+
+        `dict(extract_dash_c_pairs(...))` overwrites earlier entries with
+        later ones, mirroring how git itself resolves repeated -c flags.
+        """
+        valid_name = next(iter(hook.ROSTER), None)
+        if not valid_name:
+            self.skipTest("local roster is empty")
+        valid_email = hook.ROSTER[valid_name]
+        # First name is bogus, last is valid → must allow (last wins).
+        cmd = (
+            f'git -c user.name="NotInRoster" -c user.name="{valid_name}" '
+            f'-c user.email="{valid_email}" commit -m "x"'
+        )
+        self.assertIsNone(
+            hook.check(self._input(cmd)),
+            "last-wins semantics: bogus earlier value should be overridden",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
