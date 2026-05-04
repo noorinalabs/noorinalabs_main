@@ -33,10 +33,36 @@ Tokenization:
   pattern as validate_labels (#113) -- guarantees that text inside a
   --body "..." heredoc cannot leak into base/head/repo extraction.
 
+Cwd handling (#144):
+  The local-path freshness check (`is_branch_fresh_local`) MUST anchor its
+  `git fetch` / `git merge-base` calls in the user's actual cwd at tool-call
+  time, not the hook's parent process cwd. The orchestrator commonly runs
+  from the parent repo while a worktree subagent's `gh pr create` targets
+  the worktree's branch — anchoring on parent cwd evaluates the wrong
+  repo's HEAD against origin. `_shell_parse.resolve_tool_cwd(input_data)`
+  returns `input_data["cwd"]` (set by the harness) when present, falling
+  back to `os.getcwd()`.
+
+Implicit-repo resolution (#227):
+  When `--repo` is omitted, the hook still routes through the API path if
+  the cwd's `origin` remote resolves to a known `OWNER/REPO` slug. This
+  protects against the cross-cwd misattribution case: orchestrator runs
+  `gh pr create` (no --repo) from cwd inside parent repo Y while the actual
+  feature branch lives in worktree X targeting repo X. Without implicit-repo
+  resolution we'd run `git fetch origin main` in repo Y and get a
+  false-positive on Y's stale main. With it, we hit the gh compare API for
+  X (the worktree's actual remote) and check its branch correctly.
+
+  Implementation: `_resolve_implicit_repo(cwd)` parses `git -C <cwd> remote
+  get-url origin` and extracts `OWNER/REPO` from common github URL forms.
+  Returns None on any parse failure → falls back to the legacy local check.
+
 Exit codes:
   0 -- allow (not the matched command, branch is up to date, or check could not run)
   2 -- block (branch is behind base)
 """
+
+from __future__ import annotations
 
 import json
 import os
@@ -46,11 +72,19 @@ import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from annunaki_log import log_pretooluse_block
+from _shell_parse import resolve_tool_cwd  # noqa: E402
+from annunaki_log import log_pretooluse_block  # noqa: E402
 
 _BASE_FLAGS = {"--base", "-B"}
 _HEAD_FLAGS = {"--head", "-H"}
 _REPO_FLAGS = {"--repo", "-R"}
+
+# Match an OWNER/REPO suffix on a git remote URL. Handles:
+#   git@github.com:owner/repo.git
+#   https://github.com/owner/repo.git
+#   https://github.com/owner/repo
+#   ssh://git@github.com/owner/repo.git
+_REPO_SLUG_RE = re.compile(r"github\.com[/:]([^/]+/[^/.\s]+?)(?:\.git)?/?$")
 
 
 def _tokenize(command: str) -> list[str] | None:
@@ -139,24 +173,75 @@ def extract_repo(command: str) -> str | None:
     return _first_flag_value(command, _REPO_FLAGS)
 
 
-def is_branch_fresh_local(base: str) -> bool:
-    """cwd-based check: HEAD contains the latest commit from origin/base."""
+def is_branch_fresh_local(base: str, cwd: str | None = None) -> bool:
+    """cwd-based check: HEAD contains the latest commit from origin/base.
+
+    `cwd` anchors the subprocess calls so worktree subagents inspect their
+    own branch state, not the parent process's git state (#144).
+    """
     try:
         subprocess.run(
             ["git", "fetch", "origin", base],
             capture_output=True,
             text=True,
             timeout=30,
+            cwd=cwd,
         )
         result = subprocess.run(
             ["git", "merge-base", "--is-ancestor", f"origin/{base}", "HEAD"],
             capture_output=True,
             text=True,
             timeout=10,
+            cwd=cwd,
         )
         return result.returncode == 0
     except (subprocess.TimeoutExpired, FileNotFoundError):
         return True
+
+
+def _resolve_implicit_repo(cwd: str | None) -> str | None:
+    """Return the OWNER/REPO of `cwd`'s `origin` remote, or None if not on github.
+
+    Used when the user runs `gh pr create` without `--repo`: the implicit
+    target is the cwd's tracked github remote. Anchors the subprocess on
+    `cwd` (a worktree may have a different `origin` than the parent repo).
+    """
+    try:
+        result = subprocess.run(
+            ["git", "remote", "get-url", "origin"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            cwd=cwd,
+        )
+    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+        return None
+    if result.returncode != 0:
+        return None
+    url = (result.stdout or "").strip()
+    if not url:
+        return None
+    match = _REPO_SLUG_RE.search(url)
+    if not match:
+        return None
+    return match.group(1)
+
+
+def _current_branch(cwd: str | None) -> str | None:
+    """Return the current branch in `cwd`, or None on failure."""
+    try:
+        result = subprocess.run(
+            ["git", "symbolic-ref", "--short", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            cwd=cwd,
+        )
+    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+        return None
+    if result.returncode != 0:
+        return None
+    return (result.stdout or "").strip() or None
 
 
 def is_branch_fresh_remote(repo: str, base: str, head: str) -> bool | None:
@@ -204,26 +289,43 @@ def check(input_data: dict) -> dict | None:
         if not re.search(r"\bgh\s+pr\s+create\b", command):
             return None
 
+    cwd = resolve_tool_cwd(input_data)
     base = extract_base(command)
     repo = extract_repo(command)
+    head = extract_head(command)
 
     if repo:
-        head = extract_head(command)
+        # Explicit --repo target: API path requires --head to know what branch
+        # to compare. Without --head we cannot reliably infer; skip.
         if not head:
             return None
         fresh = is_branch_fresh_remote(repo, base, head)
         if fresh is None or fresh:
             return None
+        target = f"{repo}:{base}"
+        rebase_hint = f"Rebase the head branch onto {target} on the target repo."
     else:
-        if is_branch_fresh_local(base):
-            return None
+        # No --repo: prefer the implicit-repo API path when we can resolve
+        # the cwd's `origin` to a github slug (#227 — cross-cwd misattribution
+        # protection). Fall back to the local-cwd path if not on github.
+        implicit_repo = _resolve_implicit_repo(cwd)
+        if implicit_repo:
+            implicit_head = head or _current_branch(cwd)
+            if not implicit_head:
+                # Cannot determine the head branch — fail open (same as
+                # explicit --repo without --head).
+                return None
+            fresh = is_branch_fresh_remote(implicit_repo, base, implicit_head)
+            if fresh is None or fresh:
+                return None
+            target = f"{implicit_repo}:{base}"
+            rebase_hint = f"Rebase the head branch onto {target} on the target repo."
+        else:
+            if is_branch_fresh_local(base, cwd=cwd):
+                return None
+            target = f"origin/{base}"
+            rebase_hint = f"Run: git fetch origin && git merge origin/{base}"
 
-    target = f"{repo}:{base}" if repo else f"origin/{base}"
-    rebase_hint = (
-        f"Rebase the head branch onto {target} on the target repo."
-        if repo
-        else f"Run: git fetch origin && git merge origin/{base}"
-    )
     result = {
         "decision": "block",
         "reason": (

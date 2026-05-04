@@ -238,5 +238,85 @@ class CheckIntegrationTests(unittest.TestCase):
             self.assertEqual(result.get("decision"), "block")
 
 
+class MatcherRobustnessTests(unittest.TestCase):
+    """Negative-match coverage for the substring-bug cluster (#226, #188, #216)."""
+
+    @staticmethod
+    def _input(command: str) -> dict:
+        return {"tool_name": "Bash", "tool_input": {"command": command}}
+
+    def test_unquoted_email_value_bounded_by_whitespace(self):
+        """#226 repro: bare `-c user.email=val` does NOT slurp to EOL.
+
+        Pre-fix: the regex `-c\\s+user\\.email=["']?([^"']+)["']?` slurped
+        from `user.email=` to the next `"` or end-of-line. With a bare value
+        and no closing quote, the entire rest of the command was captured
+        into the email field. Tokenization via shlex bounds at whitespace.
+        """
+        # Use a name that exists in the local roster so we can verify the
+        # email comparison hits the correct value, not the slurped one.
+        valid_name = next(iter(hook.ROSTER), None)
+        if not valid_name:
+            self.skipTest("local roster is empty")
+        valid_email = hook.ROSTER[valid_name]
+        cmd = (
+            f'git -c user.name="{valid_name}" -c user.email={valid_email} '
+            f"commit -F /tmp/commit-msg.txt 2>&1 | tail -20"
+        )
+        result = hook.check(self._input(cmd))
+        self.assertIsNone(
+            result,
+            "#226: unquoted bare email should be allowed, not slurp to EOL",
+        )
+
+    def test_nested_heredoc_in_command_substitution(self):
+        """#188 repro: `git commit -m "$(cat <<'EOF' ... EOF)"` mangles the parser.
+
+        Pre-fix: `_strip_heredocs` + `_strip_quoted_strings` interaction on
+        nested `$(cat <<'EOF' ... EOF)` inside a double-quoted outer string
+        broke the parser's view of `user.name=...`. shlex tokenization
+        treats the entire `"$(cat <<'EOF' ... EOF)"` as one token (the outer
+        quotes are absorbed; the heredoc body is part of the token's value).
+        """
+        valid_name = next(iter(hook.ROSTER), None)
+        if not valid_name:
+            self.skipTest("local roster is empty")
+        valid_email = hook.ROSTER[valid_name]
+        # The nested form: a heredoc inside a command-substitution inside a
+        # double-quoted -m argument.
+        cmd = (
+            f'git -c user.name="{valid_name}" -c user.email="{valid_email}" '
+            "commit -m \"$(cat <<'EOF'\nmulti\nline\nmessage\nEOF\n)\""
+        )
+        result = hook.check(self._input(cmd))
+        self.assertIsNone(
+            result,
+            "#188: nested heredoc-in-command-sub-in-double-quote should not block",
+        )
+
+    def test_heredoc_body_with_git_commit_phrase_does_not_match(self):
+        """#216 sibling: heredoc body containing 'git commit' is not a real commit."""
+        cmd = (
+            "cat > /tmp/x.md <<'EOF'\n"
+            "Here is how to git commit with -c flags:\n"
+            'git -c user.name="X" commit -m "..."\n'
+            "EOF"
+        )
+        # Not a real commit invocation — should not require identity.
+        self.assertIsNone(hook.check(self._input(cmd)))
+
+    def test_label_validator_filename_no_longer_blocks(self):
+        """#226 meta-instance: --body-file path inside --label list.
+
+        The label validator (separate hook) can mistake a file path that
+        appears between `--body-file` and `--label` for a label value. This
+        hook isn't directly affected — covered for adjacency only.
+        """
+        # validate_commit_identity is on git, not gh. Just confirm gh
+        # invocations are not flagged here.
+        cmd = 'gh issue create --body-file /tmp/issue-body.txt --label "tech-debt,infrastructure"'
+        self.assertIsNone(hook.check(self._input(cmd)))
+
+
 if __name__ == "__main__":
     unittest.main()

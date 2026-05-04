@@ -13,10 +13,34 @@ Parent+child roster merge (#112 part a):
   coordinators commit in child repos without duplicating their entries into
   every child `roster.json`.
 
+Input Language
+==============
+
+Fires on:      PreToolUse Bash
+Matches:       git [-c k=v ...] [-C path] [other globals] commit [args]
+               (any segment in the compound command — split on ;, &&, ||, |;
+               leading KEY=value env-vars are stripped)
+Does NOT match: prose containing the literal "git commit" inside heredoc
+                bodies, --body / --body-file argument values, $(cat <<'EOF' …)
+                command substitutions. Tokenized via shlex; the matcher only
+                fires on actual command-position git invocations.
+
+Flag pass-through:
+    -c user.name=<value>   → required, validated against roster
+    -c user.email=<value>  → required, validated against roster
+    cd <path> && git ...   → loads <path>'s merged roster (cross-repo commit)
+
+Substring-bug history fixed by tokenization:
+    #226 — unquoted -c user.email=val no longer slurps to EOL
+    #188 — nested $(cat <<'EOF' ... EOF) no longer mangles the parser
+    Both root in regex-against-raw-string parsing; switched to shlex tokens.
+
 Exit codes:
   0 — allow (not a git commit, or identity is valid)
   2 — block (missing or invalid identity flags)
 """
+
+from __future__ import annotations
 
 import json
 import re
@@ -24,7 +48,14 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from annunaki_log import log_pretooluse_block
+from _shell_parse import (  # noqa: E402
+    extract_dash_c_pairs,
+    find_git_subcommand,
+    iter_command_segments,
+    strip_heredocs,
+    tokenize,
+)
+from annunaki_log import log_pretooluse_block  # noqa: E402
 
 
 def _read_roster(roster_path: Path) -> dict[str, str]:
@@ -96,49 +127,29 @@ def _detect_target_roster(command: str) -> dict[str, str] | None:
     return merged or None
 
 
-def _strip_heredocs(text: str) -> str:
-    """Remove heredoc bodies (<<'DELIM' ... DELIM and <<DELIM ... DELIM)."""
-    return re.sub(
-        r"<<-?\s*['\"]?(\w+)['\"]?.*?\n.*?\n\1\b",
-        "",
-        text,
-        flags=re.DOTALL,
-    )
+def _find_commit_segment(command: str) -> list[str] | None:
+    """Find the `git ... commit ...` segment in `command`. None if absent.
 
+    Strips heredocs first so a heredoc body containing the literal phrase
+    "git commit" cannot be confused with a real invocation. Tokenizes the
+    cleaned command with shlex, walks each pipeline segment, and returns
+    the first segment whose `find_git_subcommand` resolves to subcommand
+    `commit`.
 
-def _strip_quoted_strings(text: str) -> str:
-    """Remove content of single- and double-quoted strings."""
-    # Remove single-quoted strings (no escaping inside single quotes in shell)
-    text = re.sub(r"'[^']*'", "''", text)
-    # Remove double-quoted strings (handle escaped quotes)
-    text = re.sub(r'"(?:[^"\\]|\\.)*"', '""', text)
-    return text
-
-
-def _is_git_commit_command(command: str) -> bool:
-    """Return True only if the command invokes `git ... commit` as a real command.
-
-    Strips heredoc bodies and quoted strings first so that mentions of
-    "git commit" inside string literals do not trigger a false positive.
-    Then requires `git` to appear as a command — at the start of the
-    (trimmed) command or after a shell operator (&&, ||, ;, |).
+    Returns None on tokenization failure (caller treats as "not a commit").
     """
-    cleaned = _strip_heredocs(command)
-    cleaned = _strip_quoted_strings(cleaned)
-
-    # Match `git [options] commit` where commit is the subcommand.
-    # Git options before the subcommand are: -c key=val, -C path, --flag, etc.
-    # We skip those and check if the first non-option argument is "commit".
-    return bool(
-        re.search(
-            r"(?:^|[;&|]\s*|&&\s*|\|\|\s*)\s*git\b"
-            r"(?:\s+-c\s+\S+)*"  # skip -c key=val pairs
-            r"(?:\s+-[A-Za-z]\s+\S+)*"  # skip other -X val options
-            r"\s+commit(?:\s|$)",
-            cleaned,
-            re.MULTILINE,
-        )
-    )
+    cleaned = strip_heredocs(command)
+    tokens = tokenize(cleaned)
+    if tokens is None:
+        return None
+    for segment in iter_command_segments(tokens):
+        decoded = find_git_subcommand(segment)
+        if decoded is None:
+            continue
+        _globals, rest = decoded
+        if rest and rest[0] == "commit":
+            return segment
+    return None
 
 
 def check(input_data: dict) -> dict | None:
@@ -149,18 +160,19 @@ def check(input_data: dict) -> dict | None:
 
     command = input_data.get("tool_input", {}).get("command", "")
 
-    if not _is_git_commit_command(command):
+    commit_segment = _find_commit_segment(command)
+    if commit_segment is None:
         return None
 
     # Cross-repo support: if the command `cd`s into another repo, load that
-    # repo's roster instead of the local one. This allows the orchestration
-    # layer (noorinalabs-main) to commit in child repos using their team members.
+    # repo's roster instead of the local one.
     roster = _detect_target_roster(command) or ROSTER
 
-    name_match = re.search(r'-c\s+user\.name=["\']?([^"\']+)["\']?', command)
-    email_match = re.search(r'-c\s+user\.email=["\']?([^"\']+)["\']?', command)
+    pairs = dict(extract_dash_c_pairs(commit_segment))
+    name = pairs.get("user.name")
+    email = pairs.get("user.email")
 
-    if not name_match:
+    if not name:
         result = {
             "decision": "block",
             "reason": (
@@ -173,7 +185,7 @@ def check(input_data: dict) -> dict | None:
         log_pretooluse_block("validate_commit_identity", command, result["reason"])
         return result
 
-    if not email_match:
+    if not email:
         result = {
             "decision": "block",
             "reason": (
@@ -185,9 +197,6 @@ def check(input_data: dict) -> dict | None:
         }
         log_pretooluse_block("validate_commit_identity", command, result["reason"])
         return result
-
-    name = name_match.group(1).strip()
-    email = email_match.group(1).strip()
 
     if name not in roster:
         result = {

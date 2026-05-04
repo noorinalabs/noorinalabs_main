@@ -142,33 +142,49 @@ class GateMatchingTests(unittest.TestCase):
 
 
 class CheckLocalPathTests(unittest.TestCase):
-    """End-to-end check() with the cwd-based (no --repo) path mocked."""
+    """End-to-end check() with the cwd-based (no --repo) path mocked.
+
+    Post-#227: the legacy local path is only consulted when the cwd has no
+    resolvable github `origin` remote. To keep these tests focused on the
+    local path, `_resolve_implicit_repo` is patched to return None — that
+    forces the legacy code path. The implicit-repo path has its own
+    coverage in `CheckImplicitRepoTests`.
+    """
 
     @staticmethod
     def _input(command: str) -> dict:
         return {"tool_name": "Bash", "tool_input": {"command": command}}
 
     def test_local_fresh_branch_allows(self):
-        with mock.patch.object(hook, "is_branch_fresh_local", return_value=True) as mocked:
+        with (
+            mock.patch.object(hook, "_resolve_implicit_repo", return_value=None),
+            mock.patch.object(hook, "is_branch_fresh_local", return_value=True) as mocked,
+        ):
             result = hook.check(self._input("gh pr create"))
         self.assertIsNone(result)
-        mocked.assert_called_once_with("main")
+        mocked.assert_called_once()
+        self.assertEqual(mocked.call_args.args[0], "main")
 
     def test_local_stale_branch_blocks(self):
-        with mock.patch.object(hook, "is_branch_fresh_local", return_value=False):
+        with (
+            mock.patch.object(hook, "_resolve_implicit_repo", return_value=None),
+            mock.patch.object(hook, "is_branch_fresh_local", return_value=False),
+        ):
             result = hook.check(self._input("gh pr create"))
         self.assertIsNotNone(result)
         self.assertEqual(result["decision"], "block")
         self.assertIn("origin/main", result["reason"])
 
     def test_local_path_used_when_no_repo_flag(self):
-        """Without --repo, the cwd-based check is the only path consulted."""
+        """Without --repo and without a github origin, the cwd-based check is consulted."""
         with (
+            mock.patch.object(hook, "_resolve_implicit_repo", return_value=None),
             mock.patch.object(hook, "is_branch_fresh_local", return_value=True) as local_mock,
             mock.patch.object(hook, "is_branch_fresh_remote") as remote_mock,
         ):
             hook.check(self._input("gh pr create --base develop"))
-        local_mock.assert_called_once_with("develop")
+        local_mock.assert_called_once()
+        self.assertEqual(local_mock.call_args.args[0], "develop")
         remote_mock.assert_not_called()
 
 
@@ -244,6 +260,128 @@ class CheckRemotePathTests(unittest.TestCase):
             "noorinalabs/noorinalabs-isnad-graph", "main", "L.Pham/0834-feature"
         )
         local_mock.assert_not_called()
+
+
+class CheckImplicitRepoTests(unittest.TestCase):
+    """#227: when --repo is omitted, route via cwd's origin remote.
+
+    Cross-cwd misattribution protection: orchestrator running `gh pr create`
+    (no --repo) from cwd inside repo Y while feature branch lives in worktree
+    targeting repo X. Without implicit-repo resolution we'd evaluate Y's
+    main staleness, which is unrelated to the X PR.
+    """
+
+    @staticmethod
+    def _input(command: str, cwd: str = "/tmp/worktree-x") -> dict:
+        return {
+            "tool_name": "Bash",
+            "tool_input": {"command": command},
+            "cwd": cwd,
+        }
+
+    def test_implicit_repo_routes_to_remote_path(self):
+        with (
+            mock.patch.object(hook, "_resolve_implicit_repo", return_value="x/x"),
+            mock.patch.object(hook, "_current_branch", return_value="feat-x"),
+            mock.patch.object(hook, "is_branch_fresh_remote", return_value=True) as remote_mock,
+            mock.patch.object(hook, "is_branch_fresh_local") as local_mock,
+        ):
+            result = hook.check(self._input("gh pr create"))
+        self.assertIsNone(result)
+        remote_mock.assert_called_once_with("x/x", "main", "feat-x")
+        local_mock.assert_not_called()
+
+    def test_implicit_repo_stale_branch_blocks(self):
+        with (
+            mock.patch.object(hook, "_resolve_implicit_repo", return_value="x/x"),
+            mock.patch.object(hook, "_current_branch", return_value="feat-x"),
+            mock.patch.object(hook, "is_branch_fresh_remote", return_value=False),
+        ):
+            result = hook.check(self._input("gh pr create"))
+        self.assertIsNotNone(result)
+        assert result is not None
+        self.assertIn("x/x:main", result["reason"])
+
+    def test_implicit_repo_with_explicit_head(self):
+        """Explicit --head wins over the cwd-current-branch fallback."""
+        with (
+            mock.patch.object(hook, "_resolve_implicit_repo", return_value="x/x"),
+            mock.patch.object(hook, "_current_branch") as branch_mock,
+            mock.patch.object(hook, "is_branch_fresh_remote", return_value=True) as remote_mock,
+        ):
+            hook.check(self._input("gh pr create --head explicit-feat"))
+        remote_mock.assert_called_once_with("x/x", "main", "explicit-feat")
+        branch_mock.assert_not_called()
+
+    def test_repro_for_issue_227(self):
+        """#227 exact repro: gh pr create from parent cwd against child user-service.
+
+        Pre-fix: with no `--repo` the hook ran git fetch + merge-base in
+        the parent's cwd and false-positive-blocked on parent's stale main.
+        Post-fix: implicit-repo resolves to the WORKTREE's origin remote
+        (the user-service repo), and we correctly check that branch.
+        """
+        cmd = 'gh pr create --title "fix(ci): trigger ci.yml" --body-file /tmp/uss-81-pr.txt'
+        with (
+            # Worktree resolves to user-service, not the parent repo.
+            mock.patch.object(
+                hook,
+                "_resolve_implicit_repo",
+                return_value="noorinalabs/noorinalabs-user-service",
+            ),
+            mock.patch.object(
+                hook, "_current_branch", return_value="M.Salazar/0081-ci-deployments"
+            ),
+            mock.patch.object(hook, "is_branch_fresh_remote", return_value=True),
+            mock.patch.object(hook, "is_branch_fresh_local") as local_mock,
+        ):
+            result = hook.check(self._input(cmd))
+        self.assertIsNone(
+            result,
+            "#227: cross-cwd `gh pr create` should not be blocked by parent repo state",
+        )
+        local_mock.assert_not_called()
+
+
+class CwdHandlingTests(unittest.TestCase):
+    """#144: is_branch_fresh_local must run with the user's cwd, not the hook's parent cwd."""
+
+    @staticmethod
+    def _input(command: str, cwd: str | None = None) -> dict:
+        d: dict = {"tool_name": "Bash", "tool_input": {"command": command}}
+        if cwd is not None:
+            d["cwd"] = cwd
+        return d
+
+    def test_cwd_passed_through_to_local_check(self):
+        captured: dict[str, object] = {}
+
+        def fake_local(base: str, cwd: str | None = None) -> bool:
+            captured["base"] = base
+            captured["cwd"] = cwd
+            return True
+
+        with (
+            mock.patch.object(hook, "_resolve_implicit_repo", return_value=None),
+            mock.patch.object(hook, "is_branch_fresh_local", side_effect=fake_local),
+        ):
+            hook.check(self._input("gh pr create", cwd="/tmp/worktree-foo"))
+        self.assertEqual(captured.get("cwd"), "/tmp/worktree-foo")
+        self.assertEqual(captured.get("base"), "main")
+
+    def test_implicit_repo_resolution_uses_input_cwd(self):
+        captured: dict[str, object] = {}
+
+        def fake_resolve(cwd):
+            captured["cwd"] = cwd
+            return None  # force fall-through to local path
+
+        with (
+            mock.patch.object(hook, "_resolve_implicit_repo", side_effect=fake_resolve),
+            mock.patch.object(hook, "is_branch_fresh_local", return_value=True),
+        ):
+            hook.check(self._input("gh pr create", cwd="/tmp/worktree-bar"))
+        self.assertEqual(captured.get("cwd"), "/tmp/worktree-bar")
 
 
 if __name__ == "__main__":
