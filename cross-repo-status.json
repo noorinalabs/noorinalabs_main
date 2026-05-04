@@ -1,9 +1,84 @@
 {
-  "wave_active": false,
-  "current_wave": null,
+  "wave_active": true,
+  "current_wave": "wave-4",
   "next_wave": null,
   "last_completed_wave": "wave-3",
   "last_completed_at": "2026-05-04T02:35:00Z",
+  "wave_4_kicked_off_at": "2026-05-04T03:15:00Z",
+  "wave_4_branch": "deployments/phase-3/wave-4",
+  "wave_4_theme": "Tooling and process-discipline cleanup — hook bug-class consolidation + charter docs sweep",
+  "wave_4_length_estimate_days": "5-7",
+  "wave_4_repos_in_scope": [
+    "noorinalabs-main",
+    "noorinalabs-isnad-graph",
+    "noorinalabs-user-service",
+    "noorinalabs-design-system",
+    "noorinalabs-data-acquisition",
+    "noorinalabs-isnad-ingest-platform"
+  ],
+  "wave_4_scope_total_issues": 31,
+  "wave_4_scope": {
+    "tier_1_validate_pr_review_family": [
+      {"id": "noorinalabs-main#244", "title": "validate_pr_review.py Requestee-as-reviewer mismatch", "assignee": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Nadia Khoury"], "branch": "A.Virtanen/0244-pr-review-canonicalization", "bundle": "PR closes #244 + #233 + #228"},
+      {"id": "noorinalabs-main#233", "title": "charter Requestor/Requestee directionality ambiguity", "assignee": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Nadia Khoury"], "bundle": "with #244"},
+      {"id": "noorinalabs-main#228", "title": "validate_pr_review hook doesn't honor Single-Reviewer Exception", "assignee": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Nadia Khoury"], "bundle": "with #244"}
+    ],
+    "tier_2_hook_matcher_family": [
+      {"id": "noorinalabs-main#226", "title": "validate_commit_identity slurps -c user.email", "assignee": "Aino Virtanen", "reviewers": ["Nadia Khoury", "Wanjiku Mwangi"], "branch": "A.Virtanen/0226-hook-matcher-sanitization", "bundle": "PR closes #226 + #227 + #223 + #216 + #188 + #144 + #189"},
+      {"id": "noorinalabs-main#227", "title": "validate_branch_freshness uses dispatcher cwd", "bundle": "with #226"},
+      {"id": "noorinalabs-main#223", "title": "block_no_verify trips on heredoc body", "bundle": "with #226"},
+      {"id": "noorinalabs-main#216", "title": "block_git_config trips on heredoc body", "bundle": "with #226"},
+      {"id": "noorinalabs-main#188", "title": "validate_commit_identity heredoc stripping breaks on nested heredoc", "bundle": "with #226"},
+      {"id": "noorinalabs-main#144", "title": "validate_branch_freshness uses parent cwd, not worktree", "bundle": "with #226"},
+      {"id": "noorinalabs-main#189", "title": "block_shutdown_without_retro false-positive on subagent task-complete", "bundle": "with #226"},
+      {"id": "noorinalabs-isnad-graph#819", "title": "validate_commit_identity ignores cross-repo roster lookup", "assignee": "Linh Pham", "reviewers": ["Jelani Mwangi", "Arjun Raghavan"], "branch": "L.Pham/0819-hook-cross-repo-roster", "bundle": "PR closes isnad-graph#819 + #814"},
+      {"id": "noorinalabs-isnad-graph#814", "title": "validate_commit_identity heredoc/quote-strip ordering fragile", "bundle": "with isnad-graph#819"}
+    ],
+    "tier_3_skill_and_retro_action_items": [
+      {"id": "noorinalabs-main#238", "title": "/wave-kickoff multi-repo wave-branch creation", "assignee": "Wanjiku Mwangi", "reviewers": ["Aino Virtanen", "Nadia Khoury"], "branch": "W.Mwangi/0238-wave-kickoff-multi-repo"},
+      {"id": "noorinalabs-main#158", "title": "promotion-audit fall-back signal — stale-memory warning class", "assignee": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Santiago Ferreira"], "branch": "A.Virtanen/0158-promotion-audit-fallback"},
+      {"id": "noorinalabs-main#196", "title": "/wave-scope skill — reconcile meta-issue vs labels", "assignee": "Wanjiku Mwangi", "reviewers": ["Nadia Khoury", "Aino Virtanen"], "branch": "W.Mwangi/0196-wave-scope-skill"}
+    ],
+    "tier_4_charter_docs_sweep": [
+      {"id": "noorinalabs-main#225", "title": "secrets-audit doc sweep §3.0.a TODO + §3.4/§3.8 back-refs", "assignee": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Nadia Khoury"], "branch": "A.Virtanen/0225-charter-docs-sweep", "bundle": "PR closes #225 + #239 + #240 + #200 + #201 + #197"},
+      {"id": "noorinalabs-main#239", "title": "charter base-image-pinning convention", "bundle": "with #225"},
+      {"id": "noorinalabs-main#240", "title": "charter per-env OAuth provisioning convention", "bundle": "with #225"},
+      {"id": "noorinalabs-main#200", "title": "charter wave-branch CI triggers (W10 carry-forward)", "bundle": "with #225"},
+      {"id": "noorinalabs-main#201", "title": "charter spawn-prompt template — reviewer-slate first-line (W10 carry-forward)", "bundle": "with #225"},
+      {"id": "noorinalabs-main#197", "title": "docs: clarify single-leader session-team architecture", "bundle": "with #225"},
+      {"id": "noorinalabs-isnad-graph#852", "title": "CLAUDE.md branching backslash → slash sync", "assignee": "Ingrid Lindqvist", "reviewers": ["Anya Kowalczyk"], "branch": "I.Lindqvist/0852-claude-md-branching-sync", "wave_bootstrap": true},
+      {"id": "noorinalabs-user-service#90", "title": "CLAUDE.md branching backslash → slash sync", "assignee": "Mateo Salazar", "reviewers": ["Anya Kowalczyk"], "branch": "M.Salazar/0090-claude-md-branching-sync", "wave_bootstrap": true},
+      {"id": "noorinalabs-design-system#62", "title": "CLAUDE.md branching backslash → slash sync", "assignee": "Kofi Mensah", "reviewers": ["Maeve Callahan"], "branch": "K.Mensah/0062-claude-md-branching-sync", "wave_bootstrap": true},
+      {"id": "noorinalabs-data-acquisition#33", "title": "CLAUDE.md branching backslash → slash sync", "assignee": "Sofia Cardoso", "reviewers": ["Dilara Erdogan"], "branch": "S.Cardoso/0033-claude-md-branching-sync", "wave_bootstrap": true}
+    ],
+    "tier_5_firm_per_owner_directive_2026_05_04": [
+      {"id": "noorinalabs-main#214", "title": "rationalize parent-canonical hook paths org-wide", "assignee": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Nadia Khoury"], "branch": "A.Virtanen/0214-parent-canonical-hook-paths"},
+      {"id": "noorinalabs-main#215", "title": "settings.json fan-out (US + ingest-platform)", "assignee": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Santiago Ferreira"], "branch": "A.Virtanen/0215-settings-json-fanout", "touches_repos": ["noorinalabs-user-service", "noorinalabs-isnad-ingest-platform"]},
+      {"id": "noorinalabs-main#236", "title": "feedback-promotion: Reviewer Pattern C (TF state-drift)", "assignee": "Nadia Khoury", "reviewers": ["Aino Virtanen", "Santiago Ferreira"], "branch": "N.Khoury/0236-pattern-c-promotion"},
+      {"id": "noorinalabs-main#198", "title": "validate_edit_completion (new hook)", "assignee": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Nadia Khoury"], "branch": "A.Virtanen/0198-validate-edit-completion"},
+      {"id": "noorinalabs-main#203", "title": "validate_workflow_paths_coverage (new hook)", "assignee": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Nadia Khoury"], "branch": "A.Virtanen/0203-validate-workflow-paths-coverage"},
+      {"id": "noorinalabs-main#219", "title": "Hook 14 NEUTRAL conclusion bypass (Chromatic gate gap)", "assignee": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Santiago Ferreira"], "branch": "A.Virtanen/0219-hook14-neutral-bypass"}
+    ],
+    "deliberately_not_in_w4": [
+      "noorinalabs-deploy backlog (~50 issues) — wave is hooks/charter/skill scope; deploy work resumes W5+",
+      "noorinalabs-landing-page #73 (design-system bump) — gated on ds#57 publish (separate workstream)",
+      "noorinalabs-isnad-graph product-feature backlog (#840 design-system bump, #717 billing) — out of W4 theme",
+      "8-repo audits noorinalabs-main#221 #222 — own wave (large surface)",
+      "Pattern E charter promotion (emergency-mode catchup) — no current emergency"
+    ]
+  },
+  "wave_4_decisions": {
+    "scope_signed_off_at": "2026-05-04T03:15:00Z",
+    "scope_signed_off_by": "owner",
+    "stretch_promoted_to_firm": "Owner directive 2026-05-04: T5 6 issues moved into firm scope, not stretch",
+    "single_reviewer_exception": "4 child-repo CLAUDE.md branching syncs use single-reviewer per § Single-Reviewer Exception (Wave-Bootstrap Only); labeled wave-bootstrap; logged here per charter requirement",
+    "charter_changes_applied_pre_kickoff": [
+      "pull-requests.md § Additive Commits on ChangesRequested (NEW) — codifies P3W3 positive (4/4 CR cycles additive, no force-push)",
+      "pull-requests.md § Comment-Based Reviews — disambiguate Requestor/Requestee; canonical Requestor=comment-author. Resolves #233 charter-side; hook-side fix tracked in #244+#228",
+      "/wave-kickoff § 0 Pre-Flight Checklist (NEW) — Pattern F mitigation; 6 per-repo checks; applied at this kickoff"
+    ],
+    "pre_flight_checklist_pass": "All 6 checks passed for 6 in-scope repos (main, isnad-graph, user-service, design-system, data-acquisition, ingest-platform). main#232 (canonical CLAUDE.md fix) detected closed during 0.3 attribution check — dropped from scope; 4 child-sync issues retained as W4 work."
+  },
   "wave_3_kicked_off_at": "2026-05-03T17:55:00Z",
   "wave_3_wrap_status": "CLOSED 2026-05-04T02:35Z. All 14 wave-3 PRs dual-Approved + merged into wave-3 branches across 5 repos (user-service, deploy, isnad-graph, landing-page, main). 5 wave-merge PRs (deployments/phase-3/wave-3 → main) merged in deploy-order: user-service#93 (05d644e) → deploy#270 (c7cfabf) → isnad-graph#856 (bbf7073) → landing-page#76 (4131630) → main#243 (cc6e589). Merges used --admin override for the 2-reviewer hook (validate_pr_review.py treats Requestee as reviewer, mismatched with the wave's Requestee=author format; orchestrator follow-up filed). Pattern B (verify-vs-artifact) crossed 5+ wave-instances across 3 role classes — charter promotion threshold met. 6 orchestrator-class gaps caught by hooks/implementers/reviewers (wave-branch creation, deploy#242 attribution, child-repo-implementer rule for landing-page + user-service, 2-reviewer planning, agent-naming pattern, spawn-brief-reviewer-order-inversion). Wave-completion batch (T2/T3): #266 ChangesRequested → user-service#92 cross-repo Option A → re-Approved; #259 ChangesRequested → 2-line path-A → Approved; #261 ChangesRequested → 14-line perms+runbook → Approved; #267 ChangesRequested → 49-line workflow-input + failure-modes → Approved.",
   "phase": "phase-3",
@@ -73,7 +148,7 @@
   "wave_started": "2026-04-30T21:00:00Z",
   "wave_1_wrap_started": "2026-04-30T23:18:00Z",
   "wave_1_wrap_status": "CLOSED 2026-05-01T01:49:41Z. Both wave-merge PRs landed (deploy#213 merge-commit b6f2cd1; main#235 merge-commit 9a1ef3e). 5/5 Tier-1 + 2/2 Tier-2 + #205 followup-of-spec + #214 wave-tail flake fix (#215 retry-with-backoff JSON-parse classifier) all on main. 8 deploy worktrees pruned. 2 ontology files resolved. 4 charter deltas landed (Patterns A + B unified + C + D). Trust matrix updated (Lucas 4→5; others hold). Promotion audit 0/0/55/4. Wave-tail produced 5 additional retro-pattern data points stress-testing the just-landed charter; all four patterns held. 9 follow-ups filed for next-wave planning (#199 #200 #203 #204 #209 #211 #212 + main#232 + main#233 + main#234). 3 Tier-3 carry-forwards remain operationally gated (deploy#86 async-routine fires post-this-merge; deploy#151 manual SRE B2 tfstate-key migration; user-service#84 manual SRE DEPLOY_REPO_PAT secret).",
-  "last_updated": "2026-05-04T02:55:00Z",
+  "last_updated": "2026-05-04T03:15:00Z",
   "deployments_branch": "deployments/phase-3/wave-3",
   "wave_1_theme": "Promotion pipeline goes prod — owner directive: pipeline running seamlessly so team can refocus on product + process",
   "wave_1_scope": {
