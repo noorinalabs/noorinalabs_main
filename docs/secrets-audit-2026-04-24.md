@@ -135,7 +135,7 @@ Each secret's authoritative source lives OUTSIDE GitHub. Before any `set-org` / 
 | `HCLOUD_TOKEN` | Hetzner Cloud Console → (noorinalabs project) → Security → API tokens. Value shown once at creation — regenerate if lost. |
 | `GH_PACKAGES_TOKEN` | GitHub → Developer Settings → Personal access tokens with `read:packages` / `write:packages` for the `@noorinalabs` npm scope. Regenerate if unknown. |
 | `JWT_PRIVATE_KEY` / `JWT_PUBLIC_KEY` | `~/.ssh/jwt_private.pem` and `~/.ssh/jwt_public.pem` on the owner's workstation. If not recoverable, regenerate via `openssl` and re-issue all outstanding JWTs (breaking change — plan a user session-reset window). |
-| `POSTGRES_*`, `USER_POSTGRES_*`, `REDIS_*`, `USER_REDIS_*`, `NEO4J_*` (passwords/users/dbs) | Current VPS filesystem — `TODO(santiago):` confirm canonical path for the rendered env files (e.g., `/opt/noorinalabs/stg/.env` on the staging VPS). These can be `ssh`-copied to the staging tree with a `cat` over the pipe — do NOT scp the whole env file into the staging tree. **Blocked on two-VPS topology discussion — see [noorinalabs/noorinalabs-main#212](https://github.com/noorinalabs/noorinalabs-main/issues/212). Once that issue names canonical env-file paths per VPS, this row and § 3.9 Tier C migration become executable.** |
+| `POSTGRES_*`, `USER_POSTGRES_*`, `REDIS_*`, `USER_REDIS_*`, `NEO4J_*` (passwords/users/dbs) | Current VPS filesystem — rendered `.env` at `/opt/noorinalabs-deploy/.env` on both stg and prod VPSes (resolved via [main#212](https://github.com/noorinalabs/noorinalabs-main/issues/212) walkthrough 2026-04-29). These can be `ssh`-copied to the staging tree with a `cat` over the pipe — do NOT scp the whole env file into the staging tree. **Tier C env-scope migration executed 2026-04-26 against this path (per main#148 closure comments).** |
 | `GRAFANA_ADMIN_PASSWORD` | Same as Postgres — rendered env file on the VPS. |
 | `KAFKA_CLUSTER_ID` | Generated at cluster bootstrap, persisted as a per-env Terraform output in the respective `terraform/kafka/` workspace (stg + prod each get their own cluster ID — promotion does not drag the ID across envs). Retrieval: `terraform output kafka_cluster_id` against the relevant env's state. Not a credential (22-char KRaft quorum UUID); treated as non-secret but persisted for restart stability. |
 | `KAFKA_UI_USER` / `KAFKA_UI_PASSWORD` | Rendered env file on VPS (Kafka-UI container config). |
@@ -260,7 +260,7 @@ done
 
 ### 3.4. JWT keypair — `JWT_PRIVATE_KEY`, `JWT_PUBLIC_KEY`
 
-> Value sources: `$STAGING/org/JWT_PRIVATE_KEY` and `$STAGING/org/JWT_PUBLIC_KEY` (staged per § 3.0.b from canonical keypair custody — see § 3.0.a `TODO(santiago):`). If either value is unrecoverable, regenerate the keypair upstream and plan the JWT re-issue window BEFORE running this section.
+> Value sources: `$STAGING/org/JWT_PRIVATE_KEY` and `$STAGING/org/JWT_PUBLIC_KEY` (staged per § 3.0.b from canonical keypair custody — see § 3.0.a row for `JWT_PRIVATE_KEY` / `JWT_PUBLIC_KEY`). If either value is unrecoverable, regenerate the keypair upstream and plan the JWT re-issue window BEFORE running this section.
 
 ```bash
 for SECRET in JWT_PRIVATE_KEY JWT_PUBLIC_KEY; do
@@ -323,7 +323,7 @@ gh secret delete GH_PACKAGES_TOKEN --repo noorinalabs/noorinalabs-isnad-graph
 ### 3.8. `DEPLOY_SSH_PRIVATE_KEY` — TWO-STAGE migration
 
 > Value sources:
-> - Stage 1 (org-scope transitional): `$STAGING/org/DEPLOY_SSH_PRIVATE_KEY` — current shared keypair per § 3.0.a `TODO(santiago):`.
+> - Stage 1 (org-scope transitional): `$STAGING/org/DEPLOY_SSH_PRIVATE_KEY` — current shared keypair per § 3.0.a row for `DEPLOY_SSH_PRIVATE_KEY`.
 > - Stage 2 (env-scope): `$STAGING/env/staging/DEPLOY_SSH_PRIVATE_KEY` and `$STAGING/env/production/DEPLOY_SSH_PRIVATE_KEY` — generated at per-env Hetzner VPS cutover (main#141); new keypairs, each with its public half added to its env's VPS `authorized_keys`.
 
 **Stage 1 — org-scope (transitional, restores parity with stg/prod split):**
