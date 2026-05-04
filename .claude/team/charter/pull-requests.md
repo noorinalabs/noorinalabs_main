@@ -9,33 +9,52 @@ All agents share a single GitHub user account. **`gh pr review --approve` is blo
 
 **Review format** (posted via `gh pr comment`):
 ```
-Requestor: <PR author name>
-Requestee: <reviewer name>
-RequestOrReplied: Approved | Changes Requested
+Requestor: <comment author>
+Requestee: <comment target>
+RequestOrReplied: Request | Reply | Approved | ChangesRequested
 TechDebt: none | #15, #16, ...
 ```
 
-- The `Requestor` must differ from the branch author (validated by the merge hook). This is enforced by the `block_gh_pr_review.py` PreToolUse hook and validated by `validate_pr_review.py` at merge time.
-- The `TechDebt:` line is **mandatory** on every review. If the reviewer found non-blocking observations, they MUST create `tech-debt` labeled issues BEFORE posting the review, then list the issue numbers. If no tech-debt was found, write `TechDebt: none`. This is enforced by the `validate_pr_review.py` PreToolUse hook at merge time.
+### Canonical meaning (resolves main#233)
+
+The role names always describe the **comment** (not the PR):
+
+- **`Requestor` is always the comment author** — the team member posting the comment, regardless of whether they are the PR author or a reviewer.
+- **`Requestee` is always the comment target** — the team member the comment is addressed to.
+- **`RequestOrReplied`** distinguishes the comment kind, NOT the role direction:
+  - `Request` — initial review request from PR author (Requestor=PR author, Requestee=reviewer)
+  - `Reply` — non-verdict response from any party (Requestor=replier, Requestee=person-being-replied-to)
+  - `Approved` — reviewer's approving verdict (Requestor=reviewer, Requestee=PR author)
+  - `ChangesRequested` — reviewer's blocking verdict (Requestor=reviewer, Requestee=PR author)
+
+**Key consequence for verdict comments**: on `Approved` and `ChangesRequested` comments, `Requestor` is the reviewer (because the reviewer is the comment author). The hook counts distinct `Requestor` values across `Approved`/`ChangesRequested` comments to verify the 2-reviewer rule (resolves main#244 — the prior hook counted distinct `Requestee` values, which on verdict comments is the PR author, not the reviewer).
+
+### Validation
+
+- The `Requestor` of a `Request`-kind comment must differ from the comment author of the `Approved`/`ChangesRequested` comments (a PR author cannot self-approve their own PR via comment-based review). Enforced by `block_gh_pr_review.py` PreToolUse hook + `validate_pr_review.py` at merge time.
+- The `TechDebt:` line is **mandatory** on every `Approved` and `ChangesRequested` comment. If the reviewer found non-blocking observations, they MUST create `tech-debt`-labeled issues BEFORE posting the verdict, then list the issue numbers. If no tech-debt was found, write `TechDebt: none`. Enforced by `validate_pr_review.py` PreToolUse hook at merge time.
+- The 2-reviewer rule is satisfied when there are `Approved` comments from **two distinct `Requestor` values**, neither of which is the PR author. Single-reviewer waivers per § Single-Reviewer Exception (Wave-Bootstrap Only) are honored by the hook (resolves main#228) when the PR is labeled `wave-bootstrap` and the single reviewer is the Standards & Quality Lead.
 
 ## Review Prompt Template (Mandatory) <!-- promotion-target: none -->
 When the orchestrator assigns a review to any agent, the prompt **MUST** include a copy-paste-ready `gh pr comment` command with all fields pre-filled. Do not rely on agents writing the format from memory — this has a 100% error rate.
 
-**Template for orchestrator prompts:**
+**Template for orchestrator prompts** (Approved/ChangesRequested verdict — reviewer is the comment author, so Requestor=reviewer):
 ```
 Post your review using this exact command:
 
-gh pr comment {PR_NUMBER} --repo noorinalabs/{REPO} --body "Requestor: {AUTHOR_NAME}
-Requestee: {REVIEWER_NAME}
+gh pr comment {PR_NUMBER} --repo noorinalabs/{REPO} --body "Requestor: {REVIEWER_NAME}
+Requestee: {PR_AUTHOR_NAME}
 RequestOrReplied: Approved
 TechDebt: none
 
 {Your review summary here.}"
 ```
 
-Replace `Approved` with `Changes Requested` if blocking issues found. Replace `TechDebt: none` with issue numbers if tech-debt filed. Do NOT add bold markers, parenthetical descriptions, or extra fields.
+Replace `Approved` with `ChangesRequested` if blocking issues found. Replace `TechDebt: none` with issue numbers if tech-debt filed. Do NOT add bold markers, parenthetical descriptions, or extra fields.
 
-**Why:** In Phase 3 Wave 1, all 7 initial reviews used wrong field names (`Requestee (reviewer):` instead of `Requestee:`) and omitted the `TechDebt:` line, requiring re-posts and blocking merges for ~15 minutes.
+For `Request`-kind comments (initial review request from PR author), the role direction inverts: Requestor={PR_AUTHOR_NAME}, Requestee={REVIEWER_NAME} (because the PR author is the comment author of the request).
+
+**Why:** In Phase 3 Wave 1, all 7 initial reviews used wrong field names (`Requestee (reviewer):` instead of `Requestee:`) and omitted the `TechDebt:` line, requiring re-posts and blocking merges for ~15 minutes. In P3W3, the wave-completion batch's verdict comments mostly had `Requestee=author` (because Requestor was the reviewer-as-comment-author), which the prior `validate_pr_review.py` interpretation treated as 1 distinct reviewer instead of 2 — forcing `--admin` overrides on 5/5 wave-merge PRs (main#244).
 
 Failing to include the review template in a review assignment prompt is a **minor feedback event** for the orchestrator.
 
@@ -87,6 +106,28 @@ Concrete requirements:
    - **Non-trivial tech debt**: Create a GitHub Issue for future planning.
 5. **Push final changes** from the review fixes.
 6. **The team merges** the PR into the deployments branch themselves — no user approval needed for PRs into deployments branches.
+
+## Additive Commits on ChangesRequested (Mandatory) <!-- promotion-target: none -->
+
+When a reviewer marks `RequestOrReplied: ChangesRequested`, the fix MUST land as an **additive commit on the same branch**. Force-push (`git push --force` / `git push --force-with-lease`) during a ChangesRequested cycle is **prohibited** because it resets the HEAD-SHA anchor that the reviewer's `gh api contents/<path>?ref=<sha>` verification chain depends on (see § Trust the Artifact, Not the Framing). Without HEAD-SHA stability, the re-review's "delta from prior review" comparison becomes unreliable.
+
+**What is allowed during ChangesRequested:**
+- New commits added to the same branch (no rewrite of existing commits)
+- A merge commit to update from base if the base advanced (use `git merge origin/<base>`, not `git rebase`)
+
+**What is prohibited during ChangesRequested:**
+- `git push --force` / `--force-with-lease`
+- `git rebase` followed by force-push
+- `git commit --amend` followed by force-push
+- Squashing prior commits before re-review
+
+**If a rebase is genuinely needed** (e.g., merge conflict that cannot be resolved by a merge commit, or the requesting reviewer asks for a clean history), the implementer MUST open a comment thread on the PR BEFORE rebasing, get explicit "rebase OK" from the requesting reviewer, then rebase. The reply to a request-to-rebase counts as a `RequestOrReplied: Reply` not an Approval — the re-review cycle restarts from the new HEAD.
+
+**Pre-Approved squash-merge is unaffected.** Once both reviewers have posted `RequestOrReplied: Approved`, the HEAD-SHA anchor is no longer load-bearing, and `gh pr merge --squash` (which performs an effective rebase server-side) is the standard path.
+
+**Why:** In Phase 3 Wave 3, all 4 ChangesRequested cycles (deploy#259 Path-A bundled, #261 perms+runbook, #266 cross-repo Option A, #267 5-fixes-in-49-lines) shipped as additive commits. The reviewers' second-pass reviews could compute the delta deterministically against the prior HEAD SHA. Zero force-pushes; zero "what changed since I last looked" ambiguity. Codifying the practice that worked.
+
+**Severity if violated:** **Moderate** feedback event for the implementer. The reviewer may either re-do the full review at the new HEAD (slow path) or block merge until the implementer reverts the force-push and re-applies the fix as additive (correct path).
 
 ## Review Finding Disposition <!-- promotion-target: none -->
 Every finding from a PR review must be dispositioned before merge. No finding may be silently dropped.

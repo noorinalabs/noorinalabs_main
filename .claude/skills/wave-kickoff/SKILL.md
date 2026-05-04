@@ -10,18 +10,38 @@ Automate the wave kickoff process for the `{team_name}` team.
 
 ## Instructions
 
+### 0. Pre-flight checklist (Mandatory — Pattern F mitigation)
+
+Before any branch creation, label work, or agent spawning, complete this checklist for every repo in the wave's planned scope. The Phase 3 Wave 3 retro identified **6 orchestrator-class pre-flight gaps** (wave-branch creation, attribution, child-repo-implementer rule ×2, 2-reviewer planning, naming, spawn order) — all caught by downstream layers, not pre-flight. This step closes Pattern F.
+
+For each repo `R` in `wave_repos_in_scope`:
+
+| # | Check | How to verify |
+|---|---|---|
+| 0.1 | **Wave branch exists in repo `R`** | `git ls-remote origin deployments/phase{N}/wave-{M}` ≠ empty in `R`'s local clone |
+| 0.2 | **Implementer roster confirmed for `R`** | Per child-repo-implementer rule (memory `feedback_child_repo_implementer_rule.md`): implementers come from `R`'s own team roster, not the orchestrator's parent team |
+| 0.3 | **Every scoped issue's `actual_repo_for_changes` is correct** | Re-read every issue body; sibling-of references can mislead. Concrete example: deploy#242 was filed as "sibling-of isnad-graph" but the actual code change was in landing-page (caught by Idris-853 in P3W3 only after kickoff) |
+| 0.4 | **2-reviewer slate drafted per PR** | `wave_3_scope.tier_*` entries each list `assignee` + `reviewer` (and a 2nd reviewer for charter compliance — see charter `pull-requests.md` § Two-Reviewer Assignment at Wave Kickoff) |
+| 0.5 | **Agent naming pattern** | `{FirstInitial}.{LastName}/{IIII}-{slug}` per CLAUDE.md § Branching Strategy. Verify in execution plan |
+| 0.6 | **Spawn-brief ordering** | Each spawn brief lists reviewer-class identity AHEAD of implementer-class identity. Reviewer-first prevents Pattern B inversion (the implementer drafts → reviewer verifies-vs-artifact chain only works if the reviewer's role is established before the implementer starts coding) |
+
+If any check fails for any repo, STOP and resolve before proceeding. The output of this step is a 6×N table (6 checks × N repos in scope) with explicit YES/NO/N-A entries — paste it into the kickoff comment on the meta-issue so the gap-resolution audit trail lives on the issue.
+
 ### 1. Create the deployments branch
 
+For **every** repo `R` in `wave_repos_in_scope` (not just the orchestrator repo — main#238 closed in W4):
+
 ```bash
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-cd "$REPO_ROOT"
-git fetch origin
-git checkout main && git pull origin main
-git checkout -b deployments/phase{N}/wave-{M}
-git push -u origin deployments/phase{N}/wave-{M}
+for R in $WAVE_REPOS_IN_SCOPE; do
+  cd "$REPO_ROOT/$R"
+  git fetch origin
+  git checkout main && git pull origin main
+  git checkout -b deployments/phase{N}/wave-{M} 2>/dev/null || git checkout deployments/phase{N}/wave-{M}
+  git push -u origin deployments/phase{N}/wave-{M}
+done
 ```
 
-If the branch already exists, check it out and pull latest instead.
+If the branch already exists in any repo, check it out and pull latest instead. **Verify step 0.1 holds for every repo before moving on** — a missing wave branch in any child repo is a stop-the-line condition.
 
 ### 2. Create wave label
 
