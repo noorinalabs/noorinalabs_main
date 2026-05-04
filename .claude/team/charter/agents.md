@@ -173,18 +173,21 @@ All spawned agents MUST be named `{repo-name}-{persona-firstname}` (e.g., `main-
 | `noorinalabs-main` (cross-repo) | `main-` |
 
 ## Team Names <!-- promotion-target: none -->
-Each repo defines its own `team_name` in its repo charter. Use that name for all Agent tool calls when working in that repo. For cross-repo coordination, use `team_name: "noorinalabs"`.
+
+> **Single-Leader Constraint applies.** Per § Single-Leader Constraint below, only ONE team can exist per orchestrator session. The per-repo `team_name` rows in this table are therefore **only operative when you open a session dedicated to that one repo for repo-only work**. The common case — wave-kickoff orchestration from `noorinalabs-main` touching multiple child repos — uses `team_name: "noorinalabs"` for every agent regardless of which repo's code they're editing. Read § Single-Leader Constraint first; the rows below are the per-repo-session fallback, not the cross-repo default.
+
+Each repo defines its own `team_name` in its repo charter. For dedicated per-repo sessions, use that name for all Agent tool calls when working in that repo. For cross-repo coordination (the common case), use `team_name: "noorinalabs"`.
 
 | Context | team_name |
 |---------|-----------|
-| Work in noorinalabs-isnad-graph | `noorinalabs-isnad-graph` |
-| Work in noorinalabs-landing-page | `noorinalabs-landing-page` |
-| Work in noorinalabs-deploy | `noorinalabs-deploy` |
-| Work in noorinalabs-design-system | `noorinalabs-design-system` |
-| Work in noorinalabs-data-acquisition | `noorinalabs-data-acquisition` |
-| Cross-repo coordination | `noorinalabs` |
+| Cross-repo coordination (default for wave work orchestrated from `noorinalabs-main`) | `noorinalabs` |
+| Dedicated session in noorinalabs-isnad-graph (repo-only work) | `noorinalabs-isnad-graph` |
+| Dedicated session in noorinalabs-landing-page (repo-only work) | `noorinalabs-landing-page` |
+| Dedicated session in noorinalabs-deploy (repo-only work) | `noorinalabs-deploy` |
+| Dedicated session in noorinalabs-design-system (repo-only work) | `noorinalabs-design-system` |
+| Dedicated session in noorinalabs-data-acquisition (repo-only work) | `noorinalabs-data-acquisition` |
 
-> **Agent tool limitation:** Spawned agents (including the Program Director and team members) do NOT have access to the Agent tool. They cannot spawn other agents. All agent spawning must be done by the orchestrating Claude instance.
+> **Agent tool limitation:** Spawned agents (including the Program Director and team members) do NOT have access to the Agent tool. They cannot spawn other agents. All agent spawning must be done by the orchestrating Claude instance. This is the harness reinforcement of the single-team constraint — see § Hub-and-Spoke Orchestration Model and § Single-Leader Constraint.
 
 ## Single-Leader Constraint: One Team Per Orchestrator Session <!-- promotion-target: none -->
 
@@ -204,15 +207,34 @@ The harness enforces **one team per orchestrator session** — `TeamCreate` fail
 4. **Implementers report** back to their assigning manager via `SendMessage`. Cross-manager coordination is in-band (`SendMessage`) plus on-GitHub (meta-issue comments + Cross-Contract PRs).
 5. **Per-repo rosters remain canonical** for commit identity, domain ownership, and reviewer pairing — the session team is a logical overlay on top of them.
 
+### Reviewer slate discipline (FIRST-LINE in every spawn prompt)
+
+> **Position-first rule (resolves [main#201](https://github.com/noorinalabs/noorinalabs-main/issues/201)).** The reviewer slate is the first decision the spawn prompt forces the orchestrator (or PD-via-spawn-request) to make — not buried mid-checklist where it gets back-filled after scope/branch/sequencing have already framed the assignment. Every spawn prompt template MUST place this section immediately after the identity / git-identity preamble and BEFORE the `## Ontology Context` section.
+>
+> **You MUST NOT name as reviewer:**
+> - The **manager of the implementer's repo** (manager-boundary rule — see `pull-requests.md` § Two-Reviewer Assignment, observed-and-corrected ≥4× across three managers in P2W10).
+> - The **author of the upstream PR being reviewed** (self-review boundary — `block_gh_pr_review.py` enforces, but spawn-time prevention is cheaper than merge-time block).
+> - An agent currently **owning a gating issue** for this PR (independence — the gating-issue owner needs to drive resolution, not bless the implementation).
+> - An **Advisor-only role** on a cross-team consultation (per task-framework Statement A/B distinction — Advisor reviews shape decisions, not PR diffs).
+>
+> **Valid reviewer sources:**
+> - **Same-team technical peers** — primary slot (e.g., user-service tech-lead reviewing user-service implementer).
+> - **Cross-team technical peers with substantive domain overlap** — secondary slot (e.g., deploy SRE reviewing user-service CI workflow change).
+> - **Standards & Quality Lead (Aino Virtanen)** for charter-convention questions only — not as a generic peer-review slot.
+>
+> **Name BOTH reviewers explicitly in the spawn prompt** AND in the kickoff comment AND in the meta-issue execution-plan table BEFORE any branches are created. If the PD's execution-plan table is missing a 2nd reviewer for any expected PR, the orchestrator pauses spawning and asks the PD to fill the gap (see `pull-requests.md` § Two-Reviewer Assignment at Wave Kickoff).
+>
+> **Why position-first:** P2W10 surfaced four+ instances across three managers' spawn prompts where the manager-as-reviewer anti-pattern slipped through despite charter rule existing. Pattern: reviewer-naming had already happened mentally during the early-drafting pass (scope/branch/sequencing first, reviewers as a back-fill). The charter rule was correctly applied in isolated contexts but missed when embedded in a multi-section spawn prompt. Moving the rule to first-line position makes "who reviews this" a first-order architectural decision the template forces the agent to make before advancing. Discipline becomes architectural, not memorial. Co-signed by Bereket (deploy manager), Nadia Boukhari (isnad-graph + user-service manager), Marcia (landing-page manager) — each had a concrete instance during W10.
+
 ### Orchestrator checklist when spawning an implementer
 
-Every implementer spawn prompt MUST include:
+Every implementer spawn prompt MUST include, **in order**:
 
-1. **`## Ontology Context`** section (literal heading) with librarian output baked in — `enforce_ontology_context.py` scans for this heading and blocks the spawn if absent.
-2. **MANDATORY first-action** instruction to run `/ontology-librarian {topic}` in the spawned agent's own session — Hook 15 scans the agent's transcript independently and blocks Edit/Write otherwise.
-3. **Git identity** flags (`git -c user.name="..." -c user.email="parametrization+FirstName.LastName@gmail.com"`).
-4. **Branch name** matching `{FirstInitial}.{LastName}/{IIII}-{slug}` and **PR target** (typically `deployments/phase-{N}/wave-{M}`).
-5. **Reviewer pairings** (2 named reviewers, charter format).
+1. **Reviewer slate** (first-line per § Reviewer slate discipline above) — both reviewers named, manager-boundary verified, valid-source check applied.
+2. **`## Ontology Context`** section (literal heading) with librarian output baked in — `enforce_ontology_context.py` scans for this heading and blocks the spawn if absent.
+3. **MANDATORY first-action** instruction to run `/ontology-librarian {topic}` in the spawned agent's own session — Hook 15 scans the agent's transcript independently and blocks Edit/Write otherwise.
+4. **Git identity** flags (`git -c user.name="..." -c user.email="parametrization+FirstName.LastName@gmail.com"`).
+5. **Branch name** matching `{FirstInitial}.{LastName}/{IIII}-{slug}` and **PR target** (typically `deployments/phase-{N}/wave-{M}`).
 6. **Cross-Contract rule** reference if the PR is part of a cross-contract cluster (charter `pull-requests.md`).
 7. **Charter enforcement reminders** (2 reviewers, CI green before merge, no `--no-verify`, no global/repo git config, `/ontology-librarian` per agent).
 8. **Reporting pattern** — who they report to (usually their manager) and when (draft open, CI green, blocker, merge).
