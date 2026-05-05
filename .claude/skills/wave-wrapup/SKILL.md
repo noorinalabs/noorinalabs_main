@@ -299,3 +299,23 @@ Examine all memory files in the project memory directory for entries that descri
 - Final-wave merge to main requires explicit user approval
 - `/wave-retro` must be run separately after wrapup completes
 - Memory audit classifications are proposed — user can override keep/convert decisions
+
+## Scope-Drop Reconciliation (added P3W4 retro 2026-05-05)
+
+Before closing a wave, reconcile **declared scope vs delivered scope**. For each repo in `cross-repo-status.json` `wave_{N}_repos_in_scope`:
+
+```bash
+gh pr list --repo noorinalabs/{repo} --state merged --base "deployments/phase-{N}/wave-{M}" --json number --jq 'length'
+```
+
+If the count is **0**, the repo had declared work that did not ship. Resolve the drop EXPLICITLY — silent drops are not allowed.
+
+**Two valid outcomes:**
+
+1. **De-scoped during wave** — the work was correctly assessed as out-of-scope mid-wave. Move the repo from `wave_{N}_repos_in_scope` to a new `wave_{N}_repos_descoped_during_wave` array in `cross-repo-status.json` with a one-line reason field. Examples: theme misalignment surfaced after kickoff, dependency on next-wave work, planning error.
+
+2. **Carry-forward to next wave** — the work is still real but slipped. File or update the carry-forward issues, label them with the next wave's label, and add references to `cross-repo-status.json` `wave_{N+1}_carry_forward` array.
+
+**Why:** P3W4 declared `noorinalabs-isnad-ingest-platform` in scope but shipped 0 PRs to its wave branch. The drop was invisible at wrap-time because no check enforced reconciliation — the wave closed with a silent scope discrepancy that surfaced only at retro. Operationally, silent drops compound across waves: by W3-of-N, the declared scope drifts arbitrarily far from delivered, and planning-vs-execution accuracy becomes unmeasurable.
+
+**Acceptance:** A wave-wrapup is not complete until every repo in `wave_{N}_repos_in_scope` has either ≥1 PR merged to its wave branch OR an explicit de-scope/carry-forward record. Run this check BEFORE the wave-merge ceremony.

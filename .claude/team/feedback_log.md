@@ -1593,3 +1593,98 @@ Promotion audit wave-3 complete: 0 AUTO · 0 DECIDE · 60 KEPT · 3 SUPERSEDED �
 | E — process collapse under fire | Orchestrator-class | n/a (no emergency this wave) | 1 historical |
 | **F — orchestrator-class pre-flight gap** (new candidate) | Orchestrator-class | 6 instances (wave-branch, attribution, child-repo-implementer ×2, 2-reviewer planning, naming, spawn order) | **founding wave** |
 
+
+
+---
+
+## Retrospective: Phase 3 Wave 4 — Tooling & Process-Discipline Cleanup (2026-05-04 → 2026-05-05)
+
+### Wave shape
+
+| Metric | Value |
+|---|---|
+| Duration | ~36.5h (kickoff 2026-05-04T03:15Z → final wave-merge 2026-05-05T15:51Z) |
+| Repos in scope | 6 declared (main, isnad-graph, user-service, design-system, data-acquisition, ingest-platform) — **5 produced PRs** (ingest-platform: 0) |
+| PRs merged into wave branches | **14** (main: 10; isnad-graph: 2; user-service: 1; design-system: 1; data-acquisition: 1) |
+| CI failures across all 14 PRs | **0** |
+| Admin overrides at wave-merge | **0** (down from 5/5 in W3 — eliminated by #250 canonicalization in same wave) |
+| ChangesRequested cycles | 1 (#250 Wanjiku → Aino reply → Approved; additive commit, no force-push) |
+| Charter-format comments per PR | 3–8 (healthy density) |
+| Issues closed in wave | ~22 (#226 #227 #223 #216 #188 #144 #189 in #248 alone; #198, #203, #219, #225 #239 #240 #200 #201 #197, #244 #233 #228, #196, #214, #158, #852, #819 #814, #90, #62) |
+| W3 retro action items shipped IN-wave | 3/3 (pre-flight checklist via #245+#249, additive-commit codified via #254 charter sweep, validate_pr_review family closed via #250) |
+
+### Per-engineer assessments
+
+#### Org-level team
+
+**Aino Virtanen** (SQL) — 8 of 10 main# PRs. Theme-coherent hook bug-class consolidation. #248 shared `_shell_parse.py` parser refactor closing 7 issues at once; #250 validate_pr_review canonicalization (Requestor=reviewer + Single-Reviewer Exception) closing 3 issues — and the load-bearing one, because it eliminated W3's 5/5 wave-merge admin-override pattern in the same wave it landed. #254 charter+docs sweep (6 followups in 156 lines). #256 + #257 net-new hooks (validate_edit_completion + validate_workflow_paths_coverage). #261 Hook 14 NEUTRAL allowlist. #265 canonical hook-sync doc Phase 1. #266 promotion-audit STALE-OPT-OUT class. ~5400 LOC at 0 CI failures. One ChangesRequested cycle resolved cleanly with additive commit. Severity: **none**. Trust 5→5 (already max).
+
+**Wanjiku Mwangi** (TPM) — 2 skill PRs that closed W3 retro carry-forwards: #245 wave-kickoff multi-repo branches (closes #238), #249 wave-scope reconciliation (closes #196). Pattern B reviewer-class data point: ChangesRequested catch on #250 (Aino replied + got Approved by both reviewers). Reviewer on all 10 main# PRs. Severity: **none**. Trust 5→5 (already max).
+
+**Nadia Khoury** (PD) — Reviewer-only this wave (10/10 PRs). No level-changing signal. Severity: **none**. Trust 4→4.
+
+**Santiago Ferreira** (RC) — Reviewer on #266 only. Theme was tooling not deploy. Severity: **none**. Trust 5→5 (already max).
+
+#### Child-repo teams
+
+**Linh Pham** (isnad-graph DevOps) — isnad-graph#858 (`+370/-0`, validate_commit_identity cross-repo merge + strip ordering tests, closes #819 + #814). First substantive shipper-class entry. 9/9 CI, 4 charter-format comments. Severity: **none**. Trust 3→**4** ↑.
+
+**Ingrid Lindqvist** (isnad-graph Eng, NEW) — isnad-graph#857 (1-line CLAUDE.md slash sync, closes #852). 9/9 CI. First contribution. Severity: **none**. New entry at **3**.
+
+**Mateo Salazar** (user-service Eng) — user-service#94 (1-line slash sync, closes #90). Trivial scope. Severity: **none**. Hold at 4.
+
+**Kofi Mensah** (design-system Docs Eng, NEW) — design-system#63 (1-line slash sync, closes #62). 2/2 CI. First contribution. Severity: **none**. New entry at **3**.
+
+**Sofia Cardoso** (data-acquisition Tech Writer, NEW) — data-acquisition#34 (1-line slash sync). 4/4 CI. First contribution. Severity: **none**. New entry at **3**.
+
+### Top 3 going well
+
+1. **Zero CI failures + zero admin overrides on 14 PRs.** First wave at zero on both metrics. validate_pr_review canonicalization (#250) shipped IN the wave that needed it — W3's 5/5 admin-override pattern was eliminated by W4-mid. The hook-fix landing in the same wave that removed the need for the override is a tight feedback loop and a model pattern.
+2. **W3 retro action items all discharged in W4.** Pre-flight checklist (#245 wave-kickoff multi-repo + #249 wave-scope reconciliation), validate_pr_review family (#250 closes #244 + #233 + #228), additive-commit codification (charter sweep #254). 3-for-3 W3 → W4 carry-forward execution. Retro proposals are translating into wave-following implementation reliably.
+3. **Theme-coherent hook bug-class sweep.** Aino's 8 PRs all touched a single surface (5-matcher refactor via shared parser, 2 net-new hooks, 1 charter sync, 1 audit fallback class, 1 canonicalization, 1 broad sweep). #248 alone closed 7 hook-class issues by extracting `_shell_parse.py`. Model wave shape for "pick-a-class-and-sweep" tooling cleanups — when a wave has a sharp theme, concentration produces compounding closures.
+
+### Top 3 pain points
+
+1. **Wave concentration risk: 80% of main# work in one engineer (Aino).** Theme-fitness drove it (Aino owns the hook surface), and the work was clean. But a tooling-only wave with 8/10 PRs from one person is fragile to absence/burnout. W5 carry-forwards (#263 + #264 — Phase 2 child fan-out for #214 and #215 across 7 child repos) MUST be distributed across implementers to avoid a "can't ship without Aino" failure mode. Concentration is a metric we don't currently surface in retros — proposing to add it.
+2. **Trivial 1-line cross-repo doc-sync ran as 4 separate per-repo PRs.** isnad-graph#857, user-service#94, design-system#63, data-acquisition#34 — same backslash → slash fix, 4 review pairs, 4 CI runs, ~12 charter-format comments total. Overhead-heavy for a no-decision byte-identical change. No charter pattern exists for "identical cross-repo doc sweep" — proposing one.
+3. **ingest-platform produced 0 PRs despite being in declared scope.** cross-repo-status.json lists `wave_4_repos_in_scope: [..., "noorinalabs-isnad-ingest-platform"]` but the repo shipped nothing. Silent scope-drop with no de-scope decision recorded. wave-scope (#249, just shipped) reconciles meta-issue vs labels at kickoff — proposing to extend to wrapup-time scope-drop reconciliation.
+
+### Proposed process changes
+
+1. **Wave-concentration metric in retro template.** Rationale: When a single implementer authors >60% of wave PRs, flag for next-wave spread. W4 was 80% Aino. Visibility, not policy — concentration can be theme-fit (W4) or fragility (W5 if it persists).
+
+2. **Extend `/wave-wrapup` to reconcile in-scope-but-zero-PR repos.** Rationale: ingest-platform-class silent drops should not be invisible. For each repo in `wave_N_repos_in_scope`, count PRs merged to wave branch; if 0, require explicit de-scope OR carry-forward decision before wrapup-close.
+
+3. **Codify "trivial cross-repo doc sweep" as a sanctioned pattern.** Rationale: 4 PRs for an identical 1-line fix is overhead-heavy. Allow Single-Reviewer Exception per child PR when (a) diff is byte-identical across repos, (b) no behavior change, (c) all referenced from one tracking issue, (d) CI passes on every repo.
+
+### Charter changes applied (this PR)
+
+1. **`charter/pull-requests.md` — § Trivial Cross-Repo Doc Sweep** (single-reviewer exception when byte-identical across repos)
+2. **`.claude/skills/wave-wrapup/SKILL.md` — § Scope-Drop Reconciliation** (in-scope-but-zero-PR check)
+3. **`.claude/skills/wave-retro/SKILL.md` — § Wave-Concentration Metric** (top-implementer concentration in retro template)
+
+### Promotion audit (deterministic — see `.claude/team/promotion_audit_log/wave-4.md`)
+
+```
+Promotion audit wave-4: 0 AUTO · 0 DECIDE · 65 KEPT · 3 SUPERSEDED · 1 ALREADY-PROMOTED
+```
+
+No memory crossed `retro_citations >= threshold` AND `promotion_target != none`. New STALE-OPT-OUT class (shipped in #266) didn't fire — highest retro_citations is 3, threshold for the 2× sub-class would need ≥6. main#269 (memory-audit P3W4-wrapup, classifies 36 feedback memories) is the W5 follow-on for systematic frontmatter classification.
+
+### Action items
+
+1. Apply approved charter changes (this PR).
+2. W5 planning MUST distribute #263 + #264 (Phase 2 child fan-outs) across multiple implementers — not all to Aino.
+3. W5 planning MUST resolve ingest-platform W4 silent-drop: either de-scope decision OR explicit carry-forward.
+4. main#269 (memory-audit) is the right vehicle for setting `promotion_target` frontmatter on the 36 feedback memories — once classified, future audits will surface real AUTO/DECIDE candidates.
+
+### Pattern tally (running)
+
+| Pattern | Class | This wave | Cumulative |
+|---|---|---|---|
+| A — design-rationale block | Implementer | 3 (Aino #248 parser-design block, #256 + #257 hook-design rationale in PR bodies) | 9 |
+| B unified — verify-vs-artifact | Implementer + reviewer | 1 (Wanjiku ChangesRequested catch on #250 canonicalization edge case) | promotion-threshold met by tally; deterministic audit blocked by frontmatter (main#269 will classify) |
+| C — claim-state-staleness | Manager-class amplifier | 0 | reverted, held |
+| D — message-ordering-race | Architecture | n/a | tracked main#241 |
+| E — process collapse under fire | Orchestrator-class | 0 (no emergency) | 1 historical |
+| F — orchestrator-class pre-flight gap | Orchestrator-class | 0 (W3 fixes held under W4 conditions) | 6 historical, **closed by #245 + #249** |

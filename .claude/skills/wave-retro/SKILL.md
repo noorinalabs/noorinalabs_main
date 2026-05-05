@@ -138,3 +138,24 @@ The audit appends its table to this retro's feedback_log entry **and** writes a 
 - User must approve all charter changes before they are applied
 - Subjective assessment calibration (severity levels) may need user override
 - Trust matrix changes are proposed — user can veto specific adjustments
+
+## Wave-Concentration Metric (added P3W4 retro 2026-05-05)
+
+In step 4 (per-engineer assessment), compute and report the **top-implementer concentration**:
+
+```
+top_concentration = (max PRs by single implementer) / (total PRs in wave)
+```
+
+If `top_concentration >= 0.6`, surface this in step 6 (feedback log) under "Top 3 pain points" or "Top 3 going well" depending on context:
+
+- **Theme-fit concentration** (e.g., wave themed on a single domain that one engineer owns): note as a "going well" with a forward-looking flag for next wave's planning.
+- **Fragility concentration** (e.g., a multi-domain wave where one engineer happened to absorb most of the load): note as a "pain point" with explicit redistribution actions for the next wave.
+
+The metric is **visibility, not policy** — concentration is sometimes correct (theme-fit) and sometimes a risk (fragility); the retro forces the call.
+
+Include in the wave-shape table as a separate row:
+
+| Top-implementer concentration | {N PRs} / {total} = {pct}% by {engineer} |
+
+**Why:** P3W4 had 80% of main# PRs from one engineer (Aino, 8 of 10). The work was clean (theme-fit hook bug-class consolidation), but the dependency risk on W5 carry-forwards (#263, #264 also Aino-tractable) was invisible until retro. A concentration row at the top of every retro forces next-wave planning to address it explicitly — distribute, accept the risk and document, or theme the next wave around the same engineer's surface.
