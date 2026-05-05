@@ -33,6 +33,7 @@ _BASH_HOOKS = [
     "block_gh_pr_review",
     "block_stale_tmp_message_file",
     "no_worktree_self_delete",
+    "validate_edit_completion",
     "auto_set_env_test",
     "validate_lockfile_paths",
     "validate_labels",
