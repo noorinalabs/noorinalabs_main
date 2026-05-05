@@ -33,6 +33,9 @@ temp/
 # Hook 15 librarian-consultation sentinel markers (#169 — local-only, cwd-keyed)
 .claude/.librarian-consulted/
 
+# Hook 18 validate_edit_completion sentinel state (#198 — session-scoped, local-only)
+.claude/.edit-error-sentinel/
+
 # Editor files
 *.swp
 *.swo

@@ -155,6 +155,40 @@ This catches semantic conflicts that GitHub's textual merge cannot detect (e.g.,
 
 **CI enforcement:** All repositories must configure CI workflows to trigger on pushes to `deployments/**` branches (not just PRs). This provides automatic verification after each merge, complementing the manager's manual check.
 
+## CI Workflow `pull_request` Triggers Must Cover Wave Branches <!-- promotion-target: none -->
+
+CI workflows using a `pull_request` trigger MUST include active wave branches in the `branches` filter, OR omit the filter entirely so the workflow triggers on any base branch. Workflows whose `branches` filter is locked to `["main"]` (or any other single-branch list) silently skip CI on PRs targeting `deployments/phase-{N}/wave-{M}` — the wave PRs that aggregate before the main merge. This is the inverse of the push-trigger rule above: push triggers must cover `deployments/**`, AND PR triggers must cover them too.
+
+**Required pattern** — explicit branch list including wave branches:
+
+```yaml
+on:
+  pull_request:
+    branches: ["main", "deployments/**"]
+```
+
+**OR — path-filtered (no branches filter at all):**
+
+```yaml
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "tests/**"
+```
+
+**Anti-pattern** — main-only filter that drops wave-branch PRs:
+
+```yaml
+on:
+  pull_request:
+    branches: ["main"]   # WRONG: wave-branch PRs skip CI silently
+```
+
+**Reviewer enforcement:** When a PR adds or modifies a `.github/workflows/*.yml` file with a `pull_request: branches:` filter, reviewers MUST flag any single-branch list that does NOT include `deployments/**`, unless the PR body explicitly justifies the exclusion (e.g., "this workflow only runs on main-merge promotions, not pre-merge PRs").
+
+**Why:** P2W10 surfaced this convention gap twice independently. (1) `noorinalabs-user-service/ci.yml` had `branches: ["main"]` — Anya's user-service#80 alembic-merge PR targeting `deployments/phase-2/wave-10` produced an empty `statusCheckRollup` (filed user-service#81). (2) `noorinalabs-deploy/integration-tests.yml` had the same anti-pattern — wave-10 PRs touching `integration-tests/**` would skip CI (filed deploy#152, fix in deploy#154). Both are the same CI-trigger-filter-written-against-single-branch-PR-flow error. Per [`feedback_enforcement_hierarchy.md`](../feedback_log.md), charter codification is step 1 + 2 (rule + reviewer reference); a future `validate_ci_trigger_branches` PreToolUse hook is filed as step 3 if the convention proves robust without manual reviewer reminders.
+
 ## Cross-Contract PRs <!-- promotion-target: skill -->
 When two or more PRs in flight consume/produce from each other (Kafka topics, Parquet schemas, shared API contracts, wire formats between workers or services), the **first PR opened MUST include a "Contract" section** in the PR body. Subsequent PRs that consume or produce against that contract link to it and document any divergence explicitly.
 

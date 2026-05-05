@@ -3,7 +3,9 @@
 
 Blocks `gh pr merge` unless the PR has at least two reviews from distinct
 non-authors, using either formal GitHub reviews or charter-format
-comment-based reviews from different team members.
+comment-based reviews from different team members. Honors the
+Single-Reviewer Exception for wave-bootstrap PRs reviewed by a charter-
+enforcer role.
 
 Input Language:
   Fires on:      PreToolUse Bash
@@ -17,35 +19,60 @@ Input Language:
                the PR in the repo the user named, not the cwd-resolved repo.
     --admin  → short-circuits (emergency override — allows merge).
 
-Charter-format review comments:
-  Each comment is expected to include:
-    Requestor: <branch author>
-    Requestee: <reviewer>
-    RequestOrReplied: <Request|Replied|Approved|Changes Requested>
-    TechDebt: none | #15, #16, ...
+Charter-format review comments (canonical per `pull-requests.md` § Comment-Based Reviews,
+resolves #233):
 
-  Canonical RequestOrReplied values (verified on PR #821 comments):
-    - Request            — requesting review (NOT a verdict)
-    - Replied            — author responding to review (NOT a verdict)
-    - Approved           — actual review verdict (TechDebt line REQUIRED)
-    - Changes Requested  — actual review verdict (TechDebt line REQUIRED)
+  Requestor: <comment author>     # always the team member POSTING the comment
+  Requestee: <comment target>     # always the team member ADDRESSED by the comment
+  RequestOrReplied: <Request|Reply|Approved|ChangesRequested>
+  TechDebt: none | #15, #16, ...
 
-  Only Approved and Changes Requested comments are ACTUAL REVIEWS. Request /
-  Replied comments are process metadata and must NOT be required to carry the
-  TechDebt attestation line. This is the fix for issue #147.
+  Direction by RequestOrReplied:
+    - Request          — Requestor=PR author,  Requestee=reviewer (NOT a verdict)
+    - Reply / Replied  — Requestor=replier,    Requestee=person-being-replied-to (NOT a verdict)
+    - Approved         — Requestor=reviewer,   Requestee=PR author (verdict)
+    - ChangesRequested — Requestor=reviewer,   Requestee=PR author (verdict)
+
+  The reviewer for a verdict comment is the comment AUTHOR — i.e. the
+  Requestor. The prior hook counted distinct Requestee values across
+  Approved/ChangesRequested comments, which on verdicts is always the PR
+  author and so collapsed to a single value (resolves #244).
+
+Reviewer counting rule (resolves #244):
+  - Verdict comments (Approved / ChangesRequested) → Requestor is the reviewer
+  - Request / Reply comments → not reviews; do not contribute to reviewer count
+  - Two-reviewer rule satisfied when there are TWO DISTINCT REVIEWER NAMES across
+    Approved comments, neither of which is the PR author.
 
 Reviewer dedup key:
-  The reviewer set is keyed on the FULL requestee name (lowercased), not on
+  The reviewer set is keyed on the FULL reviewer name (lowercased), not on
   the lastname. Two distinct reviewers with the same lastname (e.g.,
   "Lucas Ferreira" and "Santiago Ferreira") are counted as TWO reviewers
-  toward the two-peer-review requirement. This is the fix for issue #164.
-  The author-equality check still uses lastname because branches are named
+  toward the two-peer-review requirement (issue #164).
+  The author-equality check uses lastname because branches are named
   `{Initial}.{Lastname}/...` and we only have the author's lastname to
   compare against.
 
+Single-Reviewer Exception (resolves #228):
+  When the PR is labeled `wave-bootstrap` AND there is exactly ONE distinct
+  reviewer who is a charter-enforcer role in the local roster, the hook
+  permits merge with one Approved comment instead of two. Charter
+  `pull-requests.md` § Single-Reviewer Exception (Wave-Bootstrap Only)
+  defines the policy; this is its hook-side enforcement.
+
+  Charter-enforcer roles are derived from the local repo's
+  `.claude/team/roster/` filenames matching the prefix allowlist:
+    standards_lead_*    (parent: Aino)
+    program_director_*  (parent: Nadia)
+    manager_*           (children: e.g. Maeve, Dilara, Bereket)
+    project_lead_*      (children: e.g. Marcia)
+    tech_lead_*         (children: e.g. Anya)
+  Each file's `**Name:** <Full Name>` line is parsed for the canonical name.
+
 Exit codes:
-  0 — allow (not a merge command, or two reviews exist)
-  2 — block (fewer than two peer reviews found, or a verdict is missing TechDebt)
+  0 — allow (not a merge command, two reviews, or single-reviewer exception)
+  2 — block (fewer than two reviews and exception does not apply, or a
+      verdict is missing TechDebt)
 """
 
 import json
@@ -53,9 +80,24 @@ import os
 import re
 import subprocess
 import sys
+from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from annunaki_log import log_pretooluse_block
+
+# Charter-enforcer role prefixes for the Single-Reviewer Exception. Derived
+# from `pull-requests.md § Single-Reviewer Exception (Wave-Bootstrap Only)`
+# "Standards & Quality Lead (Aino) or a comparable charter enforcer". The
+# prefix list captures the equivalent roles across parent + child rosters
+# observed in the org: standards_lead, program_director (parent), manager,
+# project_lead, tech_lead (children).
+_CHARTER_ENFORCER_ROLE_PREFIXES = (
+    "standards_lead_",
+    "program_director_",
+    "manager_",
+    "project_lead_",
+    "tech_lead_",
+)
 
 
 def is_merge_command(command: str) -> bool:
@@ -99,7 +141,8 @@ def extract_repo_from_command(command: str) -> str | None:
 def get_pr_data(pr_number: str | None, repo: str | None = None) -> dict | None:
     """Fetch all needed PR data in a single gh pr view call.
 
-    Returns dict with keys: author (login str), number, reviews, headRefName.
+    Returns dict with keys: author (login str), number, reviews, headRefName,
+    labels (list of label-name strings).
     Returns None if the fetch fails.
     """
     try:
@@ -108,7 +151,7 @@ def get_pr_data(pr_number: str | None, repo: str | None = None) -> dict | None:
             cmd.append(pr_number)
         if repo:
             cmd.extend(["--repo", repo])
-        cmd.extend(["--json", "author,number,reviews,headRefName"])
+        cmd.extend(["--json", "author,number,reviews,headRefName,labels"])
         result = subprocess.run(
             cmd,
             capture_output=True,
@@ -119,11 +162,13 @@ def get_pr_data(pr_number: str | None, repo: str | None = None) -> dict | None:
             return None
 
         data = json.loads(result.stdout)
+        labels = [label.get("name", "") for label in data.get("labels", [])]
         return {
             "author": data.get("author", {}).get("login", ""),
             "number": data.get("number", pr_number),
             "reviews": data.get("reviews", []),
             "headRefName": data.get("headRefName", ""),
+            "labels": labels,
         }
 
     except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
@@ -149,6 +194,10 @@ def extract_branch_author_lastname(head_ref: str) -> str | None:
 PROJECT_NUMBER = 2
 ORG = "noorinalabs"
 
+# Path to the local repo's roster directory. Resolved relative to the hook
+# file: /<repo_root>/.claude/hooks/validate_pr_review.py → /<repo_root>/.claude/team/roster.
+_ROSTER_DIR = Path(__file__).resolve().parent.parent / "team" / "roster"
+
 
 class CommentReviewResult:
     """Result of checking PR comments for charter-format reviews."""
@@ -160,25 +209,74 @@ class CommentReviewResult:
 
 
 # Only these RequestOrReplied values represent actual review verdicts that
-# REQUIRE the TechDebt attestation line. Request / Replied comments are
+# REQUIRE the TechDebt attestation line. Request / Reply comments are
 # process metadata (review requests, author replies) and do NOT require it.
 # Issue #147: the prior implementation flagged any Requestee+RequestOrReplied
 # comment, which over-enforced TechDebt on Request/Replied traffic.
-_VERDICT_REQUIRING_TECH_DEBT = {"approved", "changes requested", "changes"}
+#
+# Includes both the canonical `ChangesRequested` (one word, charter-line-14)
+# and the spaced/short variants observed in practice.
+_VERDICT_REQUIRING_TECH_DEBT = {
+    "approved",
+    "changes requested",
+    "changesrequested",
+    "changes",
+}
 
 
 def _is_verdict(value: str) -> bool:
     """Return True if a RequestOrReplied value is an actual review verdict.
 
-    Comparison is case-insensitive and whitespace-trimmed. Accepts both the
-    canonical `Changes Requested` and the shorter `Changes` variant noted in
-    charter discussion as seen in practice. Does NOT accept Request (a review
-    request) or Replied (an author's reply).
+    Comparison is case-insensitive and whitespace-trimmed. Accepts the
+    canonical `ChangesRequested` (per charter line 14), the spaced
+    `Changes Requested` form, and the shorter `Changes` variant noted in
+    charter discussion as seen in practice. Does NOT accept Request (a
+    review request) or Reply / Replied (an author's reply).
     """
     normalized = value.strip().lower()
     # Strip trailing markdown markers and stray punctuation
     normalized = normalized.rstrip("*").strip()
     return normalized in _VERDICT_REQUIRING_TECH_DEBT
+
+
+def _is_approved(value: str) -> bool:
+    """Return True if a RequestOrReplied value is specifically Approved.
+
+    The 2-reviewer rule (charter line 36) counts distinct Requestor values
+    across `Approved` comments only — NOT ChangesRequested. A
+    ChangesRequested comment is a verdict (TechDebt required) but does not
+    contribute to the 2-reviewer threshold.
+    """
+    normalized = value.strip().lower().rstrip("*").strip()
+    return normalized == "approved"
+
+
+def _extract_charter_field(field_name: str, body: str) -> str | None:
+    """Extract a charter-format field value from a comment body.
+
+    Handles markdown bold (`**Field:**`) and plain (`Field:`) variants.
+    Returns the first-line value with markdown markers and parenthetical
+    role descriptions stripped. Returns None if the field is not present.
+    """
+    pattern = rf"\*{{0,2}}{re.escape(field_name)}:\*{{0,2}}\s*(.+)"
+    match = re.search(pattern, body)
+    if not match:
+        return None
+    value = match.group(1).strip()
+    # Drop trailing content after first newline (single-line field).
+    value = value.split("\n", 1)[0].strip()
+    # Strip markdown bold and parenthetical role descriptions.
+    value = value.strip("*").strip()
+    value = re.sub(r"\s*\(.*?\)\s*$", "", value).strip()
+    return value or None
+
+
+def _name_lastname(full_name: str) -> str:
+    """Return the last name from a `Firstname Lastname` or `Firstname.Lastname` string."""
+    parts = re.split(r"[\s.]+", full_name)
+    if len(parts) >= 2:
+        return parts[-1]
+    return full_name
 
 
 def check_comment_reviews(
@@ -188,8 +286,15 @@ def check_comment_reviews(
 ) -> CommentReviewResult:
     """Check PR comments for charter-format review comments from different authors.
 
-    Returns a CommentReviewResult with distinct reviewer last names and any
-    reviews missing the mandatory TechDebt: attestation line.
+    Returns a CommentReviewResult with distinct reviewer names (keyed on full
+    name, lowercased) and any reviews missing the mandatory TechDebt line.
+
+    Reviewer identification per charter (resolves #244):
+      - Approved / ChangesRequested → reviewer is the Requestor (comment author)
+      - Request / Reply → not a review; does not contribute to reviewer set
+      - 2-reviewer threshold counts distinct Requestor values across Approved
+        comments only (ChangesRequested is a verdict-with-TechDebt but does
+        not count toward the threshold).
     """
     result = CommentReviewResult()
     try:
@@ -222,52 +327,31 @@ def check_comment_reviews(
         comments = json.loads(comments_result.stdout)
         for comment in comments:
             body = comment.get("body", "")
-            # Check for charter-format review: must contain Requestee: and RequestOrReplied:
-            # Handles markdown bold (**Requestee:**) and plain text (Requestee:)
-            has_requestee = re.search(r"\*{0,2}Requestee:\*{0,2}\s*(.+)", body)
-            ror_match = re.search(r"\*{0,2}RequestOrReplied:\*{0,2}\s*(.+)", body)
+            requestor = _extract_charter_field("Requestor", body)
+            ror_value = _extract_charter_field("RequestOrReplied", body)
 
-            if not (has_requestee and ror_match):
+            # A charter-format comment must have BOTH Requestor and
+            # RequestOrReplied. Comments missing either are not parsed.
+            if not (requestor and ror_value):
                 continue
 
-            # Extract Requestee name (the reviewer)
-            requestee_raw = has_requestee.group(1).strip()
-            # Strip markdown bold markers and parenthetical role descriptions
-            requestee_raw = requestee_raw.strip("*").strip()
-            requestee_name = re.sub(r"\s*\(.*?\)\s*$", "", requestee_raw).strip()
-            # Extract last name — handle "Firstname Lastname" and "Firstname.Lastname"
-            parts = re.split(r"[\s.]+", requestee_name)
-            if len(parts) >= 2:
-                reviewer_lastname = parts[-1]
-            else:
-                reviewer_lastname = requestee_name
+            is_verdict_comment = _is_verdict(ror_value)
+            is_approved_comment = _is_approved(ror_value)
 
-            # Reviewer must differ from branch author. Author check stays on
-            # lastname (branch format is `{Initial}.{Lastname}/...`), but the
-            # dedup key for the reviewer set is the FULL requestee name —
-            # otherwise two distinct reviewers sharing a lastname collapse
-            # into one (issue #164 fix: Lucas Ferreira + Santiago Ferreira
-            # were counted as 1/2 on deploy#81).
-            #
-            # NOTE: Reviewer counting is NOT filtered by verdict type. It
-            # continues to use all Requestee+RequestOrReplied comments as in
-            # prior behavior; issue #147 addresses the TechDebt filter only,
-            # and weakening the reviewer count would break existing flows.
-            if reviewer_lastname.lower() != branch_author_lastname.lower():
-                result.reviewers.add(requestee_name.lower())
+            # Only Approved comments contribute to the reviewer set toward
+            # the 2-reviewer threshold (charter line 36, resolves #244).
+            if is_approved_comment:
+                reviewer_lastname = _name_lastname(requestor)
+                if reviewer_lastname.lower() != branch_author_lastname.lower():
+                    result.reviewers.add(requestor.lower())
 
-            ror_value = ror_match.group(1).strip()
-            # Keep only the first line of the value, in case the regex greedy-
-            # matched into following content on the same line.
-            ror_value = ror_value.split("\n", 1)[0].strip()
-
-            # TechDebt attestation is REQUIRED only on actual verdicts
-            # (Approved / Changes Requested). Request / Replied comments do
-            # NOT require it (issue #147 fix).
-            if _is_verdict(ror_value):
+            # TechDebt attestation is required on every verdict
+            # (Approved + ChangesRequested) — issue #147 fix.
+            if is_verdict_comment:
                 has_tech_debt = re.search(r"\*{0,2}TechDebt:\*{0,2}\s*(.+)", body)
                 if not has_tech_debt:
-                    result.reviews_missing_tech_debt.append(requestee_name)
+                    # Reviewer name = Requestor on verdicts (charter line 30).
+                    result.reviews_missing_tech_debt.append(requestor)
                 else:
                     td_value = has_tech_debt.group(1).strip().strip("*").strip()
                     if td_value.lower() != "none":
@@ -279,6 +363,64 @@ def check_comment_reviews(
 
     except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
         return result
+
+
+def load_charter_enforcer_names() -> set[str]:
+    """Read the local roster dir and return canonical names of charter enforcers.
+
+    Charter enforcers are roster files matching the
+    `_CHARTER_ENFORCER_ROLE_PREFIXES` allowlist. Each file's
+    `**Name:** <Full Name>` line is parsed for the canonical name.
+    Returns an empty set on any I/O failure (fail-closed for the exception
+    path: if we can't read the roster, we don't grant the exception).
+
+    Names are returned in lowercase to match `CommentReviewResult.reviewers`'
+    dedup key (full name, lowercased).
+    """
+    enforcers: set[str] = set()
+    try:
+        if not _ROSTER_DIR.is_dir():
+            return enforcers
+        for entry in _ROSTER_DIR.iterdir():
+            if entry.suffix != ".md":
+                continue
+            if not any(entry.name.startswith(p) for p in _CHARTER_ENFORCER_ROLE_PREFIXES):
+                continue
+            try:
+                content = entry.read_text(encoding="utf-8")
+            except OSError:
+                continue
+            # Look for `**Name:** <Full Name>` (charter persona convention).
+            match = re.search(r"\*\*Name:\*\*\s*([^\n]+)", content)
+            if match:
+                enforcers.add(match.group(1).strip().lower())
+    except OSError:
+        return set()
+    return enforcers
+
+
+def is_single_reviewer_exception(
+    pr_labels: list[str],
+    reviewers: set[str],
+) -> bool:
+    """Return True if the PR qualifies for the Single-Reviewer Exception.
+
+    Strict conditions per charter `pull-requests.md` § Single-Reviewer Exception
+    (Wave-Bootstrap Only):
+      1. PR is labeled `wave-bootstrap`
+      2. There is EXACTLY ONE distinct reviewer in `reviewers`
+      3. That reviewer is a charter-enforcer role in the local roster
+
+    Resolves #228 — hook-side enforcement of the charter exception that was
+    previously not honored.
+    """
+    if "wave-bootstrap" not in pr_labels:
+        return False
+    if len(reviewers) != 1:
+        return False
+    sole_reviewer = next(iter(reviewers))
+    enforcers = load_charter_enforcer_names()
+    return sole_reviewer in enforcers
 
 
 def ensure_issues_on_board(repo: str, issue_numbers: list[str]) -> None:
@@ -336,6 +478,7 @@ def check(input_data: dict) -> dict | None:
     reviews = pr_data["reviews"]
     head_ref = pr_data["headRefName"]
     number = pr_data["number"]
+    labels = pr_data["labels"]
 
     formal_reviewers: set[str] = set()
     for review in reviews:
@@ -350,21 +493,32 @@ def check(input_data: dict) -> dict | None:
         if branch_author_lastname:
             comment_review_result = check_comment_reviews(number, branch_author_lastname, repo=repo)
 
-    total_distinct = len(formal_reviewers) + len(comment_review_result.reviewers)
+    distinct_reviewers = formal_reviewers | comment_review_result.reviewers
+    total_distinct = len(distinct_reviewers)
 
     pr_display = f"#{pr_number}" if pr_number else "(current branch)"
 
-    if total_distinct < 2:
-        found = total_distinct
+    # Single-Reviewer Exception (resolves #228) — wave-bootstrap PRs reviewed
+    # by a charter enforcer may merge with one Approved comment instead of
+    # two. Charter-enforcer role check uses the local roster.
+    if total_distinct == 1 and is_single_reviewer_exception(labels, distinct_reviewers):
+        # Exception applies — fall through to TechDebt check, then allow.
+        pass
+    elif total_distinct < 2:
         result = {
             "decision": "block",
             "reason": (
-                f"BLOCKED: PR {pr_display} has {found}/2 required peer reviews. "
-                "At least TWO reviews from distinct non-authors are required before merge.\n"
-                "Charter § Pull Requests requires two comment-based peer reviews for all merges.\n"
+                f"BLOCKED: PR {pr_display} has {total_distinct}/2 required peer reviews. "
+                "At least TWO Approved reviews from distinct non-authors are required before "
+                "merge.\n"
+                "Charter § Comment-Based Reviews counts distinct Requestor values across "
+                "Approved comments (resolves main#244).\n"
                 "Use `gh pr comment <PR#> --body '...'` with charter format:\n"
-                "  Requestor: <branch author>  Requestee: <reviewer>  "
+                "  Requestor: <reviewer>  Requestee: <PR author>  "
                 "RequestOrReplied: Approved  TechDebt: none | #issue, ...\n"
+                "Single-Reviewer Exception (charter § Single-Reviewer Exception (Wave-Bootstrap "
+                "Only)): label PR `wave-bootstrap` AND have a charter-enforcer review (Standards "
+                "Lead, Manager, Tech Lead, Project Lead, or Program Director).\n"
                 "Pass `--admin` for emergency overrides only."
             ),
         }
@@ -380,11 +534,12 @@ def check(input_data: dict) -> dict | None:
                 f"BLOCKED: PR {pr_display} has review(s) missing the mandatory "
                 f"TechDebt: attestation line.\n"
                 f"Reviewers without TechDebt line: {names}\n"
-                "Charter § Pull Requests requires every review to include:\n"
+                "Charter § Comment-Based Reviews requires every Approved/ChangesRequested "
+                "comment to include:\n"
                 "  TechDebt: none        (if no tech-debt found)\n"
                 "  TechDebt: #15, #16    (if issues were filed)\n"
                 "Reviewer must create tech-debt labeled issues for all non-blocking "
-                "findings BEFORE posting the review.\n"
+                "findings BEFORE posting the verdict.\n"
                 "Pass `--admin` for emergency overrides only."
             ),
         }

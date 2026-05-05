@@ -38,7 +38,7 @@ This repo (`noorinalabs-main`) is a **parent-level git repo that `.gitignore`s c
 
 ### Team Composition
 
-This is the **org-level coordination team** for `noorinalabs-main`. Each child repo has its own team — this team coordinates across repos.
+This is the **org-level coordination team** for `noorinalabs-main`. Each child repo has its own roster of personas, but every spawned agent in a cross-repo session is a member of the single `noorinalabs` session team — see § Session team architecture below.
 
 | Role | Level | Name | File |
 |------|-------|------|------|
@@ -46,6 +46,18 @@ This is the **org-level coordination team** for `noorinalabs-main`. Each child r
 | Technical Program Manager | Staff | Wanjiku Mwangi | `roster/tpm_wanjiku.md` |
 | Release Coordinator | Senior | Santiago Ferreira | `roster/release_coordinator_santiago.md` |
 | Standards & Quality Lead | Staff | Aino Virtanen | `roster/standards_lead_aino.md` |
+
+### Session team architecture
+
+The harness enforces **one team per orchestrator session**. `TeamCreate` fails with "Already leading team" if a team already exists in the session, and spawned agents do NOT have access to the `Agent` tool — only the orchestrating Claude instance can spawn. Together these eliminate the "each repo is its own team, managers spawn implementers per-repo" mental model and enforce a hub-and-spoke pattern: the team lead spawns everyone, and managers request implementer spawns via `SendMessage`.
+
+**What this means in practice:**
+
+- Cross-repo waves orchestrated from `noorinalabs-main` always use `team_name: "noorinalabs"` for every agent — managers AND implementers across all 7 child repos.
+- Per-repo team names (`noorinalabs-isnad-graph`, `noorinalabs-deploy`, etc.) only apply when a session is opened in isolation in that repo for repo-only work — NOT the common case for wave-kickoff orchestration.
+- Per-repo rosters under `<repo>/.claude/team/roster/` remain canonical for **commit identity, domain ownership, and reviewer pairing** — the session team is a logical overlay on top of them.
+
+The full constraint and delegation mechanics (orchestrator checklist, spawn-request protocol, why this is hub-and-spoke and not recursive delegation) live in [`.claude/team/charter/agents.md` § Single-Leader Constraint](.claude/team/charter/agents.md). Read that section before spawning the team in any new session.
 
 ### Key Rules
 - **Commit identity:** Each team member commits using per-commit `-c` flags with their name and `parametrization+{FirstName}.{LastName}@gmail.com` email — **never** set global/repo git config. See `.claude/team/charter.md` § Commit Identity for the full table.

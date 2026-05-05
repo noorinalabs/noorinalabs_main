@@ -10,15 +10,38 @@ Automate the wave kickoff process for the `{team_name}` team.
 
 ## Instructions
 
-### 0. Pre-flight checklist (Mandatory — Pattern F mitigation)
+### 0. Derive wave repos in scope (Mandatory first step)
+
+The canonical source for the wave's repo list is `cross-repo-status.json` key `wave_{M}_repos_in_scope` (array of `noorinalabs-*` strings). All subsequent steps iterate this list.
+
+```bash
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+WAVE_REPOS_IN_SCOPE=$(jq -r ".wave_{M}_repos_in_scope[]" "$REPO_ROOT/cross-repo-status.json")
+test -n "$WAVE_REPOS_IN_SCOPE" || { echo "ERROR: wave_{M}_repos_in_scope missing or empty in cross-repo-status.json"; exit 1; }
+echo "Wave repos in scope:"
+printf '  - %s\n' $WAVE_REPOS_IN_SCOPE
+```
+
+If the key is missing, STOP — the wave is not properly scoped. Add `wave_{M}_repos_in_scope` to `cross-repo-status.json` before invoking the skill.
+
+For path resolution: each repo `R` lives at `$REPO_ROOT/$R` EXCEPT `noorinalabs-main`, which IS `$REPO_ROOT`. Use this helper:
+
+```bash
+repo_path() {
+  local r="$1"
+  if [ "$r" = "noorinalabs-main" ]; then echo "$REPO_ROOT"; else echo "$REPO_ROOT/$r"; fi
+}
+```
+
+### 0.5. Pre-flight checklist (Mandatory — Pattern F mitigation)
 
 Before any branch creation, label work, or agent spawning, complete this checklist for every repo in the wave's planned scope. The Phase 3 Wave 3 retro identified **6 orchestrator-class pre-flight gaps** (wave-branch creation, attribution, child-repo-implementer rule ×2, 2-reviewer planning, naming, spawn order) — all caught by downstream layers, not pre-flight. This step closes Pattern F.
 
-For each repo `R` in `wave_repos_in_scope`:
+For each repo `R` in `$WAVE_REPOS_IN_SCOPE`:
 
 | # | Check | How to verify |
 |---|---|---|
-| 0.1 | **Wave branch exists in repo `R`** | `git ls-remote origin deployments/phase{N}/wave-{M}` ≠ empty in `R`'s local clone |
+| 0.1 | **Wave branch exists in repo `R`** | `gh api repos/noorinalabs/$R/git/refs/heads/deployments/phase-{N}/wave-{M}` returns 200 (not 404). Step 1 is responsible for creation; this check confirms it landed before subsequent steps run. |
 | 0.2 | **Implementer roster confirmed for `R`** | Per child-repo-implementer rule (memory `feedback_child_repo_implementer_rule.md`): implementers come from `R`'s own team roster, not the orchestrator's parent team |
 | 0.3 | **Every scoped issue's `actual_repo_for_changes` is correct** | Re-read every issue body; sibling-of references can mislead. Concrete example: deploy#242 was filed as "sibling-of isnad-graph" but the actual code change was in landing-page (caught by Idris-853 in P3W3 only after kickoff) |
 | 0.4 | **2-reviewer slate drafted per PR** | `wave_3_scope.tier_*` entries each list `assignee` + `reviewer` (and a 2nd reviewer for charter compliance — see charter `pull-requests.md` § Two-Reviewer Assignment at Wave Kickoff) |
@@ -27,21 +50,102 @@ For each repo `R` in `wave_repos_in_scope`:
 
 If any check fails for any repo, STOP and resolve before proceeding. The output of this step is a 6×N table (6 checks × N repos in scope) with explicit YES/NO/N-A entries — paste it into the kickoff comment on the meta-issue so the gap-resolution audit trail lives on the issue.
 
-### 1. Create the deployments branch
+### 1. Create the deployments branch in every wave repo
 
-For **every** repo `R` in `wave_repos_in_scope` (not just the orchestrator repo — main#238 closed in W4):
+For **every** repo `R` in `$WAVE_REPOS_IN_SCOPE` (not just the orchestrator repo — main#238 closed in W4), create `deployments/phase-{N}/wave-{M}` from `origin/main`. The skill uses `gh api` directly so it does NOT require a clean local checkout — this is intentional, since the orchestrator session may be running in an unrelated worktree.
+
+**Idempotency contract:** if the branch already exists in `R`, the skill MUST NOT fail. It distinguishes three cases via GitHub's `compare` API:
+- `exists-clean` — wave branch SHA == main SHA (just-created or unchanged)
+- `exists-ancestor` — wave branch is an ancestor of main (main advanced after kickoff; expected after the kickoff status commit lands)
+- `exists-drift` — wave branch and main have diverged (someone pushed a non-main commit onto the wave branch — surface, do NOT overwrite)
+
+**Dry-run mode:** if `WAVE_KICKOFF_DRY_RUN=1` is set in the environment, the skill MUST print the per-repo plan but skip the POST that creates the ref. Reads (lookup of existing ref + main SHA) still execute.
 
 ```bash
+BRANCH="deployments/phase-{N}/wave-{M}"
+declare -A BRANCH_SHA  # repo -> resulting SHA (for status-file update + table)
+declare -A BRANCH_STATUS  # repo -> "created" | "exists-clean" | "exists-ancestor" | "exists-drift" | "dry-run-create" | "error:<msg>"
+
 for R in $WAVE_REPOS_IN_SCOPE; do
-  cd "$REPO_ROOT/$R"
-  git fetch origin
-  git checkout main && git pull origin main
-  git checkout -b deployments/phase{N}/wave-{M} 2>/dev/null || git checkout deployments/phase{N}/wave-{M}
-  git push -u origin deployments/phase{N}/wave-{M}
+  MAIN_SHA=$(gh api "repos/noorinalabs/$R/git/refs/heads/main" --jq '.object.sha' 2>/dev/null) || {
+    BRANCH_STATUS[$R]="error:cannot-read-main"; continue;
+  }
+
+  # Probe existing branch
+  EXISTING_SHA=$(gh api "repos/noorinalabs/$R/git/refs/heads/$BRANCH" --jq '.object.sha' 2>/dev/null || true)
+
+  if [ -n "$EXISTING_SHA" ]; then
+    BRANCH_SHA[$R]="$EXISTING_SHA"
+    if [ "$EXISTING_SHA" = "$MAIN_SHA" ]; then
+      BRANCH_STATUS[$R]="exists-clean"
+    else
+      # Use compare API to distinguish ancestor (main moved forward) from real drift (wave branch diverged)
+      STATUS_TYPE=$(gh api "repos/noorinalabs/$R/compare/main...$EXISTING_SHA" --jq '.status' 2>/dev/null || echo "unknown")
+      case "$STATUS_TYPE" in
+        behind|identical) BRANCH_STATUS[$R]="exists-ancestor" ;;  # wave branch behind main = ancestor case
+        ahead|diverged)   BRANCH_STATUS[$R]="exists-drift" ;;     # real drift
+        *)                BRANCH_STATUS[$R]="exists-drift" ;;
+      esac
+    fi
+    continue
+  fi
+
+  if [ "${WAVE_KICKOFF_DRY_RUN:-0}" = "1" ]; then
+    BRANCH_SHA[$R]="$MAIN_SHA"
+    BRANCH_STATUS[$R]="dry-run-create"
+    continue
+  fi
+
+  # Create the ref. 422 means "ref already exists" — race-safe idempotency.
+  CREATE_OUT=$(gh api -X POST "repos/noorinalabs/$R/git/refs" \
+    -f "ref=refs/heads/$BRANCH" -f "sha=$MAIN_SHA" 2>&1) && {
+    BRANCH_SHA[$R]="$MAIN_SHA"
+    BRANCH_STATUS[$R]="created"
+  } || {
+    if echo "$CREATE_OUT" | grep -q "Reference already exists"; then
+      BRANCH_SHA[$R]="$MAIN_SHA"; BRANCH_STATUS[$R]="exists-clean"  # raced; treat as no-op
+    else
+      BRANCH_STATUS[$R]="error:$(echo "$CREATE_OUT" | head -1 | tr -d '"' | cut -c1-80)"
+    fi
+  }
 done
 ```
 
-If the branch already exists in any repo, check it out and pull latest instead. **Verify step 0.1 holds for every repo before moving on** — a missing wave branch in any child repo is a stop-the-line condition.
+Print a status table (always, in both dry-run and live mode):
+
+```
+| Repo                              | Branch SHA  | Status         |
+|-----------------------------------|-------------|----------------|
+| noorinalabs-main                  | 93f3513...  | created        |
+| noorinalabs-isnad-graph           | bbf7073...  | exists-clean   |
+| noorinalabs-user-service          | 8deb979...  | exists-ancestor|
+| noorinalabs-deploy                | 0b3b214...  | exists-drift   |
+| noorinalabs-design-system         |  —          | error:cannot-read-main |
+```
+
+**Stop-the-line conditions:**
+- Any `error:*` — investigate before continuing (likely a missing repo or a permissions gap, not the skill's bug to swallow)
+- Any `exists-drift` — a prior session pushed a non-main commit onto this branch. Surface to the user; do NOT overwrite. Decide whether to rebase, fast-forward, or accept.
+
+**Persist results to `cross-repo-status.json`:**
+
+```bash
+# Build a JSON object {repo: {sha, status}} and merge under wave_{M}_branches
+TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+JSON=$(for R in $WAVE_REPOS_IN_SCOPE; do
+  printf '%s\n' "$R ${BRANCH_SHA[$R]:-null} ${BRANCH_STATUS[$R]}"
+done | jq -Rn --arg ts "$TS" --arg branch "$BRANCH" '
+  [inputs | split(" ")] |
+  map({(.[0]): {sha: (.[1] | if . == "null" then null else . end), status: .[2]}}) |
+  add | {branch: $branch, created_at: $ts, repos: .}')
+
+if [ "${WAVE_KICKOFF_DRY_RUN:-0}" != "1" ]; then
+  jq --argjson b "$JSON" '.wave_{M}_branches = $b' "$REPO_ROOT/cross-repo-status.json" \
+    > "$REPO_ROOT/cross-repo-status.json.tmp" && mv "$REPO_ROOT/cross-repo-status.json.tmp" "$REPO_ROOT/cross-repo-status.json"
+fi
+```
+
+**Verify step 0.1 holds for every repo before moving on** — every entry in the status table must be `created`, `exists-clean`, `exists-ancestor`, or (with explicit user sign-off) `exists-drift`. A missing or errored wave branch in any child repo is a stop-the-line condition.
 
 ### 2. Create wave label
 

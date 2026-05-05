@@ -580,6 +580,24 @@ def classify_memory(
     threshold = memory.promotion_threshold.get("retro_citations", 3)
 
     if memory.promotion_target == "none":
+        # STALE-OPT-OUT informational class (#158): a memory marked
+        # `promotion_target: none` is authoritative — the opt-out stands.
+        # But when citations reach 2× the threshold, surface the entry in
+        # an informational sub-list so operators can reconsider during
+        # wave-retro. No auto-action, no issue filed; the kind stays KEPT.
+        if citations >= 2 * threshold:
+            return Decision(
+                kind="KEPT",
+                item_id=memory.filename,
+                from_tier="memory",
+                to_tier="-",
+                signal=f"retro_citations={citations} >= 2 * {threshold}",
+                reason=(
+                    f"promotion_target=none, but cited {citations}x — "
+                    "consider reviewing the opt-out"
+                ),
+                extra={"stale_opt_out": True},
+            )
         return Decision(
             kind="KEPT",
             item_id=memory.filename,
@@ -806,11 +824,26 @@ def render_audit_table(decisions: list[Decision], wave_name: str, audit_date: st
     out.append("")
 
     out.append("### KEPT (no action — informational)")
-    if kept:
-        for d in kept:
-            out.append(f"- `{d.item_id}` ({d.from_tier}): {d.reason} [{d.signal}]")
-    else:
+    # Split KEPT into stale-opt-out flagged vs the rest. STALE-OPT-OUT
+    # entries (#158) are informational callouts — high-citation memories
+    # whose `promotion_target: none` opt-out has crossed 2× the threshold.
+    # They render as a separate sub-list so operators can spot drift
+    # without changing how the rest of KEPT is presented.
+    stale = [d for d in kept if d.extra.get("stale_opt_out")]
+    others = [d for d in kept if not d.extra.get("stale_opt_out")]
+
+    if not kept:
         out.append("_None._")
+    else:
+        if others:
+            for d in others:
+                out.append(f"- `{d.item_id}` ({d.from_tier}): {d.reason} [{d.signal}]")
+        if stale:
+            if others:
+                out.append("")
+            out.append("**STALE-OPT-OUT (review the opt-out — informational only):**")
+            for d in stale:
+                out.append(f"- `{d.item_id}` ({d.from_tier}): {d.reason} [{d.signal}]")
     out.append("")
 
     out.append("### SUPERSEDED / ALREADY-PROMOTED (no action — informational)")

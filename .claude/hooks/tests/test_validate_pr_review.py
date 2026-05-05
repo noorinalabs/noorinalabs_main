@@ -3,16 +3,27 @@
 
 Covers:
 - Issue #147: TechDebt attestation must be required ONLY on actual review
-  verdicts (Approved / Changes Requested), NOT on Request or Replied
-  comments.
-- Issue #164: reviewer set must dedup on full Requestee name, NOT on
+  verdicts (Approved / ChangesRequested), NOT on Request or Reply comments.
+- Issue #164: reviewer set must dedup on full reviewer name, NOT on
   lastname — two distinct reviewers sharing a lastname (e.g.,
   Lucas Ferreira and Santiago Ferreira) count as TWO reviewers.
+- Issue #244: reviewer for verdict comments is the Requestor (comment
+  author), NOT the Requestee. Resolves the prior Requestee-as-reviewer
+  mismatch with the canonical charter format (resolves #233).
+- Issue #228: Single-Reviewer Exception for wave-bootstrap PRs reviewed
+  by a charter-enforcer role.
+
+Charter format used in fixtures (canonical per `pull-requests.md`
+§ Comment-Based Reviews — Requestor=comment-author, Requestee=comment-target):
+- Request comments     → Requestor=PR author,  Requestee=reviewer
+- Reply comments       → Requestor=replier,    Requestee=being-replied-to
+- Approved verdicts    → Requestor=reviewer,   Requestee=PR author
+- ChangesRequested     → Requestor=reviewer,   Requestee=PR author
 
 Also covers the W8 hook-authorship NEGATIVE-MATCH requirement.
 
-Run: python3 -m pytest .claude/hooks/tests/test_validate_pr_review.py -v
-Or:  python3 .claude/hooks/tests/test_validate_pr_review.py
+Run: ENVIRONMENT=test python3 -m pytest .claude/hooks/tests/test_validate_pr_review.py -v
+Or:  ENVIRONMENT=test python3 .claude/hooks/tests/test_validate_pr_review.py
 """
 
 from __future__ import annotations
@@ -141,10 +152,13 @@ class TechDebtFilterTests(_CheckCommentReviewsHarness):
         self.assertEqual(result.reviews_missing_tech_debt, [])
 
     def test_approved_without_techdebt_does_block(self):
-        """Positive: Approved lacking TechDebt MUST still be flagged — #147 does NOT weaken this."""
+        """Positive: Approved lacking TechDebt MUST still be flagged — #147 does NOT weaken this.
+
+        Canonical format (resolves #244): Requestor=reviewer, Requestee=PR author.
+        """
         comments = [
             self._comment(
-                "Requestor: Linh Pham\nRequestee: Mateo Santos\nRequestOrReplied: Approved"
+                "Requestor: Mateo Santos\nRequestee: Linh Pham\nRequestOrReplied: Approved"
             ),
         ]
         result = self._run_with_fake_api(comments, self.BRANCH_AUTHOR, repo=self.REPO)
@@ -153,7 +167,7 @@ class TechDebtFilterTests(_CheckCommentReviewsHarness):
     def test_changes_requested_without_techdebt_does_block(self):
         comments = [
             self._comment(
-                "Requestor: Linh Pham\nRequestee: Anya Kowalczyk\n"
+                "Requestor: Anya Kowalczyk\nRequestee: Linh Pham\n"
                 "RequestOrReplied: Changes Requested"
             ),
         ]
@@ -163,7 +177,7 @@ class TechDebtFilterTests(_CheckCommentReviewsHarness):
     def test_approved_with_techdebt_none_passes(self):
         comments = [
             self._comment(
-                "Requestor: Linh Pham\nRequestee: Mateo Santos\n"
+                "Requestor: Mateo Santos\nRequestee: Linh Pham\n"
                 "RequestOrReplied: Approved\nTechDebt: none"
             ),
         ]
@@ -173,7 +187,7 @@ class TechDebtFilterTests(_CheckCommentReviewsHarness):
     def test_approved_with_techdebt_issues_passes_and_collects(self):
         comments = [
             self._comment(
-                "Requestor: Linh Pham\nRequestee: Mateo Santos\n"
+                "Requestor: Mateo Santos\nRequestee: Linh Pham\n"
                 "RequestOrReplied: Approved\nTechDebt: #15, #16"
             ),
         ]
@@ -182,31 +196,33 @@ class TechDebtFilterTests(_CheckCommentReviewsHarness):
         self.assertEqual(sorted(result.tech_debt_issue_numbers), ["15", "16"])
 
     def test_pr_821_scenario(self):
-        """Exact scenario from issue #147 repro.
+        """Exact scenario from issue #147 repro, in canonical #244 format.
 
         PR #821 had 3 real reviews (Jelani+Anya approved, Anya changes-requested —
-        all with TechDebt) and 4 non-review comments (3 Request, 1 Replied — no
+        all with TechDebt) and 4 non-review comments (3 Request, 1 Reply — no
         TechDebt). The hook blocked on the 4 non-review comments. After the fix,
         only actual-verdict comments without TechDebt should be flagged.
+
+        Canonical format (#244): verdict comments swap to Requestor=reviewer.
         """
         comments = [
-            # Review requests (no TechDebt line — must be accepted after fix)
+            # Review requests — Requestor=PR author, Requestee=reviewer (no TechDebt required)
             self._comment(
                 "Requestor: Linh Pham\nRequestee: Jelani Mwangi\nRequestOrReplied: Request"
             ),
             self._comment(
                 "Requestor: Linh Pham\nRequestee: Anya Kowalczyk\nRequestOrReplied: Request"
             ),
-            # Actual reviews with TechDebt
+            # Verdicts — Requestor=reviewer, Requestee=PR author
             self._comment(
-                "Requestor: Linh Pham\nRequestee: Jelani Mwangi\n"
+                "Requestor: Jelani Mwangi\nRequestee: Linh Pham\n"
                 "RequestOrReplied: Approved\nTechDebt: none"
             ),
             self._comment(
-                "Requestor: Linh Pham\nRequestee: Anya Kowalczyk\n"
+                "Requestor: Anya Kowalczyk\nRequestee: Linh Pham\n"
                 "RequestOrReplied: Changes Requested\nTechDebt: #200"
             ),
-            # Author reply (no TechDebt line — must be accepted after fix)
+            # Author reply — Requestor=replier (Linh), Requestee=being-replied-to (Anya)
             self._comment(
                 "Requestor: Linh Pham\nRequestee: Anya Kowalczyk\nRequestOrReplied: Replied"
             ),
@@ -214,9 +230,9 @@ class TechDebtFilterTests(_CheckCommentReviewsHarness):
             self._comment(
                 "Requestor: Linh Pham\nRequestee: Anya Kowalczyk\nRequestOrReplied: Request"
             ),
-            # Re-review approval
+            # Re-review approval — Requestor=reviewer (Anya)
             self._comment(
-                "Requestor: Linh Pham\nRequestee: Anya Kowalczyk\n"
+                "Requestor: Anya Kowalczyk\nRequestee: Linh Pham\n"
                 "RequestOrReplied: Approved\nTechDebt: none"
             ),
         ]
@@ -241,8 +257,8 @@ class TechDebtFilterTests(_CheckCommentReviewsHarness):
     def test_markdown_bold_approved_still_requires_techdebt(self):
         comments = [
             self._comment(
-                "**Requestor:** Linh Pham\n"
-                "**Requestee:** Mateo Santos\n"
+                "**Requestor:** Mateo Santos\n"
+                "**Requestee:** Linh Pham\n"
                 "**RequestOrReplied:** Approved"
             ),
         ]
@@ -255,6 +271,9 @@ class ReviewerDedupTests(_CheckCommentReviewsHarness):
 
     Prior behavior keyed the set on lastname, so Lucas Ferreira and Santiago
     Ferreira counted as one reviewer. Guard tests for the full-name fix.
+
+    Post-#244 reviewer identification uses Requestor on verdict comments;
+    fixtures updated to canonical format (Requestor=reviewer).
     """
 
     @staticmethod
@@ -262,14 +281,18 @@ class ReviewerDedupTests(_CheckCommentReviewsHarness):
         return {"body": body, "user": {"login": "anyone"}}
 
     def test_two_reviewers_same_lastname_count_as_two(self):
-        """NEGATIVE MATCH for #164: two Ferreiras must count as 2, not 1."""
+        """NEGATIVE MATCH for #164: two Ferreiras must count as 2, not 1.
+
+        Canonical format: each reviewer is the Requestor of their own
+        Approved verdict comment.
+        """
         comments = [
             self._comment(
-                "Requestor: Linh Pham\nRequestee: Lucas Ferreira\n"
+                "Requestor: Lucas Ferreira\nRequestee: Linh Pham\n"
                 "RequestOrReplied: Approved\nTechDebt: none"
             ),
             self._comment(
-                "Requestor: Linh Pham\nRequestee: Santiago Ferreira\n"
+                "Requestor: Santiago Ferreira\nRequestee: Linh Pham\n"
                 "RequestOrReplied: Approved\nTechDebt: none"
             ),
         ]
@@ -283,13 +306,20 @@ class ReviewerDedupTests(_CheckCommentReviewsHarness):
         self.assertIn("santiago ferreira", result.reviewers)
 
     def test_same_person_counted_once_across_multiple_comments(self):
-        """Positive: same reviewer making Request + Approved counts as one."""
+        """Positive: same reviewer's verdict counts once even across re-cycles.
+
+        Canonical format: the Approved verdict has Requestor=reviewer.
+        Request comments (Requestor=PR author) do NOT contribute to the
+        reviewer set after the #244 fix — only Approved verdicts count.
+        """
         comments = [
+            # Initial review request (Requestor=PR author) — does NOT count toward reviewers
             self._comment(
                 "Requestor: Linh Pham\nRequestee: Mateo Santos\nRequestOrReplied: Request"
             ),
+            # Verdict (Requestor=reviewer) — counts
             self._comment(
-                "Requestor: Linh Pham\nRequestee: Mateo Santos\n"
+                "Requestor: Mateo Santos\nRequestee: Linh Pham\n"
                 "RequestOrReplied: Approved\nTechDebt: none"
             ),
         ]
@@ -298,11 +328,12 @@ class ReviewerDedupTests(_CheckCommentReviewsHarness):
         self.assertIn("mateo santos", result.reviewers)
 
     def test_branch_author_lastname_still_excluded(self):
-        """Author-equality check still works (it uses lastname, correctly).
+        """Author-equality check still works on Requestor (post-#244).
 
-        Branch author has lastname `Pham`. A Pham-surnamed reviewer must still
-        be excluded from the reviewer set — regression guard for the
-        author-equality branch of the logic after the dedup-key change.
+        Branch author has lastname `Pham`. If a Pham-surnamed Requestor
+        somehow appears on an Approved verdict (a self-approval attempt),
+        it must be excluded. Regression guard for the author-equality
+        branch on the now-canonical Requestor field.
         """
         comments = [
             self._comment(
@@ -363,6 +394,289 @@ class MergeCommandMatchTests(unittest.TestCase):
         self.assertFalse(hook.is_merge_command("gh pr create"))
         self.assertFalse(hook.is_merge_command("git merge main"))
         self.assertFalse(hook.is_merge_command("gh pr checks"))
+
+
+class IsApprovedTests(unittest.TestCase):
+    """Issue #244: only Approved comments count toward the 2-reviewer rule.
+
+    ChangesRequested is a verdict (TechDebt required) but does NOT contribute
+    to the 2-Approved-distinct-reviewer threshold per charter line 36.
+    """
+
+    def test_approved_is_approved(self):
+        self.assertTrue(hook._is_approved("Approved"))
+
+    def test_lowercase_approved(self):
+        self.assertTrue(hook._is_approved("approved"))
+
+    def test_changes_requested_is_not_approved(self):
+        self.assertFalse(hook._is_approved("Changes Requested"))
+
+    def test_changesrequested_camelcase_is_not_approved(self):
+        self.assertFalse(hook._is_approved("ChangesRequested"))
+
+    def test_request_is_not_approved(self):
+        self.assertFalse(hook._is_approved("Request"))
+
+    def test_replied_is_not_approved(self):
+        self.assertFalse(hook._is_approved("Replied"))
+
+
+class RequestorCountingTests(_CheckCommentReviewsHarness):
+    """Issue #244: reviewer for verdict comments is the Requestor (comment author).
+
+    Pre-#244 the hook counted distinct Requestee values. Post-#244 it counts
+    distinct Requestor values across Approved comments only.
+    """
+
+    @staticmethod
+    def _comment(body: str) -> dict:
+        return {"body": body, "user": {"login": "anyone"}}
+
+    def test_approved_counts_requestor(self):
+        """Two Approved verdicts from distinct Requestors → 2 reviewers."""
+        comments = [
+            self._comment(
+                "Requestor: Anya Kowalczyk\nRequestee: Linh Pham\n"
+                "RequestOrReplied: Approved\nTechDebt: none"
+            ),
+            self._comment(
+                "Requestor: Jelani Mwangi\nRequestee: Linh Pham\n"
+                "RequestOrReplied: Approved\nTechDebt: none"
+            ),
+        ]
+        result = self._run_with_fake_api(comments, self.BRANCH_AUTHOR, repo=self.REPO)
+        self.assertEqual(len(result.reviewers), 2)
+        self.assertIn("anya kowalczyk", result.reviewers)
+        self.assertIn("jelani mwangi", result.reviewers)
+
+    def test_request_does_not_count_toward_reviewers(self):
+        """A Request comment (Requestor=PR author) is NOT a review verdict."""
+        comments = [
+            self._comment(
+                "Requestor: Linh Pham\nRequestee: Anya Kowalczyk\nRequestOrReplied: Request"
+            ),
+        ]
+        result = self._run_with_fake_api(comments, self.BRANCH_AUTHOR, repo=self.REPO)
+        self.assertEqual(result.reviewers, set())
+
+    def test_changes_requested_does_not_count_toward_approved_threshold(self):
+        """ChangesRequested is a verdict but NOT toward the 2-Approved threshold.
+
+        Charter line 36: "two distinct Requestor values" specifically across
+        `Approved` comments. CR comments do not satisfy the threshold.
+        """
+        comments = [
+            self._comment(
+                "Requestor: Anya Kowalczyk\nRequestee: Linh Pham\n"
+                "RequestOrReplied: Changes Requested\nTechDebt: none"
+            ),
+        ]
+        result = self._run_with_fake_api(comments, self.BRANCH_AUTHOR, repo=self.REPO)
+        # ChangesRequested has TechDebt so it's a verdict (no missing-attestation
+        # error), but the reviewer set stays empty because only Approved counts.
+        self.assertEqual(result.reviewers, set())
+        self.assertEqual(result.reviews_missing_tech_debt, [])
+
+    def test_p3w3_wave_merge_repro(self):
+        """Exact repro of the P3W3 wave-merge --admin episode (issue #244).
+
+        Wave-merge PRs had 2 distinct Approveds, but the prior hook counted
+        Requestee (= PR author) and saw 1 distinct value → blocked. With
+        #244 fix counting Requestor, both reviewers are recognized.
+        """
+        comments = [
+            # Two distinct reviewers Approved — canonical Requestor=reviewer
+            self._comment(
+                "Requestor: Bereket Tadesse\nRequestee: Aino Virtanen\n"
+                "RequestOrReplied: Approved\nTechDebt: none"
+            ),
+            self._comment(
+                "Requestor: Lucas Ferreira\nRequestee: Aino Virtanen\n"
+                "RequestOrReplied: Approved\nTechDebt: none"
+            ),
+        ]
+        # Branch author lastname is "Virtanen" (Aino's wave-merge PR).
+        result = self._run_with_fake_api(comments, "Virtanen", repo=self.REPO)
+        self.assertEqual(
+            len(result.reviewers),
+            2,
+            "P3W3 #244 repro: should count Bereket + Lucas as 2 distinct Requestors",
+        )
+
+
+class LoadCharterEnforcerNamesTests(unittest.TestCase):
+    """Issue #228: charter-enforcer names parsed from local roster filenames.
+
+    Tests against the parent repo's actual roster (Aino Virtanen as
+    standards_lead, Nadia Khoury as program_director). The hook uses
+    `_ROSTER_DIR` resolved relative to the hook file at module import.
+    """
+
+    def test_parent_roster_includes_aino(self):
+        """Parent's standards_lead_aino.md → Aino Virtanen is an enforcer."""
+        enforcers = hook.load_charter_enforcer_names()
+        self.assertIn(
+            "aino virtanen",
+            enforcers,
+            f"Standards Lead missing from charter enforcers: {enforcers}",
+        )
+
+    def test_parent_roster_includes_nadia(self):
+        """Parent's program_director_nadia.md → Nadia Khoury is an enforcer."""
+        enforcers = hook.load_charter_enforcer_names()
+        self.assertIn("nadia khoury", enforcers)
+
+    def test_engineer_roles_excluded(self):
+        """`sre_engineer_*`, `security_engineer_*`, etc. are NOT enforcers."""
+        enforcers = hook.load_charter_enforcer_names()
+        # Aisha (sre_engineer) and Nino (security_engineer) must NOT be in the set.
+        self.assertNotIn("aisha idrissi", enforcers)
+        self.assertNotIn("nino kavtaradze", enforcers)
+
+
+class SingleReviewerExceptionTests(unittest.TestCase):
+    """Issue #228: hook honors charter's Single-Reviewer Exception."""
+
+    def test_exception_grants_with_label_and_enforcer(self):
+        """Label `wave-bootstrap` + sole reviewer is a charter enforcer → exception applies."""
+        # Use Aino's lowercased full name (matches what reviewers set holds).
+        self.assertTrue(
+            hook.is_single_reviewer_exception(
+                pr_labels=["wave-bootstrap", "tech-debt"],
+                reviewers={"aino virtanen"},
+            )
+        )
+
+    def test_exception_denied_without_label(self):
+        """No `wave-bootstrap` label → exception does NOT apply."""
+        self.assertFalse(
+            hook.is_single_reviewer_exception(
+                pr_labels=["tech-debt"],
+                reviewers={"aino virtanen"},
+            )
+        )
+
+    def test_exception_denied_with_zero_reviewers(self):
+        """Zero reviewers is not "exactly one" — exception does NOT apply."""
+        self.assertFalse(
+            hook.is_single_reviewer_exception(
+                pr_labels=["wave-bootstrap"],
+                reviewers=set(),
+            )
+        )
+
+    def test_exception_denied_with_two_reviewers(self):
+        """Two reviewers means the strict rule is already satisfied — exception unnecessary."""
+        self.assertFalse(
+            hook.is_single_reviewer_exception(
+                pr_labels=["wave-bootstrap"],
+                reviewers={"aino virtanen", "nadia khoury"},
+            )
+        )
+
+    def test_exception_denied_with_non_enforcer_reviewer(self):
+        """`wave-bootstrap` label + sole reviewer is NOT a charter enforcer → no exception."""
+        self.assertFalse(
+            hook.is_single_reviewer_exception(
+                pr_labels=["wave-bootstrap"],
+                reviewers={"some random engineer"},
+            )
+        )
+
+
+class CheckEndToEndTests(unittest.TestCase):
+    """End-to-end check() integration tests for #244 + #228 paths."""
+
+    @staticmethod
+    def _input(command: str) -> dict:
+        return {"tool_name": "Bash", "tool_input": {"command": command}}
+
+    def _patch_pr_data(self, **overrides) -> dict:
+        """Build a stub PR-data dict with sensible defaults; override per test."""
+        base = {
+            "author": "parametrization",
+            "number": 100,
+            "reviews": [],  # no formal GitHub reviews in any of these tests
+            "headRefName": "L.Pham/0001-fix",
+            "labels": [],
+        }
+        base.update(overrides)
+        return base
+
+    def test_two_distinct_approved_requestors_allows_merge(self):
+        """Canonical happy path: 2 distinct Requestors on Approved comments → allow."""
+        review_result = hook.CommentReviewResult()
+        review_result.reviewers = {"anya kowalczyk", "jelani mwangi"}
+        with (
+            mock.patch.object(hook, "get_pr_data", return_value=self._patch_pr_data()),
+            mock.patch.object(hook, "check_comment_reviews", return_value=review_result),
+        ):
+            result = hook.check(self._input("gh pr merge 100 --squash"))
+        self.assertIsNone(result, "2 distinct Requestor Approveds should allow merge")
+
+    def test_one_reviewer_without_wave_bootstrap_blocks(self):
+        """Strict rule: 1 reviewer + no wave-bootstrap label → block."""
+        review_result = hook.CommentReviewResult()
+        review_result.reviewers = {"anya kowalczyk"}
+        with (
+            mock.patch.object(hook, "get_pr_data", return_value=self._patch_pr_data()),
+            mock.patch.object(hook, "check_comment_reviews", return_value=review_result),
+        ):
+            result = hook.check(self._input("gh pr merge 100 --squash"))
+        self.assertIsNotNone(result)
+        assert result is not None
+        self.assertEqual(result["decision"], "block")
+        self.assertIn("1/2", result["reason"])
+
+    def test_one_reviewer_with_wave_bootstrap_and_enforcer_allows(self):
+        """Single-Reviewer Exception (#228): wave-bootstrap + charter enforcer → allow.
+
+        Uses the actual parent roster — Aino Virtanen is the Standards Lead.
+        """
+        review_result = hook.CommentReviewResult()
+        review_result.reviewers = {"aino virtanen"}
+        with (
+            mock.patch.object(
+                hook,
+                "get_pr_data",
+                return_value=self._patch_pr_data(labels=["wave-bootstrap", "tech-debt"]),
+            ),
+            mock.patch.object(hook, "check_comment_reviews", return_value=review_result),
+        ):
+            result = hook.check(self._input("gh pr merge 100 --squash"))
+        self.assertIsNone(
+            result,
+            "wave-bootstrap PR with charter-enforcer Approved should merge with 1 reviewer",
+        )
+
+    def test_one_reviewer_with_wave_bootstrap_but_non_enforcer_blocks(self):
+        """Single-Reviewer Exception requires a charter-enforcer reviewer.
+
+        wave-bootstrap label alone does NOT grant the exception — the sole
+        reviewer must also be a charter-enforcer per local roster.
+        """
+        review_result = hook.CommentReviewResult()
+        review_result.reviewers = {"some engineer"}
+        with (
+            mock.patch.object(
+                hook,
+                "get_pr_data",
+                return_value=self._patch_pr_data(labels=["wave-bootstrap"]),
+            ),
+            mock.patch.object(hook, "check_comment_reviews", return_value=review_result),
+        ):
+            result = hook.check(self._input("gh pr merge 100 --squash"))
+        self.assertIsNotNone(result)
+        assert result is not None
+        self.assertEqual(result["decision"], "block")
+
+    def test_admin_short_circuits(self):
+        """--admin allows merge regardless of reviewer count (emergency override)."""
+        with mock.patch.object(hook, "get_pr_data") as get_mock:
+            result = hook.check(self._input("gh pr merge 100 --admin"))
+        self.assertIsNone(result)
+        get_mock.assert_not_called()
 
 
 if __name__ == "__main__":

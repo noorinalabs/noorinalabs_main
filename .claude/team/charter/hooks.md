@@ -143,6 +143,7 @@ When hooks sharing the same matcher type (Bash, Agent, SendMessage, etc.) accumu
 - **Manual steps remaining:** None — the hook queries `gh pr view` for the check rollup automatically.
 - **Emergency override:** Pass `--admin` to `gh pr merge`, or remove the `validate_pr_ci_status` entry from the dispatcher hook list.
 - **P2W9 retro findings (2026-04-22):** Hook 14 is registered in noorinalabs-main but is NOT synced to child repos. `gh pr merge` on child-repo PRs (deploy#146 in particular) bypassed the CI check because the dispatcher in the child repo doesn't list this hook. **Action:** sync Hook 14 to all 7 child-repo dispatchers following the same pattern as #112 part (b) for `validate_commit_identity`. Additionally, the hook's behavior on **pending** checks may have been too permissive during P2W9 — the mid-CI-run merge window allowed main#178 to merge before FAILURE conclusions materialized. Tighten the pending-check semantics to block mid-run merges unless `--auto` is passed to hand off to GitHub's auto-merge. Tracking issues: noorinalabs-main#182 (main), noorinalabs-deploy#148 (cross-repo sync).
+- **NEUTRAL allowlist (resolves #219, P3W4 T5):** GitHub's Checks API uses `NEUTRAL` to mean "the check has no opinion" — historically treated as pass. Chromatic (the dominant visual-regression service for Storybook-based component libraries) returns `NEUTRAL` on snapshots-pending-review, so a vanilla `NEUTRAL → pass` interpretation would let a PR merge while visual-regression review is still pending. The hook now consults a `_NEUTRAL_PENDING_CHECK_NAMES` allowlist (case-insensitive on the CheckRun's display name) to decide: names in the allowlist treat `NEUTRAL` as **pending**, all other names preserve the prior `NEUTRAL → pass` behavior. Initial allowlist: `{"chromatic"}`. Add new entries when a CI service uses `NEUTRAL` to mean "review pending" rather than "no opinion." Surfaced by Luciana Ferreyra (design-system QA) on design-system#61 review, comment-id 4335373566.
 
 ## Hook 15: Enforce Librarian Consulted (`enforce_librarian_consulted.py`)
 
@@ -169,6 +170,82 @@ When hooks sharing the same matcher type (Bash, Agent, SendMessage, etc.) accumu
 - **Matcher:** `Skill` (new matcher type — first hook of this kind in the codebase). Direct registration in `settings.json` per dispatcher consolidation policy (§ Dispatcher Consolidation Policy: consolidate at 4+ hooks of the same matcher; this is the only Skill-matcher hook).
 - **Manual steps remaining:** None when the gate fires — the operator must either close the open items, OR add a carry-forward block to the skill `args`. The charter rule still mandates the same discipline for manually-authored handoffs and retros that don't go through skills (those are out of scope for the hook; a separate Stop-hook scan was considered and deferred per the design comment on #195).
 - **Emergency override:** Remove the `Skill` matcher entry from `.claude/settings.json`. There is no in-band override flag — the purpose of the hook is to break the "this one's fine, just say concluded" rationalization that put the P2W9 incident on owner's desk. Matches Hook 15's stance.
+
+## Hook 18: Validate Edit Completion (`validate_edit_completion.py`)
+
+- **What it automates:** Two-phase gate that closes the **tool-error-soft-accept** failure class. PostToolUse on Edit/Write/NotebookEdit records `is_error: true` responses to a session-scoped sentinel at `<repo_root>/.claude/.edit-error-sentinel/<session-id>.jsonl` (gitignored). PreToolUse on subsequent state-sensitive actions (Edit/Write/NotebookEdit on the same path, SendMessage, or Bash matching `git commit` / `gh pr comment` / `gh issue comment`) reads the sentinel and blocks unless the error has been acknowledged via one of: a `Read` of the errored path, a Bash `cat`/`head`/`tail`/`grep`/`less`/`ls`/`wc` of the path, OR a SendMessage / comment text containing both the path AND the literal string `edit-error acknowledged`. Acknowledged entries are pruned atomically.
+- **Augments:** P2W10 retro-mandated discipline. Two independent W10 instances (Marcia walkback on prompt-drafting Edit error; Bereket Contract-revert false-status report despite 5 consecutive Edit `is_error: true`). Same tool, same failure class, same blast-radius. Per `feedback_enforcement_hierarchy.md`, charter rule "always verify edits landed" decays without enforcement; this is the hook-tier enforcement.
+- **Matcher:** Multi-matcher — `Bash` via `dispatcher.py` (`_BASH_HOOKS` list); `Edit` / `Write` / `NotebookEdit` direct PreToolUse + PostToolUse registration in `settings.json`; `SendMessage` direct PreToolUse registration in `settings.json` (alongside `block_shutdown_without_retro.py`). The dispatcher routes Bash via the hook's `check(input_data)` function; the other matchers go through `main()` which dispatches on `hook_event_name` to either `_post_tool_use` (record-on-error) or `_pre_tool_use_blocks` (gate-if-unacked).
+- **Manual steps remaining:** When a state-sensitive action blocks, the agent acknowledges via Read / Bash-verb / explicit-marker on the errored path. Charter `pull-requests.md` § Trust the Artifact, Not the Framing already prescribes verify-before-claim discipline; this hook is the enforcement layer for that prescription on the Edit-tool surface.
+- **Emergency override:** Pass an explicit `edit-error acknowledged` marker in the next SendMessage / comment for the path (in-band escape hatch for recovery edits). Or remove the hook entry from `dispatcher.py`'s `_BASH_HOOKS` list AND the `settings.json` registrations. The marker path is the recommended emergency path because it preserves the audit trail.
+- **Promotion provenance:** P2W10 retro (2026-04-23 — Khoury framing: "if it keeps surfacing, hook candidate — something that blocks next Write/Edit if prior Edit returned an error-that-wasn't-explicitly-handled"). Filed as [#198](https://github.com/noorinalabs/noorinalabs-main/issues/198), promoted to hook in P3W4 T5.
+
+## Hook 19: Validate Workflow Paths Coverage (`validate_workflow_paths_coverage.py`)
+
+- **What it automates:** Blocks `gh pr create` / `gh pr ready` when the PR diff modifies any `.github/workflows/*.yml` file that is NOT covered by any base-branch workflow's `on.pull_request.paths:` filter (or by a base workflow with `on.pull_request:` and no `paths:` filter). Closes the **workflow-file orphan** failure class — a PR can land workflow changes that GitHub silently skips CI on, producing `statusCheckRollup: []` + `mergeStateStatus: CLEAN` (which `validate_pr_ci_status` only blocks on FAILED, not EMPTY). Companion to Hook 9 / `validate_pr_ci_status` at the trigger-graph layer.
+- **Coverage logic:** Builds the union of `on.pull_request.paths:` patterns across all base-branch workflows; tracks whether ANY base workflow has `on.pull_request:` without a `paths:` filter (covers everything). For each `.github/workflows/**` file in the PR diff, checks against the union. Path matching uses `fnmatch` with `**` glob expansion. Workflows with `paths-ignore:` only (no `paths:`) are conservatively treated as no-paths-filter coverage (over-allows slightly; safer side for the orphan-blocking goal).
+- **Augments:** Charter `pull-requests.md § CI Workflow `pull_request` Triggers Must Cover Wave Branches` (sibling at the wave-branch coverage layer; this hook covers the workflow-file-orphan layer). Both rules together close the trigger-gap class surfaced in P2W10 via deploy#153 + user-service#80/#81.
+- **Matcher:** `Bash` via `dispatcher.py` (`_BASH_HOOKS` list, ordered after `validate_branch_freshness` since both are PR-create gates and this one fetches base-branch workflow YAMLs — the network calls land late in the chain).
+- **Manual steps remaining:** When the hook blocks, the PR author has three remediation paths (named in the block message): (a) precursor PR adds `'.github/workflows/**'` to a base workflow's paths filter — recommended; (b) add a workflow with `on.pull_request:` and no `paths:` filter (covers everything including future workflow files); (c) `--admin` at merge time if the change genuinely needs no CI (rare).
+- **Emergency override:** Remove the `validate_workflow_paths_coverage` entry from `dispatcher.py`'s `_BASH_HOOKS` list. There is no in-band override flag — the purpose of the hook is to prevent silent CI skipping, so an inline bypass would defeat the point.
+- **Out of scope for v1:** Net-zero infra-revert orphan detection (`statusCheckRollup: []` + non-base HEAD) — requires re-running GitHub's paths-filter evaluator at hook time. Filed as follow-up. Cross-repo reusable-workflow inheritance (`workflow_call`/`uses:`) — reviewer responsibility.
+- **Promotion provenance:** P2W10 retro-candidate (2026-04-24, deploy#153 76d7d7f orphan). Filed as [#203](https://github.com/noorinalabs/noorinalabs-main/issues/203) sibling of [#200](https://github.com/noorinalabs/noorinalabs-main/issues/200) — different layer of the same trigger-gap class. Promoted to hook in P3W4 T5.
+
+## Hook Sync Across Child Repos <!-- promotion-target: none -->
+
+Shared hooks live in `noorinalabs-main/.claude/hooks/` (the parent repo's hooks tree). Child repos consume them via **parent-canonical paths** — their own `.claude/settings.json` registers each hook by absolute path into the parent's hooks tree, e.g.:
+
+```jsonc
+{
+  "matcher": "Bash",
+  "hooks": [{
+    "type": "command",
+    "command": "python3 /home/parameterization/code/noorinalabs-main/.claude/hooks/dispatcher.py",
+    "timeout": 30
+  }]
+}
+```
+
+**The parent's `.claude/hooks/` is the single source of truth for shared hook code.** Child repos do NOT keep local `.py` copies of shared hooks; they reference the parent's files by path. This makes a new shared hook a configuration change in each child's `settings.json`, not a code-fan-out across child repos — eliminating the drift risk that surfaced in P2W9 (Hook 14 was registered in the parent for ~2 weeks before #194 surfaced no child had it).
+
+### Required pattern
+
+For every shared hook (i.e., a hook that exists at `noorinalabs-main/.claude/hooks/<name>.py` and applies to multiple repos):
+
+1. Hook source code lives at `noorinalabs-main/.claude/hooks/<name>.py` ONLY. No copies in child repos.
+2. Each child repo's `.claude/settings.json` registers the hook under the appropriate matcher with a `command` of `python3 /home/parameterization/code/noorinalabs-main/.claude/hooks/<name>.py` (or the dispatcher path for Bash hooks).
+3. Child repos do NOT have their own `annunaki_log.py`, `_shell_parse.py`, `dispatcher.py`, or other shared support files. They reference the parent's copies.
+
+### Anti-pattern: copy-resident hooks
+
+Do NOT copy `.py` hook files into a child repo's `.claude/hooks/` and register them via relative paths. This is the **copy-resident anti-pattern**:
+
+- Forces a per-repo PR to ship every shared-hook update (versus a single line in each child's `settings.json`).
+- Two distinct mental models in flight whenever some children are copy-resident and others are symlink-style.
+- Drift is permanent — no compile-time check that all copies are in sync with the parent's source of truth.
+
+If you find a child repo using copy-resident hooks during routine work, file a tracking issue and align on the next hook-sync wave's plan rather than mixing the cleanup into an unrelated PR.
+
+### Anti-pattern: empty child config
+
+A child repo that participates in hook-gated workflows (commits, PRs, merges) MUST have a `.claude/settings.json` registering at least the parent dispatcher and matcher hooks relevant to that repo's surface (Edit/Write for sources, SendMessage for cross-repo coordination, etc.). An **empty child config** is a silent gap — hooks the parent enforces simply don't fire in that repo. Audit during wave-kickoff and file `tech-debt` if any in-scope repo is empty.
+
+### Reviewer enforcement
+
+When a PR adds or modifies a child repo's `.claude/settings.json`, reviewers verify:
+- Each hook entry uses an absolute path into `noorinalabs-main/.claude/hooks/`, not a relative path.
+- No new `.py` hook files are added to the child's `.claude/hooks/` (the dir should be empty or contain only child-local hooks specific to that repo's surface — none currently exist).
+- Coverage matches the parent's matcher list for the equivalent surface (e.g., a child with code-editing tools should register PreToolUse Edit/Write hooks that the parent registers for the same purposes).
+
+### Caveats acknowledged
+
+- Symlink-style is fragile to parent-dir layout changes — but the org-canonical workstation layout (`/home/parameterization/code/noorinalabs-main/...`) has been stable since project inception.
+- Symlink-style breaks when a child repo is cloned standalone OUTSIDE the parent. Hooks fail to invoke (no matching path); the harness gracefully falls through (no hook = allow). Document this in any per-child-repo CLAUDE.md that anticipates standalone cloning.
+- Hook updates require a child-side `settings.json` edit when hook count changes (new hook added; matcher consolidation per § Dispatcher Consolidation Policy). This is one line per child — significantly cheaper than the per-repo PR cost the copy-resident pattern imposes.
+
+### Promotion provenance
+
+Surfaced during execution of [#194](https://github.com/noorinalabs/noorinalabs-main/issues/194) (Hook 14 sync to 7 child repos) — Aino's survey found 3 copy-resident, 3 symlink-style, 2 empty across the 7 child repos. Owner-greenlit the canonicalization 2026-04-27. Phase 1 (this section, charter codification) lands in P3W4. Phase 2 (per-child-repo sweep migrating the 3 copy-resident repos to symlink-style + scaffolding any empty repos) is tracked separately for P3W5. See [#214](https://github.com/noorinalabs/noorinalabs-main/issues/214).
 
 ---
 
