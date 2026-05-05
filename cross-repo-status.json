@@ -1,9 +1,54 @@
 {
-  "wave_active": false,
-  "current_wave": null,
-  "next_wave": "wave-5",
+  "wave_active": true,
+  "current_wave": "wave-5",
+  "next_wave": "wave-6",
   "last_completed_wave": "wave-4",
   "last_completed_at": "2026-05-05T15:51:29Z",
+  "wave_5_meta_issue": "noorinalabs-main#274",
+  "wave_5_kicked_off_at": "2026-05-05T22:30:00Z",
+  "wave_5_scope_reconciled_at": "2026-05-05T22:31:00Z",
+  "wave_5_scope_reconciliation_note": "Manual /wave-scope run (auto-threading not yet built per main#273). Declared 7 issues across 4 tiers; labeled 0 (kickoff Step 7 applies labels). No drift between meta-issue body and carry-forward list. No memory must-includes filed for W5.",
+  "wave_5_branch": "deployments/phase-3/wave-5",
+  "wave_5_theme": "Multi-repo fan-out + memory classification + skill self-improvement",
+  "wave_5_length_estimate_days": "5-7",
+  "wave_5_concentration_cap_pct": 40,
+  "wave_5_repos_in_scope": ["noorinalabs-main", "noorinalabs-isnad-graph", "noorinalabs-user-service", "noorinalabs-design-system", "noorinalabs-data-acquisition", "noorinalabs-isnad-ingest-platform", "noorinalabs-deploy", "noorinalabs-landing-page"],
+  "wave_5_carry_forwards_from_w4": ["main#263", "main#264", "main#267"],
+  "wave_5_scope_total_issues": 11,
+  "wave_5_branches": {"branch": "deployments/phase-3/wave-5", "created_at": "2026-05-05T22:32:00Z", "repos": {"noorinalabs-main": {"sha": "c8504560", "status": "created"}, "noorinalabs-isnad-graph": {"sha": "908a19e0", "status": "created"}, "noorinalabs-user-service": {"sha": "b1108b0c", "status": "created"}, "noorinalabs-design-system": {"sha": "f9e7a847", "status": "created"}, "noorinalabs-data-acquisition": {"sha": "388e728d", "status": "created"}, "noorinalabs-isnad-ingest-platform": {"sha": "e10bc2e3", "status": "created"}, "noorinalabs-deploy": {"sha": "c7cfabf0", "status": "created"}, "noorinalabs-landing-page": {"sha": "41316302", "status": "created"}}},
+  "wave_5_scope": {
+    "tier_1_w4_carry_forwards": [
+      {"id": "noorinalabs-main#263", "title": "Phase 2 #214 child fan-out — sweep all 7 child repos to parent-canonical hook paths", "shape": "fan-out", "implementers": "distributed (1 per child repo, see tier_1A)"},
+      {"id": "noorinalabs-main#264", "title": "Phase 2 #215 settings.json fan-out (US + ingest-platform)", "implementers": ["Anya Kowalczyk (US)", "Yusuke (ingest-platform)"]},
+      {"id": "noorinalabs-main#267", "title": "ci.yml paths filter excludes .claude/skills/**", "implementer": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Nadia Khoury"]}
+    ],
+    "tier_1A_263_distribution": [
+      {"repo": "noorinalabs-isnad-graph", "implementer": "Linh Pham", "second_reviewer": "Arjun Raghavan"},
+      {"repo": "noorinalabs-user-service", "implementer": "Mateo Salazar", "second_reviewer": "Anya Kowalczyk"},
+      {"repo": "noorinalabs-design-system", "implementer": "Kofi Mensah", "second_reviewer": "Maeve"},
+      {"repo": "noorinalabs-data-acquisition", "implementer": "Sofia Cardoso", "second_reviewer": "Kwesi Boateng"},
+      {"repo": "noorinalabs-isnad-ingest-platform", "implementer": "Yusuke", "second_reviewer": "Adaeze"},
+      {"repo": "noorinalabs-deploy", "implementer": "Lucas Ferreira", "second_reviewer": "Bereket Tadesse"},
+      {"repo": "noorinalabs-landing-page", "implementer": "K. Mensah-Williams", "second_reviewer": "Maeve"}
+    ],
+    "tier_2_day0_deliverables": [
+      {"id": "noorinalabs-main#273", "title": "Thread /wave-scope into /wave-retro Step 9 + /wave-kickoff Step 0", "implementer": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Nadia Khoury"]},
+      {"id": "noorinalabs-main#269", "title": "Memory-audit: classify 36 feedback memories", "implementer": "Aino Virtanen", "reviewers": ["Wanjiku Mwangi", "Nadia Khoury"]}
+    ],
+    "tier_3_ingest_platform_direct": [
+      {"id": "noorinalabs-isnad-ingest-platform#14", "title": "Regenerate uv.lock to include kafka-python and boto3, remove Dockerfile workaround", "implementer": "Yusuke", "reviewers": ["Adaeze", "Bjorn"]}
+    ],
+    "tier_4_small_followups": [
+      {"id": "noorinalabs-main#271", "title": "charter cross-reference between adjacent Single-Reviewer Exception sections", "implementer": "Wanjiku Mwangi", "reviewers": ["Aino Virtanen", "Nadia Khoury"]}
+    ],
+    "deliberately_not_in_w5": [
+      "noorinalabs-deploy backlog (~30 issues) — only #263 sliver in scope, broader deploy work continues prior W4 deferral",
+      "secrets-audit cluster (#205-#210) — own wave (large surface)",
+      "8-repo audits #221, #222 — own wave (large surface)",
+      "main hook refactors (#170, #176) — better suited to a 'hook DRY' themed wave",
+      "ingest-platform deeper backlog (#19, #20, #22, #23, #24) — out of W5 scope"
+    ]
+  },
   "wave_4_completed_at": "2026-05-05T15:51:29Z",
   "wave_4_main_merge_sha": "af51f94",
   "wave_4_final_pr_count": 14,
