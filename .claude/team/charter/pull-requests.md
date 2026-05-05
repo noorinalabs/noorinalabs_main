@@ -76,6 +76,8 @@ Strict conditions — **all must hold**:
 
 All other PRs require two comment-based reviews. `--admin` merges without two reviews are subject to the moderate-feedback-event classification in § Feedback System.
 
+**See also:** § Trivial Cross-Repo Doc Sweep — a separate single-reviewer exception class for byte-identical doc syncs across child repos. The two exceptions are **independent budgets** (the wave-bootstrap 1-per-wave cap does not consume, and is not consumed by, doc-sweep waivers) and are **not cumulative** — a single PR may invoke at most one.
+
 **Why:** In Phase 2 Wave 8, the single-reviewer shortcut was invoked 8× — it had stopped being an exception and become a pattern of convenience. This clause formalizes the boundary.
 
 ## Load-Bearing Followups for Disabled CI Jobs <!-- promotion-target: skill -->
@@ -367,6 +369,8 @@ When a single doc-sync change must land identically in N>1 child repos (e.g., ba
 4. **CI green on every repo** — no CI failures across the sweep; one red CI revokes the exception for the whole sweep.
 
 A sweep PR uses the same charter-format comments and TechDebt line as standard PRs. When the exception is invoked, the PR body must include a "Sweep:" line citing the tracking issue and the byte-identical-diff verification command.
+
+**See also:** § Single-Reviewer Exception (Wave-Bootstrap Only) — a separate single-reviewer exception class for tooling/CI/hook-rollout PRs that gate subsequent wave work. The two exceptions are **independent budgets** (the wave-bootstrap 1-per-wave cap does not consume, and is not consumed by, doc-sweep waivers) and are **not cumulative** — a single PR may invoke at most one.
 
 **Why:** P3W4 ran 4 separate per-repo PRs for an identical 1-line CLAUDE.md slash sync (isnad-graph#857, user-service#94, design-system#63, data-acquisition#34) — 4 review pairs, 4 CI runs, ~12 charter-format comments for a no-decision change. The 2-reviewer requirement is load-bearing for behavior changes; for byte-identical doc sweeps, the verification value is concentrated at the parent tracking issue, not at each child PR.
 
