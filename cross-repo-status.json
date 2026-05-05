@@ -9,7 +9,7 @@
   "wave_4_final_pr_count": 14,
   "wave_4_admin_overrides": 0,
   "wave_4_carry_forward_to_wave_5": ["main#263", "main#264", "main#267"],
-  "wave_4_repos_descoped_during_wave": [{"repo": "noorinalabs-isnad-ingest-platform", "reason": "Theme misalignment — wave-4 was hook bug-class consolidation in noorinalabs-main; ingest-platform had no in-scope work materialize. Recorded retroactively at P3W4 retro per new wave-wrapup § Scope-Drop Reconciliation."}],
+  "wave_4_repos_descoped_during_wave": [{"repo": "noorinalabs-isnad-ingest-platform", "reason": "Kickoff-side scoping error (corrected per main#272) — listed in wave_4_repos_in_scope at kickoff but no tier item assigned ingest-platform a deliverable; the only touch-points (#214, #215) were structured as Phase-1-main-only with Phase-2 child fan-out always intended as W5 work (#263, #264). Not a wave-execution failure; not a theme-misalignment drop."}],
   "wave_4_retro_completed_at": "2026-05-05T22:00:00Z",
   "wave_3_completed_at": "2026-05-04T02:35:00Z",
   "wave_4_kicked_off_at": "2026-05-04T03:15:00Z",
