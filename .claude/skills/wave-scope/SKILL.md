@@ -302,24 +302,26 @@ If any step surfaced a process gap (stale memory, missing meta-issue, vague refe
 
 This is what `/wave-kickoff` Step 0a reads to confirm the wave's scope was reconciled before kickoff. Write only on full success — if the run aborted at step 7 (no dispositions) or step 10 (label-churn confirmation declined), do NOT write.
 
+**Why not raw jq:** `jq ... > tmp && mv` round-trips reformat the entire file from compact-inline (the deliberate shape used by `/wave-kickoff` and `/wave-start` for `wave_{N}_*` keys) to jq's default pretty form, doubling line count and producing a 500+ line cosmetic diff per run. P3W5 PR #276 review flagged this as load-bearing. The targeted upsert helper below preserves the existing shape — replace-in-place when the key exists (zero churn), insert-near-sibling when it doesn't (delta = 1 line per new key).
+
 ```bash
 TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-NOTE_ARGS=()
+UPSERT_ARGS=("wave_{M}_scope_reconciled_at=$(jq -nc --arg t "$TS" '$t')")
+
 if [ -n "${SCOPE_RECONCILIATION_NOTE:-}" ]; then
-  NOTE_ARGS+=(--arg note "$SCOPE_RECONCILIATION_NOTE")
+  UPSERT_ARGS+=("wave_{M}_scope_reconciliation_note=$(jq -nc --arg n "$SCOPE_RECONCILIATION_NOTE" '$n')")
 fi
 
-jq --arg ts "$TS" "${NOTE_ARGS[@]}" \
-   '.wave_{M}_scope_reconciled_at = $ts
-    | (if $ENV.SCOPE_RECONCILIATION_NOTE then .wave_{M}_scope_reconciliation_note = $note else . end)' \
-   "$REPO_ROOT/cross-repo-status.json" \
-   > "$REPO_ROOT/cross-repo-status.json.tmp" \
-   && mv "$REPO_ROOT/cross-repo-status.json.tmp" "$REPO_ROOT/cross-repo-status.json"
+python3 "$REPO_ROOT/.claude/skills/wave-scope/upsert_status_keys.py" \
+  "$REPO_ROOT/cross-repo-status.json" \
+  "${UPSERT_ARGS[@]}"
 
 echo "  wave_{M}_scope_reconciled_at = $TS written to cross-repo-status.json"
 ```
 
-The optional `wave_{M}_scope_reconciliation_note` is for capturing edge cases (e.g., "no drift; no memory must-includes; manual run because skill not yet built"). Set `SCOPE_RECONCILIATION_NOTE` in the environment before invoking the jq command if there is a non-trivial summary worth preserving for the next retro.
+The helper validates JSON pre- and post-write, replaces top-level keys in place when they already exist, and inserts new keys after the most-recent `wave_{N}_*` sibling line. Idempotent — re-running with identical values produces zero diff.
+
+The optional `wave_{M}_scope_reconciliation_note` is for capturing edge cases (e.g., "no drift; no memory must-includes; manual run because skill not yet built"). Set `SCOPE_RECONCILIATION_NOTE` in the environment before invoking the helper if there is a non-trivial summary worth preserving for the next retro.
 
 The companion read-side check is `/wave-kickoff` SKILL.md § 0a — it stops kickoff if this timestamp is missing or predates the prior wave's retro.
 

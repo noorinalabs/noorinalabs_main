@@ -12,9 +12,13 @@ Automate the wave kickoff process for the `{team_name}` team.
 
 ### 0a. Verify next-wave scope is reconciled (Mandatory precondition — added P3W5 #273)
 
-`cross-repo-status.json` MUST carry a `wave_{M}_scope_reconciled_at` ISO timestamp written by `/wave-scope {P} {M}`, and that timestamp MUST post-date the previous wave's retro completion timestamp. If absent or stale, STOP and require the user to run `/wave-scope {P} {M}` first.
+`cross-repo-status.json` MUST carry a `wave_{M}_scope_reconciled_at` ISO timestamp written by `/wave-scope {P} {M}`. If a prior-wave retro/completion timestamp is also present, the scope timestamp MUST post-date it. If `wave_{M}_scope_reconciled_at` is absent the kickoff STOPs unconditionally; the staleness check is permissive (no-op) when the prior-wave timestamp is also absent — see "Permissive fallback" below.
 
 ```bash
+# Note: `{P}` and `{M}` are skill-template placeholders the orchestrator
+# string-substitutes BEFORE the bash block runs. After substitution
+# `$(({M} - 1))` becomes a literal arithmetic expansion like `$((5 - 1))` —
+# they are not bash variables.
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 SCOPE_TS=$(jq -r '.wave_{M}_scope_reconciled_at // empty' "$REPO_ROOT/cross-repo-status.json")
 PRIOR_RETRO_TS=$(jq -r '.wave_$(({M} - 1))_retro_completed_at // .wave_$(({M} - 1))_completed_at // empty' "$REPO_ROOT/cross-repo-status.json")
@@ -31,10 +35,16 @@ if [ -n "$PRIOR_RETRO_TS" ] && [ "$SCOPE_TS" \< "$PRIOR_RETRO_TS" ]; then
   exit 1
 fi
 
-echo "  Scope reconciled at: $SCOPE_TS (post-dates last retro: $PRIOR_RETRO_TS)"
+if [ -z "$PRIOR_RETRO_TS" ]; then
+  echo "  Scope reconciled at: $SCOPE_TS (no prior-wave timestamp — first wave of phase or fresh project; staleness check skipped)"
+else
+  echo "  Scope reconciled at: $SCOPE_TS (post-dates last retro: $PRIOR_RETRO_TS)"
+fi
 ```
 
 This check is a deterministic JSON read — no GitHub API calls, no side effects. It catches the off-path case where `/wave-kickoff` is invoked without a recent `/wave-scope` (drift signal: meta-issue out of sync with labels). The common path is covered by `/wave-retro` Step 9, which auto-invokes `/wave-scope {P} {M+1}` at end-of-wave.
+
+**Permissive fallback (intentional).** When neither `wave_{M-1}_retro_completed_at` nor `wave_{M-1}_completed_at` exists in `cross-repo-status.json` — e.g., the first wave of a phase, or a fresh project — the staleness comparison is silently skipped and only the absent-scope check fires. This keeps the precondition usable for Phase-N-Wave-1 cases without requiring a synthetic zero-timestamp. The trade-off: a `wave_{M}_scope_reconciled_at` written years ago with no surrounding context will pass. If that becomes a real failure mode, tighten to fail-closed and require an explicit `WAVE_KICKOFF_ALLOW_NO_PRIOR_RETRO=1` override.
 
 ### 0. Derive wave repos in scope (Mandatory first step)
 

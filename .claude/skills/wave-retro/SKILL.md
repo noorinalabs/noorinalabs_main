@@ -140,13 +140,26 @@ Carry-forward and memory-must-include state is freshest immediately after retro,
 ```bash
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 NEXT_WAVE=$(({M} + 1))
-NEXT_META_ISSUE=$(gh issue list --repo noorinalabs/noorinalabs-main \
-    --search "Phase {N} Wave $NEXT_WAVE in:title" \
-    --json number,title --jq '.[0].number')
 
-if [ -z "$NEXT_META_ISSUE" ] || [ "$NEXT_META_ISSUE" = "null" ]; then
+# Anchored title pattern + open-state filter. Meta-issue title format is
+# "Phase {N} Wave {M+1} — <theme>" — the dash-space tail prevents bleed into
+# retro tracking issues like "Phase 3 Wave 5 retro tracking" that some teams
+# file separately. Asserting exactly-one-hit surfaces ambiguity as a blocker
+# instead of silently picking whichever issue GitHub orders first.
+META_HITS=$(gh issue list --repo noorinalabs/noorinalabs-main --state open \
+    --search "\"Phase {N} Wave $NEXT_WAVE —\" in:title" \
+    --json number,title)
+HIT_COUNT=$(echo "$META_HITS" | jq 'length')
+NEXT_META_ISSUE=$(echo "$META_HITS" | jq -r '.[0].number // empty')
+
+if [ "$HIT_COUNT" -eq 0 ]; then
   echo "BLOCKER for /wave-kickoff p{N} w$NEXT_WAVE:"
-  echo "  Next-wave meta-issue not yet drafted. Create the meta-issue, then run /wave-scope {N} $NEXT_WAVE before /wave-kickoff."
+  echo "  Next-wave meta-issue not yet drafted. Create one titled 'Phase {N} Wave $NEXT_WAVE — <theme>' and run /wave-scope {N} $NEXT_WAVE before /wave-kickoff."
+elif [ "$HIT_COUNT" -gt 1 ]; then
+  echo "BLOCKER for /wave-kickoff p{N} w$NEXT_WAVE:"
+  echo "  Multiple open issues match 'Phase {N} Wave $NEXT_WAVE —' in title — meta-issue is ambiguous:"
+  echo "$META_HITS" | jq -r '.[] | "    - #\(.number): \(.title)"'
+  echo "  Resolve before running /wave-scope."
 else
   echo "Auto-invoking /wave-scope {N} $NEXT_WAVE (next-wave meta-issue: noorinalabs-main#$NEXT_META_ISSUE)"
   # Invoke the skill — it will write wave_${NEXT_WAVE}_scope_reconciled_at to cross-repo-status.json on success.
