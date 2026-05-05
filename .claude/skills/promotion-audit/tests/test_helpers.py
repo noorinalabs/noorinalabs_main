@@ -475,6 +475,71 @@ class ClassifyMemoryTests(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
+# Classification — STALE-OPT-OUT informational class (#158)
+# ---------------------------------------------------------------------------
+
+
+class StaleOptOutTests(unittest.TestCase):
+    """A `promotion_target: none` memory whose retro_citations cross
+    2× the threshold is flagged STALE-OPT-OUT — an informational
+    callout under KEPT, not a new decision tier. The opt-out stays
+    authoritative; nothing is overridden, no issue is filed.
+    """
+
+    def test_high_cite_none_is_flagged(self) -> None:
+        """POS: `none` + citations >= 2 * threshold → KEPT with stale_opt_out flag."""
+        m = _make_memory(promotion_target="none", status="active")
+        d = h.classify_memory(m, {"retro_citations": 7}, set())
+        self.assertEqual(d.kind, "KEPT")
+        self.assertTrue(d.extra.get("stale_opt_out"))
+        self.assertIn("cited 7x", d.reason)
+        self.assertIn(">= 2 *", d.signal)
+
+    def test_low_cite_none_not_flagged(self) -> None:
+        """NEG: `none` + citations below 2 * threshold → plain KEPT, no flag."""
+        m = _make_memory(promotion_target="none", status="active")
+        # threshold default 3; below 2*3=6 must NOT trigger.
+        d = h.classify_memory(m, {"retro_citations": 5}, set())
+        self.assertEqual(d.kind, "KEPT")
+        self.assertFalse(d.extra.get("stale_opt_out", False))
+        self.assertIn("informational memory", d.reason)
+
+    def test_exactly_double_threshold_is_flagged(self) -> None:
+        """POS: edge case — citations == 2 * threshold triggers (>=, not >)."""
+        m = _make_memory(promotion_target="none", status="active")
+        d = h.classify_memory(m, {"retro_citations": 6}, set())  # 2 * 3
+        self.assertEqual(d.kind, "KEPT")
+        self.assertTrue(d.extra.get("stale_opt_out"))
+
+    def test_charter_target_high_cite_unaffected(self) -> None:
+        """NEG: `charter` target with high citations still flows AUTO/DECIDE.
+        STALE-OPT-OUT only applies on the `promotion_target: none` path."""
+        m = _make_memory(promotion_target="charter", status="active")
+        d = h.classify_memory(m, {"retro_citations": 100}, set())
+        self.assertEqual(d.kind, "AUTO")
+        self.assertFalse(d.extra.get("stale_opt_out", False))
+
+    def test_custom_threshold_respected(self) -> None:
+        """NEG: a memory with a custom threshold uses that, not the default."""
+        m = _make_memory(
+            promotion_target="none",
+            status="active",
+            promotion_threshold={"retro_citations": 5, "skill_invocations": 5},
+        )
+        # 2 * 5 = 10; 9 must NOT trigger, 10 MUST.
+        d_below = h.classify_memory(m, {"retro_citations": 9}, set())
+        self.assertFalse(d_below.extra.get("stale_opt_out", False))
+        d_at = h.classify_memory(m, {"retro_citations": 10}, set())
+        self.assertTrue(d_at.extra.get("stale_opt_out"))
+
+    def test_already_promoted_takes_precedence(self) -> None:
+        """NEG: ALREADY-PROMOTED still wins over STALE-OPT-OUT."""
+        m = _make_memory(promotion_target="none", status="active")
+        d = h.classify_memory(m, {"retro_citations": 100}, {"feedback_x.md"})
+        self.assertEqual(d.kind, "ALREADY-PROMOTED")
+
+
+# ---------------------------------------------------------------------------
 # Classification — charter section
 # ---------------------------------------------------------------------------
 
@@ -597,6 +662,68 @@ class RenderAuditTableTests(unittest.TestCase):
         a = h.render_audit_table(decisions, "wave-9", "2026-04-19")
         b = h.render_audit_table(decisions, "wave-9", "2026-04-19")
         self.assertEqual(a, b)
+
+    def test_stale_opt_out_sublist_rendered(self) -> None:
+        """POS: KEPT entries with stale_opt_out=True render as a labeled sub-list."""
+        decisions = [
+            h.Decision(
+                kind="KEPT",
+                item_id="feedback_quiet.md",
+                from_tier="memory",
+                to_tier="-",
+                signal="retro_citations=0",
+                reason="promotion_target=none (informational memory)",
+            ),
+            h.Decision(
+                kind="KEPT",
+                item_id="feedback_loud.md",
+                from_tier="memory",
+                to_tier="-",
+                signal="retro_citations=7 >= 2 * 3",
+                reason="promotion_target=none, but cited 7x — consider reviewing the opt-out",
+                extra={"stale_opt_out": True},
+            ),
+        ]
+        out = h.render_audit_table(decisions, "wave-9", "2026-04-19")
+        self.assertIn("STALE-OPT-OUT", out)
+        # The plain KEPT entry must appear above the STALE-OPT-OUT header.
+        quiet_idx = out.index("feedback_quiet.md")
+        header_idx = out.index("STALE-OPT-OUT")
+        loud_idx = out.index("feedback_loud.md")
+        self.assertLess(quiet_idx, header_idx)
+        self.assertLess(header_idx, loud_idx)
+
+    def test_no_stale_opt_out_header_when_empty(self) -> None:
+        """NEG: with no flagged entries, the STALE-OPT-OUT header must NOT appear."""
+        decisions = [
+            h.Decision(
+                kind="KEPT",
+                item_id="feedback_x.md",
+                from_tier="memory",
+                to_tier="-",
+                signal="retro_citations=0",
+                reason="promotion_target=none (informational memory)",
+            ),
+        ]
+        out = h.render_audit_table(decisions, "wave-9", "2026-04-19")
+        self.assertNotIn("STALE-OPT-OUT", out)
+
+    def test_stale_only_renders_header(self) -> None:
+        """POS: when ALL KEPT entries are stale-flagged, header still appears."""
+        decisions = [
+            h.Decision(
+                kind="KEPT",
+                item_id="feedback_loud.md",
+                from_tier="memory",
+                to_tier="-",
+                signal="retro_citations=7 >= 2 * 3",
+                reason="promotion_target=none, but cited 7x — consider reviewing the opt-out",
+                extra={"stale_opt_out": True},
+            ),
+        ]
+        out = h.render_audit_table(decisions, "wave-9", "2026-04-19")
+        self.assertIn("STALE-OPT-OUT", out)
+        self.assertIn("feedback_loud.md", out)
 
     def test_sorted_within_bucket(self) -> None:
         """NEG: unsorted input must still produce sorted output."""

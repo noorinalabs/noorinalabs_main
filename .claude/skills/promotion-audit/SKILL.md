@@ -51,6 +51,7 @@ For each memory, charter section, and skill, compute a `Decision` via `classify(
 - **AUTO** — thresholds met, promotion target is charter or skill, NOT already promoted
 - **DECIDE** — thresholds met, target is hook (always DECIDE), OR `requires_decision: true` override, OR signals ambiguous
 - **KEPT** — promotion-target is `none`, thresholds not yet met, or status is `active` with no promotion intent
+  - **STALE-OPT-OUT (informational sub-class)** — when a memory has `promotion_target: none` AND `retro_citations >= 2 * threshold`, the entry stays KEPT (the opt-out is authoritative) but is rendered in a separate sub-list so operators can spot drift during wave-retro. No auto-action, no issue filed, no override of the opt-out. (#158)
 - **SUPERSEDED** — status is `superseded` or `enforced-elsewhere` with an explicit `superseded_by` reference
 - **ALREADY-PROMOTED** — name appears in `find_already_promoted()` set (recognized via `Promotion provenance:` blocks in charter/hooks.md)
 
@@ -86,6 +87,9 @@ Use `render_audit_table(decisions)` to produce deterministic markdown with four 
 
 ### KEPT (no action — informational)
 - {item}: {reason}
+
+**STALE-OPT-OUT (review the opt-out — informational only):**
+- {item}: {reason}    ← only rendered when at least one entry crosses 2× threshold
 
 ### SUPERSEDED / ALREADY-PROMOTED (no action — informational)
 - {item}: {pointer}
