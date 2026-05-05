@@ -191,6 +191,62 @@ When hooks sharing the same matcher type (Bash, Agent, SendMessage, etc.) accumu
 - **Out of scope for v1:** Net-zero infra-revert orphan detection (`statusCheckRollup: []` + non-base HEAD) — requires re-running GitHub's paths-filter evaluator at hook time. Filed as follow-up. Cross-repo reusable-workflow inheritance (`workflow_call`/`uses:`) — reviewer responsibility.
 - **Promotion provenance:** P2W10 retro-candidate (2026-04-24, deploy#153 76d7d7f orphan). Filed as [#203](https://github.com/noorinalabs/noorinalabs-main/issues/203) sibling of [#200](https://github.com/noorinalabs/noorinalabs-main/issues/200) — different layer of the same trigger-gap class. Promoted to hook in P3W4 T5.
 
+## Hook Sync Across Child Repos <!-- promotion-target: none -->
+
+Shared hooks live in `noorinalabs-main/.claude/hooks/` (the parent repo's hooks tree). Child repos consume them via **parent-canonical paths** — their own `.claude/settings.json` registers each hook by absolute path into the parent's hooks tree, e.g.:
+
+```jsonc
+{
+  "matcher": "Bash",
+  "hooks": [{
+    "type": "command",
+    "command": "python3 /home/parameterization/code/noorinalabs-main/.claude/hooks/dispatcher.py",
+    "timeout": 30
+  }]
+}
+```
+
+**The parent's `.claude/hooks/` is the single source of truth for shared hook code.** Child repos do NOT keep local `.py` copies of shared hooks; they reference the parent's files by path. This makes a new shared hook a configuration change in each child's `settings.json`, not a code-fan-out across child repos — eliminating the drift risk that surfaced in P2W9 (Hook 14 was registered in the parent for ~2 weeks before #194 surfaced no child had it).
+
+### Required pattern
+
+For every shared hook (i.e., a hook that exists at `noorinalabs-main/.claude/hooks/<name>.py` and applies to multiple repos):
+
+1. Hook source code lives at `noorinalabs-main/.claude/hooks/<name>.py` ONLY. No copies in child repos.
+2. Each child repo's `.claude/settings.json` registers the hook under the appropriate matcher with a `command` of `python3 /home/parameterization/code/noorinalabs-main/.claude/hooks/<name>.py` (or the dispatcher path for Bash hooks).
+3. Child repos do NOT have their own `annunaki_log.py`, `_shell_parse.py`, `dispatcher.py`, or other shared support files. They reference the parent's copies.
+
+### Anti-pattern: copy-resident hooks
+
+Do NOT copy `.py` hook files into a child repo's `.claude/hooks/` and register them via relative paths. This is the **copy-resident anti-pattern**:
+
+- Forces a per-repo PR to ship every shared-hook update (versus a single line in each child's `settings.json`).
+- Two distinct mental models in flight whenever some children are copy-resident and others are symlink-style.
+- Drift is permanent — no compile-time check that all copies are in sync with the parent's source of truth.
+
+If you find a child repo using copy-resident hooks during routine work, file a tracking issue and align on the next hook-sync wave's plan rather than mixing the cleanup into an unrelated PR.
+
+### Anti-pattern: empty child config
+
+A child repo that participates in hook-gated workflows (commits, PRs, merges) MUST have a `.claude/settings.json` registering at least the parent dispatcher and matcher hooks relevant to that repo's surface (Edit/Write for sources, SendMessage for cross-repo coordination, etc.). An **empty child config** is a silent gap — hooks the parent enforces simply don't fire in that repo. Audit during wave-kickoff and file `tech-debt` if any in-scope repo is empty.
+
+### Reviewer enforcement
+
+When a PR adds or modifies a child repo's `.claude/settings.json`, reviewers verify:
+- Each hook entry uses an absolute path into `noorinalabs-main/.claude/hooks/`, not a relative path.
+- No new `.py` hook files are added to the child's `.claude/hooks/` (the dir should be empty or contain only child-local hooks specific to that repo's surface — none currently exist).
+- Coverage matches the parent's matcher list for the equivalent surface (e.g., a child with code-editing tools should register PreToolUse Edit/Write hooks that the parent registers for the same purposes).
+
+### Caveats acknowledged
+
+- Symlink-style is fragile to parent-dir layout changes — but the org-canonical workstation layout (`/home/parameterization/code/noorinalabs-main/...`) has been stable since project inception.
+- Symlink-style breaks when a child repo is cloned standalone OUTSIDE the parent. Hooks fail to invoke (no matching path); the harness gracefully falls through (no hook = allow). Document this in any per-child-repo CLAUDE.md that anticipates standalone cloning.
+- Hook updates require a child-side `settings.json` edit when hook count changes (new hook added; matcher consolidation per § Dispatcher Consolidation Policy). This is one line per child — significantly cheaper than the per-repo PR cost the copy-resident pattern imposes.
+
+### Promotion provenance
+
+Surfaced during execution of [#194](https://github.com/noorinalabs/noorinalabs-main/issues/194) (Hook 14 sync to 7 child repos) — Aino's survey found 3 copy-resident, 3 symlink-style, 2 empty across the 7 child repos. Owner-greenlit the canonicalization 2026-04-27. Phase 1 (this section, charter codification) lands in P3W4. Phase 2 (per-child-repo sweep migrating the 3 copy-resident repos to symlink-style + scaffolding any empty repos) is tracked separately for P3W5. See [#214](https://github.com/noorinalabs/noorinalabs-main/issues/214).
+
 ---
 
 ## Hook Authorship Requirements <!-- promotion-target: none -->
