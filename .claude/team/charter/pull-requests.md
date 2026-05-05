@@ -355,3 +355,19 @@ Read the diff against the actual artifact (Caddyfile, compose env-vars, terrafor
 ### Why
 
 Phase 3 Wave 1 produced 4 corroborating data points across two roles. Implementer side: `#161` scope catch + `#206` Reality-post-#87 mapping table. Reviewer side: `#206` Caddyfile evidence-receipts. Both halves of the same discipline.
+
+
+## Trivial Cross-Repo Doc Sweep
+
+When a single doc-sync change must land identically in N>1 child repos (e.g., backslash→slash path corrections, broken-URL fixes, copyright-year updates, identical CLAUDE.md sentence sync), a **Single-Reviewer Exception** is granted per child PR provided ALL of the following hold:
+
+1. **Byte-identical diff** — every child PR's diff is byte-identical to every other (verifiable via `git show <pr-head>:<path> | diff -`). Per-repo adaptations (different branding, different file paths) DO NOT qualify; those go through standard 2-reviewer review.
+2. **No behavior change** — change is doc/comment-only OR a configuration sync that produces no runtime difference.
+3. **Tracking-issue link** — every child PR references one parent tracking issue in `noorinalabs-main` that enumerates all child PRs.
+4. **CI green on every repo** — no CI failures across the sweep; one red CI revokes the exception for the whole sweep.
+
+A sweep PR uses the same charter-format comments and TechDebt line as standard PRs. When the exception is invoked, the PR body must include a "Sweep:" line citing the tracking issue and the byte-identical-diff verification command.
+
+**Why:** P3W4 ran 4 separate per-repo PRs for an identical 1-line CLAUDE.md slash sync (isnad-graph#857, user-service#94, design-system#63, data-acquisition#34) — 4 review pairs, 4 CI runs, ~12 charter-format comments for a no-decision change. The 2-reviewer requirement is load-bearing for behavior changes; for byte-identical doc sweeps, the verification value is concentrated at the parent tracking issue, not at each child PR.
+
+**Severity if violated:** Invoking the sweep exception on a non-byte-identical change, or skipping the tracking issue, is moderate (review-bypass for changes that needed standard review). The 2nd reviewer is the load-bearing safeguard against silent behavior change.

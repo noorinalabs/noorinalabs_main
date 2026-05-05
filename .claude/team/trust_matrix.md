@@ -529,3 +529,59 @@ The org was restructured in Session 3 with new repo-level teams. The matrix abov
 | **Aino Virtanen** (SQL) | Largest main# PR in wave (#242, 384 lines); table-driven hook with tests | None this wave. |
 | **Orchestrator** | 14/14 PRs landed clean; 0 CI failures wave-wide; 4 ChangesRequested cycles all resolved without force-push; promotion-audit ran end-to-end (deterministic 0/0/60/3/1); honest filing of 6 orchestrator-class gaps as their own issues (main#238 wave-kickoff multi-repo + 5 sibling tracking comments) | 6 orchestrator-class pre-flight gaps — caught by implementers/reviewers/hooks, not pre-flight. Recurring class: wave-branch-creation (Aisha-252 catch), deploy#242 attribution (Idris-853 catch), child-repo-implementer rule (landing-page + user-service mid-wave), 2-reviewer planning, agent-naming pattern, spawn-brief-reviewer-order-inversion. main#238 tracks the wave-kickoff fix; the rest need a pre-flight checklist. Used `--admin` override on 5 wave-merge PRs because validate_pr_review.py treats Requestee-as-reviewer mismatching the wave's Requestee=author format (main#244 tracks the hook fix). |
 
+
+
+---
+
+## Phase 3 Wave 4 Trust Updates (2026-05-05) — Tooling & Process-Discipline Cleanup
+
+### Org-Level Team (noorinalabs-main)
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Aino Virtanen (SQL) | 5 | 5 | 8 main# PRs (~5400 LOC), 0 CI failures, theme-coherent hook bug-class consolidation. #248 shared `_shell_parse.py` parser refactor closing 7 issues; #250 validate_pr_review canonicalization closing 3 issues (eliminated W3's 5/5 wave-merge admin-override pattern); #254 charter+docs sweep closing 6 followups; #256 validate_edit_completion hook; #257 validate_workflow_paths_coverage hook; #261 Hook 14 NEUTRAL allowlist; #265 canonical hook-sync doc Phase 1; #266 promotion-audit STALE-OPT-OUT class. One ChangesRequested cycle on #250 resolved with additive commit (no force-push). Already at max. |
+| Wanjiku Mwangi (TPM) | 5 | 5 | 2 skill PRs closing W3 retro carry-forwards: #245 wave-kickoff multi-repo branches (closes #238), #249 wave-scope reconciliation (closes #196). Pattern B reviewer-class signal: ChangesRequested catch on #250 (caught canonicalization edge case; resolved cleanly via additive Reply). Reviewer on all 10 main# PRs. Already at max. |
+| Nadia Khoury (PD) | 4 | 4 | Reviewer-only this wave (no implement spawns). All approvals 1st-cycle Approved or single-reply chains. No level-changing positive/negative signal. No change. |
+| Santiago Ferreira (RC) | 5 | 5 | Reviewer on #266 only — wave theme was tooling, not deploy-class. Already at max. |
+
+### Child-Repo Teams — P3W4 Updates
+
+#### noorinalabs-isnad-graph team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Linh Pham (DevOps Eng) | 3 | **4** ↑ | First substantive shipper-class entry: isnad-graph#858 (`+370/-0`, validate_commit_identity cross-repo merge handling + strip ordering tests, closes #819 + #814). Test-discipline-class contribution at appropriate scope. 9/9 CI green, 4 charter-format comments, single-cycle Approved. |
+| Ingrid Lindqvist (Engineer) | — | **3** (new) | First contribution: isnad-graph#857 (`+1/-1` CLAUDE.md branching backslash → slash, closes #852). Trivial doc-sync; appropriate-scope first entry. 9/9 CI green. New entry at 3. |
+
+#### noorinalabs-user-service team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Mateo Salazar (Engineer) | 4 | 4 | user-service#94 (`+1/-1` CLAUDE.md slash sync, closes #90). Trivial doc-sync; not a level-changing signal. Hold at 4. |
+
+#### noorinalabs-design-system team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Kofi Mensah (Docs / Storybook Eng) | — | **3** (new) | First contribution: design-system#63 (`+1/-1` CLAUDE.md slash sync, closes #62). Trivial doc-sync; appropriate-scope first entry. 2/2 CI green. New entry at 3. |
+
+#### noorinalabs-data-acquisition team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Sofia Cardoso (Tech Writer) | — | **3** (new) | First contribution: data-acquisition#34 (`+1/-1` CLAUDE.md slash sync). Trivial doc-sync; appropriate-scope first entry. 4/4 CI green. New entry at 3. |
+
+### Done Well / Needs Improvement (Phase 3 Wave 4)
+
+| Member | Done Well | Needs Improvement |
+|--------|-----------|-------------------|
+| **Aino Virtanen** (SQL) | Theme-coherent 8-PR hook bug-class sweep; #248 shared parser closing 7 issues; #250 eliminated W3's wave-merge admin-override pattern in same wave it landed; 5400 LOC at 0 CI failures | None this wave. (Wave-concentration risk noted at the team level — 80% of main# from one engineer — but assessed against the engineer as theme-fitness, not negative signal.) |
+| **Wanjiku Mwangi** (TPM) | 2 skill PRs closing W3 retro carry-forwards; ChangesRequested catch on #250; reviewer on all 10 main# | None this wave. |
+| **Nadia Khoury** (PD) | Reviewer coverage on all 10 main# PRs; clean approvals | Not actively spawned for implement work this wave; reduced visibility on coordination-class output. |
+| **Santiago Ferreira** (RC) | Reviewer on #266 | Theme-misalignment — RC role is light when wave is tooling-only; no actionable improvement. |
+| **Linh Pham** (isnad-graph DevOps) | 370-line hook-test PR closing #819+#814; test-discipline at appropriate scope | None this wave. |
+| **Ingrid Lindqvist** (isnad-graph Eng) | First contribution executed cleanly | None this wave. |
+| **Mateo Salazar** (user-service Eng) | Same-day 1-line trivial sync | None this wave. |
+| **Kofi Mensah** (design-system Docs Eng) | First contribution executed cleanly | None this wave. |
+| **Sofia Cardoso** (data-acquisition Tech Writer) | First contribution executed cleanly | None this wave. |
+| **Orchestrator** | 14/14 PRs landed; 0 CI failures wave-wide; 0 admin overrides (down from 5/5 in W3); 3-of-3 W3 retro action items discharged in W4; promotion-audit ran end-to-end (deterministic 0/0/65/3/1) | Wave-concentration: 80% of main# from one engineer is fragile; W5 carry-forwards (#263, #264) MUST distribute across implementers. ingest-platform was in declared scope but produced 0 PRs — silent scope-drop with no de-scope decision recorded. 4 child-repo trivial doc-sync PRs ran as separate review pairs instead of bundled — overhead-heavy for byte-identical change. |
