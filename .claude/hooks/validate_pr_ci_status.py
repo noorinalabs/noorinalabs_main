@@ -5,6 +5,42 @@ Queries `gh pr view --json statusCheckRollup` and blocks merge when any
 required check has failed, been cancelled, timed out, or requires action.
 Pending checks block unless the user passes `--auto` (warn-but-allow).
 
+Input Language
+==============
+
+Fires on:      PreToolUse Bash
+Matches:       gh pr merge [{N}] [--repo {OWNER/REPO}] [--squash|--merge|--rebase]
+                           [--admin] [--auto] (chained via &&/||/|/; OK; leading
+                           env-var assignments stripped)
+Does NOT match: gh pr list, gh pr view, gh pr checks, gh pr create, gh pr edit,
+                git merge, git pull.
+Flag pass-through:
+    --repo  → forwarded to `gh pr view`
+    --admin → short-circuits (emergency override — allows merge)
+    --auto  → permits pending checks (GitHub auto-merge on green)
+
+NEUTRAL conclusion semantics (resolves #219)
+============================================
+
+GitHub's Checks API uses `NEUTRAL` to mean "the check has no opinion." For
+most checks this is correctly treated as a pass (e.g., a workflow that
+explicitly returns `neutral` because a precondition was not met). However,
+**Chromatic** (the dominant visual-regression service for Storybook-based
+component libraries) returns `NEUTRAL` on snapshots-pending-review — a state
+where the check is structurally not-finished even though GitHub's status
+field reports COMPLETED. Treating that as pass would let `gh pr merge`
+through while visual-regression review is still pending — defeating the
+gate's purpose.
+
+The `_NEUTRAL_PENDING_CHECK_NAMES` allowlist below names CheckRuns whose
+`NEUTRAL` conclusion is treated as **pending** instead of pass. Match is
+case-insensitive on the check's display name (per `check_name`). Any check
+not in the allowlist preserves the prior `NEUTRAL → pass` behavior.
+
+Add a new entry when a service uses `NEUTRAL` to mean "review pending"
+rather than "no opinion." Charter `pull-requests.md § CI Must Be Green`
+governs the rule; this allowlist is the operational mapping.
+
 Exit codes:
   0 — allow (not a merge command, --admin override, or all checks green)
   2 — block (failing or pending checks without --auto)
@@ -34,6 +70,18 @@ _PENDING_STATUSES = {"QUEUED", "IN_PROGRESS", "WAITING", "PENDING", "REQUESTED"}
 # Bucket values (GitHub check rollup) that map to pass/fail.
 _FAIL_BUCKETS = {"fail"}
 _PASS_BUCKETS = {"pass", "skipping"}
+
+# CheckRun names whose `NEUTRAL` conclusion is treated as PENDING, not PASS
+# (resolves #219). Match is case-insensitive on the check's display name.
+# Add entries here when a service uses NEUTRAL to mean "review pending"
+# rather than "no opinion." Currently:
+#
+#   chromatic — Visual-regression CI (Storybook snapshots). Returns NEUTRAL
+#               while snapshots are pending owner review; treating as pass
+#               lets visual changes merge un-reviewed.
+_NEUTRAL_PENDING_CHECK_NAMES = {
+    "chromatic",
+}
 
 
 def is_merge_command(command: str) -> bool:
@@ -93,7 +141,14 @@ def fetch_checks(pr_number: str | None, repo: str | None) -> list[dict] | None:
 
 
 def classify_check(check: dict) -> str:
-    """Return 'fail', 'pending', or 'pass' for a single check entry."""
+    """Return 'fail', 'pending', or 'pass' for a single check entry.
+
+    NEUTRAL conclusion handling (resolves #219): CheckRuns whose display
+    name is in `_NEUTRAL_PENDING_CHECK_NAMES` (case-insensitive) treat
+    NEUTRAL as 'pending' rather than 'pass'. All other checks preserve
+    the prior NEUTRAL → pass behavior. See module docstring for the
+    allowlist's rationale.
+    """
     bucket = (check.get("bucket") or "").lower()
     conclusion = (check.get("conclusion") or "").upper()
     status = (check.get("status") or check.get("state") or "").upper()
@@ -105,6 +160,9 @@ def classify_check(check: dict) -> str:
         # checks have status != COMPLETED.
         if status == "COMPLETED":
             return "pass"
+        return "pending"
+    # NEUTRAL allowlist: named CheckRuns treat NEUTRAL as pending (#219).
+    if conclusion == "NEUTRAL" and check_name(check).lower() in _NEUTRAL_PENDING_CHECK_NAMES:
         return "pending"
     if bucket in _PASS_BUCKETS or conclusion in {"SUCCESS", "NEUTRAL", "SKIPPED"}:
         return "pass"
