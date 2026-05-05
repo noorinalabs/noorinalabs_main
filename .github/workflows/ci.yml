@@ -5,12 +5,14 @@ on:
     branches: [main, "deployments/**"]
     paths:
       - ".claude/hooks/**"
+      - ".claude/skills/**"
       - ".github/workflows/ci.yml"
       - "pyproject.toml"
   pull_request:
     branches: [main, "deployments/**"]
     paths:
       - ".claude/hooks/**"
+      - ".claude/skills/**"
       - ".github/workflows/ci.yml"
       - "pyproject.toml"
 
