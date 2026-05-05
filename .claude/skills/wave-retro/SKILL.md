@@ -133,6 +133,34 @@ The audit appends its table to this retro's feedback_log entry **and** writes a 
 
 **Do NOT apply any charter changes without explicit user approval.** The user decides which proposals to adopt, modify, or reject.
 
+### 9. Reconcile next-wave scope (`/wave-scope`) — added P3W5 #273
+
+Carry-forward and memory-must-include state is freshest immediately after retro, so this is the highest-value moment to run `/wave-scope`. Auto-invoke if the next-wave meta-issue exists; otherwise surface as a kickoff blocker.
+
+```bash
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+NEXT_WAVE=$(({M} + 1))
+NEXT_META_ISSUE=$(gh issue list --repo noorinalabs/noorinalabs-main \
+    --search "Phase {N} Wave $NEXT_WAVE in:title" \
+    --json number,title --jq '.[0].number')
+
+if [ -z "$NEXT_META_ISSUE" ] || [ "$NEXT_META_ISSUE" = "null" ]; then
+  echo "BLOCKER for /wave-kickoff p{N} w$NEXT_WAVE:"
+  echo "  Next-wave meta-issue not yet drafted. Create the meta-issue, then run /wave-scope {N} $NEXT_WAVE before /wave-kickoff."
+else
+  echo "Auto-invoking /wave-scope {N} $NEXT_WAVE (next-wave meta-issue: noorinalabs-main#$NEXT_META_ISSUE)"
+  # Invoke the skill — it will write wave_${NEXT_WAVE}_scope_reconciled_at to cross-repo-status.json on success.
+fi
+```
+
+Then invoke the `/wave-scope` skill with the next phase + wave numbers. The skill is responsible for:
+- Reading carry-forward (just-written by step 6) and memory must-includes
+- Reconciling declared (meta-issue) vs labeled scope across all repos
+- Refreshing the next-wave meta-issue body
+- Writing `wave_$NEXT_WAVE_scope_reconciled_at` so `/wave-kickoff` Step 0a passes
+
+This step closes the retro→kickoff handoff loop: every retro produces a reconciled next-wave scope, and every kickoff verifies it. If the meta-issue doesn't exist yet (early-stage phase planning), surface explicitly so the gap is owned before the next kickoff.
+
 ## What remains manual
 
 - User must approve all charter changes before they are applied

@@ -10,6 +10,32 @@ Automate the wave kickoff process for the `{team_name}` team.
 
 ## Instructions
 
+### 0a. Verify next-wave scope is reconciled (Mandatory precondition — added P3W5 #273)
+
+`cross-repo-status.json` MUST carry a `wave_{M}_scope_reconciled_at` ISO timestamp written by `/wave-scope {P} {M}`, and that timestamp MUST post-date the previous wave's retro completion timestamp. If absent or stale, STOP and require the user to run `/wave-scope {P} {M}` first.
+
+```bash
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+SCOPE_TS=$(jq -r '.wave_{M}_scope_reconciled_at // empty' "$REPO_ROOT/cross-repo-status.json")
+PRIOR_RETRO_TS=$(jq -r '.wave_$(({M} - 1))_retro_completed_at // .wave_$(({M} - 1))_completed_at // empty' "$REPO_ROOT/cross-repo-status.json")
+
+if [ -z "$SCOPE_TS" ]; then
+  echo "ERROR: wave_{M}_scope_reconciled_at missing in cross-repo-status.json."
+  echo "  Run /wave-scope {P} {M} before /wave-kickoff."
+  exit 1
+fi
+
+if [ -n "$PRIOR_RETRO_TS" ] && [ "$SCOPE_TS" \< "$PRIOR_RETRO_TS" ]; then
+  echo "ERROR: wave_{M}_scope_reconciled_at ($SCOPE_TS) predates last retro ($PRIOR_RETRO_TS)."
+  echo "  Re-run /wave-scope {P} {M} so the reconciliation reflects the current carry-forward + memory-must-include state."
+  exit 1
+fi
+
+echo "  Scope reconciled at: $SCOPE_TS (post-dates last retro: $PRIOR_RETRO_TS)"
+```
+
+This check is a deterministic JSON read — no GitHub API calls, no side effects. It catches the off-path case where `/wave-kickoff` is invoked without a recent `/wave-scope` (drift signal: meta-issue out of sync with labels). The common path is covered by `/wave-retro` Step 9, which auto-invokes `/wave-scope {P} {M+1}` at end-of-wave.
+
 ### 0. Derive wave repos in scope (Mandatory first step)
 
 The canonical source for the wave's repo list is `cross-repo-status.json` key `wave_{M}_repos_in_scope` (array of `noorinalabs-*` strings). All subsequent steps iterate this list.

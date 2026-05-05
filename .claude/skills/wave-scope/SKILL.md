@@ -298,6 +298,31 @@ Do NOT delete the original body — copy it (or post the pre-update version as a
 
 If any step surfaced a process gap (stale memory, missing meta-issue, vague reference), include a `**Process gaps surfaced**` section so the next retro can address them.
 
+### 13. Write reconciliation timestamp to `cross-repo-status.json` (added P3W5 #273)
+
+This is what `/wave-kickoff` Step 0a reads to confirm the wave's scope was reconciled before kickoff. Write only on full success — if the run aborted at step 7 (no dispositions) or step 10 (label-churn confirmation declined), do NOT write.
+
+```bash
+TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+NOTE_ARGS=()
+if [ -n "${SCOPE_RECONCILIATION_NOTE:-}" ]; then
+  NOTE_ARGS+=(--arg note "$SCOPE_RECONCILIATION_NOTE")
+fi
+
+jq --arg ts "$TS" "${NOTE_ARGS[@]}" \
+   '.wave_{M}_scope_reconciled_at = $ts
+    | (if $ENV.SCOPE_RECONCILIATION_NOTE then .wave_{M}_scope_reconciliation_note = $note else . end)' \
+   "$REPO_ROOT/cross-repo-status.json" \
+   > "$REPO_ROOT/cross-repo-status.json.tmp" \
+   && mv "$REPO_ROOT/cross-repo-status.json.tmp" "$REPO_ROOT/cross-repo-status.json"
+
+echo "  wave_{M}_scope_reconciled_at = $TS written to cross-repo-status.json"
+```
+
+The optional `wave_{M}_scope_reconciliation_note` is for capturing edge cases (e.g., "no drift; no memory must-includes; manual run because skill not yet built"). Set `SCOPE_RECONCILIATION_NOTE` in the environment before invoking the jq command if there is a non-trivial summary worth preserving for the next retro.
+
+The companion read-side check is `/wave-kickoff` SKILL.md § 0a — it stops kickoff if this timestamp is missing or predates the prior wave's retro.
+
 ## Relationship to other wave skills
 
 | Skill | Timing | Output |
