@@ -40,6 +40,7 @@ _BASH_HOOKS = [
     "validate_pr_review",
     "validate_pr_ci_status",
     "validate_branch_freshness",
+    "validate_workflow_paths_coverage",
     "validate_vps_host",
     "warn_ghcr_image",
 ]
