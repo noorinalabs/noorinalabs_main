@@ -1688,3 +1688,114 @@ No memory crossed `retro_citations >= threshold` AND `promotion_target != none`.
 | D — message-ordering-race | Architecture | n/a | tracked main#241 |
 | E — process collapse under fire | Orchestrator-class | 0 (no emergency) | 1 historical |
 | F — orchestrator-class pre-flight gap | Orchestrator-class | 0 (W3 fixes held under W4 conditions) | 6 historical, **closed by #245 + #249** |
+
+## Retrospective: Phase 3 Wave 5 — Multi-Repo Fan-Out + Memory Classification + Skill Self-Improvement (2026-05-05 → 2026-05-06)
+
+### Wave shape
+
+| Metric | Value |
+|---|---|
+| Duration | **~2.2h** (kickoff 2026-05-05T22:30Z → final wave-merge 2026-05-06T00:41:23Z) — fastest wave to date |
+| Repos in scope | 8 declared (main + all 7 child repos) — **8 produced PRs** (zero-PR-repos: 0) |
+| PRs merged into wave branches | **11** (main: 4; isnad-graph: 1; user-service: 1; design-system: 1; data-acquisition: 1; ingest-platform: 1; deploy: 1; landing-page: 1) |
+| CI failures across all 11 PRs | **0** |
+| Admin overrides at wave-merge | **0** (2nd consecutive zero-override wave: W3=5/5 → W4=0 → W5=0) |
+| ChangesRequested cycles | 4 observable (main#276: 2 [Wanjiku+Nadia]; isnad-graph#861: 2 [Anya+Arjun]) — `cross-repo-status.json` counter says 6, discrepancy noted in pain points |
+| Top-implementer concentration | **3 / 11 = 27%** (Aino) — well below the 40% kickoff cap and the 60% retro-flag threshold; **down from W4's 80%** (W4 retro action item #2 fully discharged) |
+| Issues closed in wave | 11 declared (main#267, #273, #269, #271; isnad-graph#860; user-service#95; design-system#65; data-acquisition#36; ingest-platform#14; deploy#270; landing-page#78) |
+| W4 retro action items shipped IN-wave | 4/4 (charter changes via #279; distribute fan-out via 7 different child-repo implementers; resolve ingest-platform silent-drop via #26; classify memory frontmatter via #277) |
+| Carry-forward to W6 | 5 (main#278, isnad-graph#862, design-system#67, data-acquisition#38, landing-page#77) |
+
+### Per-engineer assessments
+
+#### Org-level team
+
+**Aino Virtanen** (SQL) — 3 main# PRs across 3 distinct surfaces. #275 (`+2/-0` ci.yml paths filter for `.claude/skills/**`, closes #267) — minimal-correct scope on a CI gate. #276 (`+217/-0` thread `/wave-scope` into `/wave-retro` Step 9 + `/wave-kickoff` Step 0a + `/wave-scope` Step 13 timestamp write, closes #273) — both reviewers (Wanjiku, Nadia) ChangesRequested independently; resolved cleanly via additive Reply commits + Approved cycle. #277 (`+725/-0` systematic frontmatter classification of all 36 feedback memories, closes #269) — load-bearing memory-system work that flips next `/promotion-audit` from `0 AUTO / 0 DECIDE` to a 5-AUTO surface. Concentration **27%** vs W4 80% — exact W4-retro-action-#2 outcome. Severity: **none**. Trust 5→5 (already max).
+
+**Wanjiku Mwangi** (TPM) — #279 charter cross-reference paragraphs (`+4/-0`, closes #271) — completed the W4-retro followup Aino flagged on PR #270. Pattern B reviewer-class catch on #276 (independent ChangesRequested catch alongside Nadia, both resolved via additive Reply chain). Reviewer on all 4 main# PRs. Severity: **none**. Trust 5→5 (already max).
+
+**Nadia Khoury** (PD) — Reviewer on all 4 main# PRs. Pattern B catch on #276 alongside Wanjiku (independent ChangesRequested signal). No implement-class spawn this wave. Severity: **none**. Trust 4→4 (level pinned at 4 by reviewer-only profile across W3+W4+W5).
+
+**Santiago Ferreira** (RC) — No deploy-class work routed; theme was multi-repo fan-out + memory + skills. Severity: **none**. Trust 5→5 (already max).
+
+#### Child-repo teams
+
+**Linh Pham** (isnad-graph DevOps) — isnad-graph#861 (`+37/-1173` canonical hook-paths migration). 1 ChangesRequested cycle (Anya + Arjun both CR'd; resolved via Reply chain + Approved). 9/9 CI green. Severity: **none**. Trust 4→4.
+
+**Mateo Salazar** (user-service Eng) — user-service#96 (`+152/-449` canonical hook-paths migration — settings.json + delete copy-resident hooks). 0 CR cycles, 1/1 CI green. Approved by Anya + Idris. Step-up from W4's 1-line trivial sync. Severity: **none**. Trust 4→4.
+
+**Kofi Mensah** (design-system Docs Eng) — design-system#66 (`0/-273` chore: remove copy-resident orphan hook files, closes #65). 0 CR, 2/2 CI. Approved by Maeve + Keanu. Severity: **none**. Trust 3→**4** ↑.
+
+**Tarek Mansour** (data-acquisition Eng, NEW) — data-acquisition#37 (`0/-273` drop copy-resident hook remnants, closes #36). 0 CR, 4/4 CI. Approved by Dilara + Alejandra. **Implementer-substitution from declared scope** (Sofia Cardoso was kickoff-declared T1A #263 implementer for this repo) — no recorded swap rationale anywhere; surfaces a process gap discussed below. Severity: **none** (engineer-class clean execution). New entry at **3**.
+
+**Yusuke Inoue** (ingest-platform Eng, Principal, NEW) — ingest-platform#26 (`+12/-9` drop Dockerfile workaround, install via uv export+pip from authoritative lock, closes #14). 0 CR cycles. Approved by Adaeze + Bjorn. Closes a long-deferred workaround AND resolves W4's silent-scope-drop pattern by being the active implementer for ingest-platform's first real wave-cycle deliverable. Severity: **none**. New entry at **4**.
+
+**Lucas Ferreira** (deploy SRE) — deploy#271 (`0/-781` canonical hook-paths migration). Largest deletion in wave. 0 CR cycles. Approved by Bereket + Aisha. Severity: **none**. Trust 5→5 (already max).
+
+**Kofi Mensah-Williams** (landing-page Eng) — landing-page#79 (`0/-273` chore: delete stale copy-resident `.py`, closes #78). 0 CR, 2/2 CI. Approved by Marcia + Nazia. Original P1 entry flagged "Some CI fixes needed post-PR"; this W5 PR clean from first push. Severity: **none**. Trust 3→**4** ↑.
+
+### Top 3 going well
+
+1. **Concentration discipline: 80% → 27% in one wave.** W4 retro action item #2 said "W5 planning MUST distribute #263 + #264 (Phase 2 child fan-outs) across multiple implementers — not all to Aino." W5 kickoff distributed the 7-child-repo fan-out across **7 different implementers** (one per child repo). Top-implementer concentration dropped from 80% to 27% — well below the 60% retro-flag threshold and the 40% kickoff cap. The wave-concentration metric (added to retro template in W4 #270) immediately produced a measurable behavior change at the next kickoff. Pattern: retro-surfaced metric + cap-bearing kickoff template = tractable single-wave correction.
+2. **All 4 W4-retro action items closed within W5.** (1) Charter changes (`Trivial Cross-Repo Doc Sweep`, `Scope-Drop Reconciliation`, `Wave-Concentration Metric`) shipped via PR #270. (2) Concentration distribution achieved. (3) ingest-platform silent-drop resolved via Yusuke's #26. (4) Memory-frontmatter classification shipped via Aino's #277. 4-for-4 W4→W5 carry-forward execution — second consecutive wave with 100% retro-action discharge (W4 was 3-for-3 W3 actions).
+3. **`/wave-scope` self-threading shipped in the wave that needed it.** #276 wired `/wave-scope` into both `/wave-retro` Step 9 (auto-invoke for next wave) and `/wave-kickoff` Step 0a (precondition check), with `/wave-scope` Step 13 writing the timestamp the kickoff reads. This is the same shape as W4's #250 (validate_pr_review canonicalization shipping in the wave that needed it to eliminate W3's admin-override pattern). Skill self-improvement landing in-wave is a recurring positive primitive worth tracking — proposing pattern-tally entry "Pattern G — in-wave skill self-improvement."
+
+### Top 3 pain points
+
+1. **Implementer-substitution in data-acquisition not recorded anywhere.** Kickoff (`wave_5_scope.tier_1A_263_distribution[data-acquisition].implementer`) declared **Sofia Cardoso**; the actual PR (data-acquisition#37) was authored by **Tarek Mansour** on branch `T.Mansour/0036-...` — no swap rationale in `cross-repo-status.json`, no comment in the meta-issue (#274), no decision in `wave_5_decisions`. This is the same shape as W4's ingest-platform silent-drop, just inverted: there it was silent-zero-PR; here it's silent-substitution. Both are scope-drift with no audit trail. Sofia's W4 entry (NEW at 3) gave no signal of being unavailable — and her W5 trust isn't dinged because there's no evidence of failure-to-deliver (work was reassigned, but where, when, by whom is unrecorded).
+2. **CI rollup empty for 4 of 11 PRs (#277, #279, deploy#271, ingest-platform#26).** Aino's #275 (`paths` filter for `.claude/skills/**`) addressed the **main** repo's coverage gap, but: (a) #277 was memory-frontmatter changes — no `.claude/skills/**` touched, no `.py`, no `.yml` — so no workflow triggered; (b) #279 was charter docs only; (c) deploy#271 was settings.json + hook deletes in the deploy repo, which has its own CI scope filters; (d) ingest-platform#26 was Dockerfile + uv lockfile changes in ingest-platform, same per-repo scope question. Per-repo CI scope-coverage is a separate gap from the main-repo fix; #275 didn't claim to address it. Worth surfacing as W6 candidate.
+3. **`cross-repo-status.json` counter drift.** `wave_5_changes_requested_cycles: 6` was written at wrapup time, but PR-level evidence shows only **4** distinct ChangesRequested signals (main#276: Wanjiku + Nadia = 2; isnad-graph#861: Anya + Arjun = 2). Same-class drift as W4's `wave_4_top_concentration_pct: 22` claim (vs the actual 80% I recomputed at retro). The status file is being written at wrapup but the math isn't being re-verified at retro. Proposing a `verify_status_counters` pass as a Step 2.5 in `/wave-retro`.
+
+### Proposed process changes
+
+1. **Implementer-substitution recording: extend `/wave-wrapup` to compare declared-vs-actual implementer per PR.** Rationale: W4 silent-drop (zero-PR variant) was caught by the W4 retro proposal (Scope-Drop Reconciliation, now in `/wave-wrapup` per #270). W5 surfaced the inverted variant (silent-substitution) which the new check doesn't cover. For each PR merged into the wave branch, compare `gh pr view --json author` against the kickoff-declared implementer; if mismatched, require an entry in `wave_N_decisions.implementer_substitutions` with timestamp + rationale before wrapup-close. Same-class fix as W4's, just covers the inverted case.
+
+2. **Status-counter verification in `/wave-retro` Step 2.5.** Rationale: `wave_5_changes_requested_cycles: 6` (claimed) vs 4 (observable) drift — alongside W4's `wave_4_top_concentration_pct: 22` (claimed) vs 80% (observable). The pattern is wrapup-time arithmetic that nobody reverifies. Add a quick recomputation pass in `/wave-retro`: pull `wave_N_*` numeric counters from `cross-repo-status.json`, recompute from PR data, surface drift as a retro-blocker (or auto-correct + log the correction).
+
+3. **Pattern-tally entry: "Pattern G — in-wave skill self-improvement."** Rationale: W4's #250 (validate_pr_review canonicalization shipping in the same wave that needed it to eliminate W3's admin-override pattern) and W5's #276 (`/wave-scope` self-threading shipping in the same wave that proposed it) are the same primitive: skill/hook fixes landing in-wave rather than carry-forwards. Worth tracking explicitly in the running pattern tally — frequency tells us when the team has crossed into "self-improving" cadence.
+
+### Charter changes proposed (NOT auto-applied — require user approval)
+
+1. **`.claude/skills/wave-wrapup/SKILL.md` — § Implementer-Substitution Reconciliation** — for each PR merged into wave branch, compare `gh pr view --json author` against `wave_N_scope.tier_*[].implementer`; require recorded swap rationale if mismatched.
+2. **`.claude/skills/wave-retro/SKILL.md` — § Step 2.5: Status-Counter Verification** — recompute `wave_N_*` numeric counters from PR data, surface drift before proceeding to per-engineer assessments.
+3. **`.claude/skills/wave-retro/SKILL.md` — pattern-tally template addition** — Pattern G — in-wave skill self-improvement.
+
+### Promotion audit (deterministic — see `.claude/team/promotion_audit_log/wave-5.md`)
+
+```
+Promotion audit wave-5: 5 AUTO · 0 DECIDE · 52 KEPT · 11 SUPERSEDED · 1 ALREADY-PROMOTED
+```
+
+**Delta vs W4 (`0 / 0 / 65 / 3 / 1`):** AUTO went 0 → **5** because PR #277 (P3W5 T2) classified all 36 feedback memories with `promotion_target` frontmatter — this is the audit run that surfaces the result. SUPERSEDED went 3 → 11 for the same reason (8 new `enforced-elsewhere` markers landed via #277). KEPT correspondingly dropped 65 → 52.
+
+**5 AUTO candidates (memory → charter):**
+
+| Memory | Citations | Proposed charter target |
+|---|---|---|
+| `feedback_canonical_source_via_git_show.md` | 4 | `charter/git-discipline.md` § canonical-source-via-git-show |
+| `feedback_child_repo_implementer_rule.md` | 4 | `charter/agents.md` § child-repo-implementer-rule |
+| `feedback_honest_audit_over_conclusion_claim.md` | 4 | `charter/wave-wrapup.md` § honest-audit-discipline |
+| `feedback_review_against_artifact_not_framing.md` | 4 | `charter/pull-requests.md` § review-against-artifact |
+| `feedback_security_guard_inline_not_followup.md` | 4 | `charter/pull-requests.md` § security-guard-inline |
+
+These do NOT auto-apply within this retro PR (per skill: "Do NOT apply any charter changes without explicit user approval"). The owner decides whether to (a) generate the 5 charter sections in a separate Aino-authored PR now, or (b) defer to W6. See retro summary in conversation for the ask.
+
+### Action items
+
+1. Apply approved charter changes (this PR if user approves).
+2. W6 planning MUST address the data-acquisition implementer-substitution: record retro-resolved swap (Sofia → Tarek) in `wave_5_decisions` post-hoc, OR assign Sofia a W6 role with explicit wave-availability confirmation at kickoff.
+3. W6 planning MUST address per-repo CI scope-coverage (4 PRs with `CheckRollup: 0` this wave) — file follow-up issue(s) per repo for `.claude/hooks/**` + `settings.json` paths in each child repo's CI workflow filters.
+4. W6 promotion-audit will surface the 5 AUTO candidates predicted by #277's classification — Aino (or whoever owns charter at the time) will need to draft the auto-generated charter sections for those 5 memories.
+5. W4-retro carry-forward main#278 (wave-scope JSON-write idempotency / churn budget) carries to W6 unchanged.
+
+### Pattern tally (running)
+
+| Pattern | Class | This wave | Cumulative |
+|---|---|---|---|
+| A — design-rationale block | Implementer | 1 (Aino #276 PR body design rationale for "Hook deliberately omitted this round" decision) | 10 |
+| B unified — verify-vs-artifact | Implementer + reviewer | 2 (Wanjiku + Nadia independent ChangesRequested catches on #276 wave-scope edge case) | promotion-threshold met by tally; awaiting next `/promotion-audit` post-#277 |
+| C — claim-state-staleness | Manager-class amplifier | 0 | reverted, held |
+| D — message-ordering-race | Architecture | n/a | tracked main#241 |
+| E — process collapse under fire | Orchestrator-class | 0 (no emergency) | 1 historical |
+| F — orchestrator-class pre-flight gap | Orchestrator-class | 0 | 6 historical, **closed by #245 + #249** |
+| **G — in-wave skill self-improvement** (NEW) | Skill/Hook author | 1 (Aino #276 `/wave-scope` self-threading shipped in wave that proposed it) | **2** (W4 #250 validate_pr_review canonicalization + W5 #276 `/wave-scope` threading) |

@@ -116,16 +116,16 @@
       "tracked_at": "2026-04-23T03:07:42.694189+00:00"
     },
     ".claude/skills/wave-retro/SKILL.md": {
-      "last_resolved": "4cb181da87445574175c9aeb268376114faa3b821ad833a0d80df1aab1b431bd",
-      "last_tracked": "4cb181da87445574175c9aeb268376114faa3b821ad833a0d80df1aab1b431bd",
-      "resolved_at": "2026-04-17T02:56:03.855330+00:00",
-      "tracked_at": "2026-04-17T02:53:10.158033+00:00"
+      "last_tracked": "7f0eb66cbefbae94a4b9276ae901dbbb217435ab9765500b5d10b79801730e4b",
+      "last_resolved": "7f0eb66cbefbae94a4b9276ae901dbbb217435ab9765500b5d10b79801730e4b",
+      "tracked_at": "2026-05-06T01:04:58.032514+00:00",
+      "resolved_at": "2026-05-06T01:07:41.670330+00:00"
     },
     ".claude/skills/wave-wrapup/SKILL.md": {
-      "last_resolved": "942ee78e1af0066f6aac71bdcca00793808f6c3f9a04ab729ba0f8cc6ab5e4de",
-      "last_tracked": "942ee78e1af0066f6aac71bdcca00793808f6c3f9a04ab729ba0f8cc6ab5e4de",
-      "resolved_at": "2026-04-11T16:26:02.575946+00:00",
-      "tracked_at": "2026-04-11T16:16:53.008874+00:00"
+      "last_tracked": "0e0967ef3fe793da97ecfbac88e528689e88840d3ce4cc3a5b9999071bfb4945",
+      "last_resolved": "0e0967ef3fe793da97ecfbac88e528689e88840d3ce4cc3a5b9999071bfb4945",
+      "tracked_at": "2026-05-06T01:04:29.514039+00:00",
+      "resolved_at": "2026-05-06T01:07:41.670330+00:00"
     },
     ".claude/team/charter.md": {
       "last_tracked": "a572ba52385b8ed797904abd53b9b35a5f0ffb80f7288193270db7408e53f848",
@@ -164,10 +164,10 @@
       "tracked_at": "2026-04-22T23:02:59.573817+00:00"
     },
     ".claude/team/feedback_log.md": {
-      "last_resolved": "53a38a78680373a6668c7d29e7057c9151bf1ba516d881e0447944be7cbf8cf8",
-      "last_tracked": "53a38a78680373a6668c7d29e7057c9151bf1ba516d881e0447944be7cbf8cf8",
-      "resolved_at": "2026-04-17T02:56:03.855330+00:00",
-      "tracked_at": "2026-04-17T02:55:49.813670+00:00"
+      "last_tracked": "bfec458da44732e6fbcddfb0ba042b3448e68be5e9544a2fb447d1342f9af704",
+      "last_resolved": "bfec458da44732e6fbcddfb0ba042b3448e68be5e9544a2fb447d1342f9af704",
+      "tracked_at": "2026-05-06T00:58:59.181870+00:00",
+      "resolved_at": "2026-05-06T00:59:20.040752+00:00"
     },
     ".gitignore": {
       "last_resolved": "485dc652a170747795b28d630c593c7c263ef6426b814a325fbb92c407ceea0f",
@@ -200,10 +200,10 @@
       "tracked_at": "2026-04-16T21:36:05.052302+00:00"
     },
     "cross-repo-status.json": {
-      "last_tracked": "f4076e82e881364da9c9c167bcc21acb6c314962c742ce65fe9c622432b34c5b",
-      "last_resolved": "777badd0013b60c9bd302e947d4ca0d63372d08a8f03acd539df78a192763c9a",
-      "tracked_at": "2026-05-05T21:54:42.989705+00:00",
-      "resolved_at": "2026-05-04T02:51:53.699155Z"
+      "last_tracked": "7b955ebee85480b62c226122521f664af7cfdf053fd9eb35d62b8e4ea989d772",
+      "last_resolved": "7b955ebee85480b62c226122521f664af7cfdf053fd9eb35d62b8e4ea989d772",
+      "tracked_at": "2026-05-06T00:42:53.818666+00:00",
+      "resolved_at": "2026-05-06T00:49:39.816328+00:00"
     },
     "dependencies.yml": {
       "last_resolved": "f4b53ffd3e1f81e055130ae2f53ff08ba9b5f651782434bbf3ac8b3eab4276e8",
@@ -645,9 +645,21 @@
     },
     ".claude/team/promotion_audit_log/wave-4.md": {
       "last_tracked": "1bfd9875b711b475c4b25d26eb79895346777f36024816efac64be444273c33b",
-      "last_resolved": "",
+      "last_resolved": "1bfd9875b711b475c4b25d26eb79895346777f36024816efac64be444273c33b",
       "tracked_at": "2026-05-05T21:54:00.789969+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-05-06T00:49:39.816328+00:00"
+    },
+    ".claude/team/trust_matrix.md": {
+      "last_tracked": "1351fe43a7eee95c09ed866e99a4e343b9ce420edad57a20365835fb4cddf1bb",
+      "last_resolved": "1351fe43a7eee95c09ed866e99a4e343b9ce420edad57a20365835fb4cddf1bb",
+      "tracked_at": "2026-05-06T00:55:23.211891+00:00",
+      "resolved_at": "2026-05-06T00:59:20.040752+00:00"
+    },
+    ".claude/team/promotion_audit_log/wave-5.md": {
+      "last_tracked": "85263be2a3a83a8d84e4334aac290bed766cc5a2b08e238ffbc5b26563791002",
+      "last_resolved": "85263be2a3a83a8d84e4334aac290bed766cc5a2b08e238ffbc5b26563791002",
+      "tracked_at": "2026-05-06T00:59:20.040752+00:00",
+      "resolved_at": "2026-05-06T00:59:20.040752+00:00"
     }
   },
   "last_cleanup": {

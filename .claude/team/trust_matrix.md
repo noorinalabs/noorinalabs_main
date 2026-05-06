@@ -585,3 +585,78 @@ The org was restructured in Session 3 with new repo-level teams. The matrix abov
 | **Kofi Mensah** (design-system Docs Eng) | First contribution executed cleanly | None this wave. |
 | **Sofia Cardoso** (data-acquisition Tech Writer) | First contribution executed cleanly | None this wave. |
 | **Orchestrator** | 14/14 PRs landed; 0 CI failures wave-wide; 0 admin overrides (down from 5/5 in W3); 3-of-3 W3 retro action items discharged in W4; promotion-audit ran end-to-end (deterministic 0/0/65/3/1) | Wave-concentration: 80% of main# from one engineer is fragile; W5 carry-forwards (#263, #264) MUST distribute across implementers. ingest-platform was in declared scope but produced 0 PRs — silent scope-drop with no de-scope decision recorded. 4 child-repo trivial doc-sync PRs ran as separate review pairs instead of bundled — overhead-heavy for byte-identical change. |
+
+---
+
+## Phase 3 Wave 5 Trust Updates (2026-05-06) — Multi-Repo Fan-Out + Memory Classification + Skill Self-Improvement
+
+### Org-Level Team (noorinalabs-main)
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Aino Virtanen (SQL) | 5 | 5 | 3 main# PRs, all clean. #275 (`+2/-0` ci.yml paths filter for `.claude/skills/**`, closes #267) — minimal scope, exactly the right size for a CI gate fix. #276 (`+217/-0` thread `/wave-scope` into `/wave-retro` Step 9 + `/wave-kickoff` Step 0a + `/wave-scope` Step 13 timestamp write, closes #273) — both reviewers ChangesRequested, resolved via additive Reply commits + clean Approved cycle. #277 (`+725/-0` systematic frontmatter classification of 36 feedback memories, closes #269) — load-bearing memory-system work that flips the next `/promotion-audit` from `0 AUTO / 0 DECIDE` to a real surface. Concentration dropped to **27%** (3/11) from W4's 80% — W4 retro action item #2 (distribute fan-out) achieved. Already at max. |
+| Wanjiku Mwangi (TPM) | 5 | 5 | #279 (`+4/-0` charter Single-Reviewer Exception cross-reference paragraphs, closes #271) — completed the W4-retro followup Aino flagged on PR #270. Pattern B reviewer-class catch on #276 (ChangesRequested on wave-scope edge case alongside Nadia, both resolved via additive Reply). Reviewer on all 4 main# PRs. Already at max. |
+| Nadia Khoury (PD) | 4 | 4 | Reviewer on all 4 main# PRs. Pattern B catch on #276 alongside Wanjiku (independent ChangesRequested, both with additive-resolution Approved cycle). No implement-class spawn this wave; coordination-class signal is reviewer-only. No change. |
+| Santiago Ferreira (RC) | 5 | 5 | Theme was multi-repo fan-out + memory + skills — no deploy-class work routed to RC. Already at max. |
+
+### Child-Repo Teams — P3W5 Updates
+
+#### noorinalabs-isnad-graph team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Linh Pham (DevOps Eng) | 4 | 4 | isnad-graph#861 (`+37/-1173` canonical hook-paths migration — delete copies + rewrite settings.json). 1 ChangesRequested cycle (Anya + Arjun both CR'd; resolved via Reply chain + Approved). 9/9 CI green, 9 charter-format comments. Substantive cross-repo fan-out execution at appropriate scope. Hold at 4 — clean execution, no level-changing signal. |
+
+#### noorinalabs-user-service team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Mateo Salazar (Engineer) | 4 | 4 | user-service#96 (`+152/-449` canonical hook-paths migration — rewrite settings.json + delete copy-resident hooks). 0 CR cycles. 1/1 CI green. Approved by Anya Kowalczyk + Idris Yusuf. Step up in scope from W4's 1-line trivial sync; clean execution. Hold at 4. |
+
+#### noorinalabs-design-system team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Kofi Mensah (Docs / Storybook Eng) | 3 | **4** ↑ | Second contribution at substantive scope: design-system#66 (`0/-273` chore: remove copy-resident orphan hook files, closes #65). 0 CR cycles. 2/2 CI green. Approved by Maeve Callahan + Keanu Tama. Promotion to 4 reflects clean execution at meaningful scope (273-line delete is materially larger than W4's 1-line entry). |
+
+#### noorinalabs-data-acquisition team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Tarek Mansour (Engineer) | — | **3** (new) | First wave-PR entry: data-acquisition#37 (`0/-273` drop copy-resident hook remnants — parent-canonical sweep, closes #36). 0 CR cycles. 4/4 CI green. Approved by Dilara Erdogan + Alejandra Reyes-Fuentes. Implementer-substitution from declared scope (Sofia Cardoso was the kickoff-declared implementer for T1A #263 in this repo — see § Done Well / Needs Improvement and feedback log Pain Point #2). New entry at 3 — appropriate-scope first wave PR, clean execution. |
+| Sofia Cardoso (Tech Writer) | 3 | 3 | No PR this wave; declared T1A #263 implementer position handed off to Tarek Mansour with no recorded swap rationale. Not a negative signal against Sofia (no failure to deliver — work was reassigned). Hold at 3. |
+
+#### noorinalabs-isnad-ingest-platform team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Yusuke Inoue (Engineer, Principal) | — | **4** (new) | First substantive PR entry: ingest-platform#26 (`+12/-9` drop Dockerfile workaround, install via uv export+pip from authoritative lock, closes #14). 0 CR cycles. Approved by Adaeze + Bjorn. Closes a long-deferred Dockerfile-workaround issue and resolves W4's silent-scope-drop pattern by being the active implementer for ingest-platform's first real wave-cycle deliverable. New entry at 4 — Principal-level scope on a previously-deferred load-bearing fix. |
+
+#### noorinalabs-deploy team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Lucas Ferreira (SRE) | 5 | 5 | deploy#271 (`0/-781` canonical hook-paths migration — delete copies + rewrite settings.json). Largest deletion in wave (781 lines). 0 CR cycles. Approved by Bereket Tadesse + Aisha Idrissi. Clean execution on the largest fan-out target. Already at max. |
+
+#### noorinalabs-landing-page team
+
+| Rated | Old | New | Reason |
+|-------|-----|-----|--------|
+| Kofi Mensah-Williams (Engineer) | 3 | **4** ↑ | landing-page#79 (`0/-273` chore: delete stale copy-resident `.py` — adopt parent-canonical pattern, closes #78). 0 CR cycles. 2/2 CI green. Approved by Marcia Vasquez-Paredes + Nazia Rahman. Original P1 entry flagged "Some CI fixes needed post-PR"; this W5 PR was clean from first push. Promote to 4 — execution discipline corrected. |
+
+### Done Well / Needs Improvement (Phase 3 Wave 5)
+
+| Member | Done Well | Needs Improvement |
+|--------|-----------|-------------------|
+| **Aino Virtanen** (SQL) | 3 main# PRs across 3 distinct surfaces (CI, skill-threading, memory-classification) at concentration that dropped from W4's 80% to **27%**; #277 sets up the next promotion-audit AUTO surface (5 candidates were 0 pre-#277); clean additive-Reply discipline on #276 ChangesRequested cycle | None this wave. |
+| **Wanjiku Mwangi** (TPM) | Pattern B reviewer-class catch on #276 (independent of Nadia); cleared W4-retro followup #271 same-wave | None this wave. |
+| **Nadia Khoury** (PD) | Reviewer on all 4 main# PRs; Pattern B catch on #276 | Still no implement-class spawn this wave; level pinned at 4 by reviewer-only profile across W3+W4+W5. |
+| **Santiago Ferreira** (RC) | Theme-misalignment — RC role is light when wave is non-deploy | No actionable improvement; theme-routed wave shape. |
+| **Linh Pham** (isnad-graph DevOps) | Substantive +37/-1173 fan-out; resolved 2 reviewer ChangesRequested cycles cleanly | None this wave. |
+| **Mateo Salazar** (user-service Eng) | Step-up scope (+152/-449) executed cleanly, 0 CR | None this wave. |
+| **Kofi Mensah** (design-system Docs Eng) | Second contribution at substantive scope (273-line delete), 0 CR | None this wave. |
+| **Tarek Mansour** (data-acquisition Eng) | First wave PR (273-line delete) clean, 4/4 CI | Implementer-substitution from declared scope (replaced Sofia Cardoso) is not recorded anywhere — process gap, not engineer-class failure (see Pain Point #2 + Proposed Process Change #1). |
+| **Yusuke Inoue** (ingest-platform Eng, Principal) | First substantive PR closes load-bearing long-deferred #14; resolves W4 silent-scope-drop pattern | None this wave. |
+| **Lucas Ferreira** (deploy SRE) | Largest deletion in wave (-781 LOC) clean, 0 CR | None this wave. |
+| **Kofi Mensah-Williams** (landing-page Eng) | Clean PR (273-line delete), 2/2 CI — corrects P1 "CI fixes needed" pattern | None this wave. |
+| **Orchestrator** | 11/11 PRs landed; 0 CI failures (where CI ran); 0 admin overrides (2nd consecutive zero-override wave); concentration dropped 80%→27% — W4 retro action item #2 fully discharged; ingest-platform produced first real wave-PR (W4 retro action item #3 discharged); /wave-scope auto-threading shipped IN-wave (#276) and the W4-retro action items closed within the same wave they landed | (a) Implementer-substitution in data-acquisition (declared Sofia Cardoso → actual Tarek Mansour) not recorded anywhere — same shape as W4 ingest-platform silent-drop, just inverted (silent-substitution vs silent-drop). (b) `wave_5_changes_requested_cycles: 6` in cross-repo-status.json vs 4 observable from PR data (#276: 2, isnad-graph#861: 2) — counter discrepancy worth reconciling. (c) 4 of 11 PRs (#277, #279, deploy#271, ingest-platform#26) had `CheckRollup: 0` — #275 paths-filter fix only covers main; per-repo CI scope-coverage gap unaddressed. |
