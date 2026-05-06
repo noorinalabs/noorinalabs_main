@@ -134,10 +134,10 @@
       "resolved_at": "2026-05-03T16:59:38.573672+00:00"
     },
     ".claude/team/charter/agents.md": {
-      "last_resolved": "791f49adadd0065103aeb3b808252d2204b61c35b9ca2eb0cb4a5faf93757f89",
-      "last_tracked": "791f49adadd0065103aeb3b808252d2204b61c35b9ca2eb0cb4a5faf93757f89",
-      "resolved_at": "2026-04-23T23:34:47.340707+00:00",
-      "tracked_at": "2026-04-23T03:05:57.195189+00:00"
+      "last_tracked": "e01a0d773db423445cd7eb1a974c00663a325e14d285618beb85f0425e6a6059",
+      "last_resolved": "e01a0d773db423445cd7eb1a974c00663a325e14d285618beb85f0425e6a6059",
+      "tracked_at": "2026-05-06T01:09:30.045935+00:00",
+      "resolved_at": "2026-05-06T01:11:01.420649+00:00"
     },
     ".claude/team/charter/hooks.md": {
       "last_resolved": "518829629de66db1d14abc8d37c32703dfee4bd42ebeb3c651b7afe2946232c7",
@@ -152,16 +152,16 @@
       "tracked_at": "2026-04-23T03:27:45.739038+00:00"
     },
     ".claude/team/charter/pull-requests.md": {
-      "last_resolved": "f38d6f2f26158d2698aae1859d78738ce4f1ad0d015692f85ab2e1c326910d48",
-      "last_tracked": "f38d6f2f26158d2698aae1859d78738ce4f1ad0d015692f85ab2e1c326910d48",
-      "resolved_at": "2026-04-23T00:07:17.600045+00:00",
-      "tracked_at": "2026-04-22T23:02:38.307846+00:00"
+      "last_tracked": "df75d7e64166855e0f12591358e64d06a34c2d782db742caf15e857fff86b872",
+      "last_resolved": "df75d7e64166855e0f12591358e64d06a34c2d782db742caf15e857fff86b872",
+      "tracked_at": "2026-05-06T01:10:00.084070+00:00",
+      "resolved_at": "2026-05-06T01:11:01.420649+00:00"
     },
     ".claude/team/charter/skills.md": {
-      "last_resolved": "3d17f4b3d18d25767976007ec0d79884c5befa66bf9096c52a0c7b2ba9636078",
-      "last_tracked": "3d17f4b3d18d25767976007ec0d79884c5befa66bf9096c52a0c7b2ba9636078",
-      "resolved_at": "2026-04-23T00:07:17.600045+00:00",
-      "tracked_at": "2026-04-22T23:02:59.573817+00:00"
+      "last_tracked": "ebed0f2646c067c3f5fe4c5cd3d15504d51c2bc16a2b9bd9eed550bbfae5a598",
+      "last_resolved": "ebed0f2646c067c3f5fe4c5cd3d15504d51c2bc16a2b9bd9eed550bbfae5a598",
+      "tracked_at": "2026-05-06T01:08:14.927799+00:00",
+      "resolved_at": "2026-05-06T01:11:01.420649+00:00"
     },
     ".claude/team/feedback_log.md": {
       "last_tracked": "bfec458da44732e6fbcddfb0ba042b3448e68be5e9544a2fb447d1342f9af704",
@@ -660,6 +660,12 @@
       "last_resolved": "85263be2a3a83a8d84e4334aac290bed766cc5a2b08e238ffbc5b26563791002",
       "tracked_at": "2026-05-06T00:59:20.040752+00:00",
       "resolved_at": "2026-05-06T00:59:20.040752+00:00"
+    },
+    ".claude/team/charter/state-claims.md": {
+      "last_tracked": "0a27638d2ae460ef1730509b35a97b70cfb64498b5dba0b68897164b4a359f02",
+      "last_resolved": "0a27638d2ae460ef1730509b35a97b70cfb64498b5dba0b68897164b4a359f02",
+      "tracked_at": "2026-05-06T01:08:41.676774+00:00",
+      "resolved_at": "2026-05-06T01:11:01.420649+00:00"
     }
   },
   "last_cleanup": {

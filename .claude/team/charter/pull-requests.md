@@ -322,6 +322,8 @@ Minor — but recurrence is moderate. The discipline is high-leverage for incide
 
 Phase 3 Wave 1 produced 4 corroborating data points (above) where the design-rationale block earned positive reviewer engagement, surfaced design alternatives during review, and provided the canonical retro evidence later. Without it, gate-DAG correctness is invisible to anyone reading the PR after merge.
 
+<!-- Promoted from memory: feedback_review_against_artifact_not_framing.md (P3W5 retro 2026-05-06; reviewer-side). The implementer-side data points (#161, #206 Reality-post-#87) predate the dedicated memory and were the original founding examples; the memory codified the reviewer-side counterpart, which this section now incorporates. -->
+
 ## Trust the Artifact, Not the Framing (Mandatory) <!-- promotion-target: skill -->
 
 Both implementer and reviewer disciplines on the same axis: verify spec assumptions and PR-body framing against ground truth before action.
@@ -375,3 +377,47 @@ A sweep PR uses the same charter-format comments and TechDebt line as standard P
 **Why:** P3W4 ran 4 separate per-repo PRs for an identical 1-line CLAUDE.md slash sync (isnad-graph#857, user-service#94, design-system#63, data-acquisition#34) — 4 review pairs, 4 CI runs, ~12 charter-format comments for a no-decision change. The 2-reviewer requirement is load-bearing for behavior changes; for byte-identical doc sweeps, the verification value is concentrated at the parent tracking issue, not at each child PR.
 
 **Severity if violated:** Invoking the sweep exception on a non-byte-identical change, or skipping the tracking issue, is moderate (review-bypass for changes that needed standard review). The 2nd reviewer is the load-bearing safeguard against silent behavior change.
+
+<!-- Promoted from memory: feedback_security_guard_inline_not_followup.md (P3W5 retro 2026-05-06) -->
+
+## Security Guards Belong Inline, Not in a Followup (Mandatory) <!-- promotion-target: skill -->
+
+When reviewing a PR whose security model depends on a runtime guard — env check, scheme restriction (`{http,https}` whitelist), HTTPS-required-outside-test, startup assertion, URL rewriter, auth bypass flag — the guard MUST ship in the same PR. Filing a TechDebt followup issue is a legitimate review artifact (paper trail in case the guard ever regresses), but it is **not a substitute** for the inline guard.
+
+### Reviewer protocol
+
+When the threat model requires a runtime guard:
+
+1. **Post `Changes Requested`**, even if a followup issue exists for the guard.
+2. **File the followup BEFORE posting the review comment** so the comment can cite `TechDebt: #N` cleanly.
+3. **Frame the ask as:** "Resolve inline; close the followup with the fixup SHA referenced from this PR." The followup is a tracking artifact, not a fix.
+4. **Approve only after** the inline guard lands. Acceptable shapes for the guard: env-gate that refuses-to-boot in prod, scheme whitelist, HTTPS-required-outside-test assertion, startup-time check that fails fast, URL-rewriter input validation.
+
+### What this rule applies to
+
+- Environment gates (prod/staging refuse-to-boot under override paths)
+- Scheme whitelists (`{http,https}` restrictions on user-controlled URLs)
+- HTTPS-required-outside-test assertions
+- Startup-time security assertions (boot fails if config is unsafe)
+- URL rewriters / proxy redirects (input validation)
+- Auth bypass flags (e.g., `OAUTH_PROVIDER_BASE_URL_OVERRIDE`-class knobs)
+
+Docstring warnings, code-comment cautions, and "remember to set X in prod" notes are NEVER sufficient for these.
+
+### What this rule does NOT apply to
+
+- Defense-in-depth hardening that doesn't change the threat surface
+- Log-level tuning, observability additions
+- Doc updates that describe existing behavior
+- Refactors that preserve threat model
+
+These are legitimate followups when the inline change is already safe.
+
+### Severity if violated
+
+- Reviewer Approves a PR with a deferred runtime guard, no inline safeguard: **severe** (silent regression window between merge and followup-fixup).
+- Implementer ships a knob without the guard, even if a followup is filed: **moderate** (the followup is paperwork; the threat surface is open until the guard lands).
+
+### Worked example
+
+`noorinalabs-user-service#77` (`OAUTH_PROVIDER_BASE_URL_OVERRIDE`, 2026-04-21). Reviewer filed followup #78 proposing a prod-environment guard + HTTPS-outside-test requirement, and posted `Changes Requested`. Mateo landed both inline in fixup `1104104`; #78 closed same day. Team-lead's verdict: "shipping the env-gate + HTTPS requirement inline rather than deferring to #78 was the right call." Deferring would have left a window where a prod misconfig could exfil `client_secret` via `/token` POSTs with no backstop.
