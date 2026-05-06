@@ -20,6 +20,39 @@ List all PRs merged to the wave's deployments branch:
 gh pr list --state merged --base "deployments/phase{N}/wave-{M}" --json number,title,author,body,mergedAt,reviews
 ```
 
+### 2.5. Status-counter verification (added P3W5 retro 2026-05-06)
+
+Before per-engineer assessment, verify the numeric counters in `cross-repo-status.json` against PR-level evidence. The counters are written at wrapup time and tend to drift — recompute them from the PR data gathered in Step 2 and surface drift before it propagates into the retro narrative.
+
+```bash
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Read claimed counters
+CLAIMED_PR_COUNT=$(jq -r ".wave_${M}_final_pr_count" "$REPO_ROOT/cross-repo-status.json")
+CLAIMED_CR_CYCLES=$(jq -r ".wave_${M}_changes_requested_cycles" "$REPO_ROOT/cross-repo-status.json")
+CLAIMED_CONCENTRATION=$(jq -r ".wave_${M}_top_concentration_pct" "$REPO_ROOT/cross-repo-status.json")
+
+# Recompute from Step-2 PR data (sum across all repos in scope)
+ACTUAL_PR_COUNT=...           # count of merged PRs across wave_${M}_repos_in_scope
+ACTUAL_CR_CYCLES=...           # count of comments where RequestOrReplied == "ChangesRequested"
+ACTUAL_CONCENTRATION=...       # max(PRs by single author) / total PRs, as integer percent
+
+# Surface drift
+if [ "$CLAIMED_PR_COUNT" != "$ACTUAL_PR_COUNT" ]; then
+  echo "DRIFT: wave_${M}_final_pr_count = $CLAIMED_PR_COUNT (claimed) vs $ACTUAL_PR_COUNT (actual)"
+fi
+# ... same for CR cycles, concentration
+```
+
+**Required handling per drift case:**
+
+1. **Counter mismatch ≤ ±2 or ≤ ±5%**: log the correction in the retro feedback_log entry under "Top 3 pain points" or "Orchestrator Needs Improvement", and rewrite the counter in `cross-repo-status.json` with a `wave_{N}_counter_corrections` array entry recording the (claimed, actual, corrected_at) triple.
+2. **Counter mismatch > ±2 or > ±5%**: surface as retro-blocker — investigate the wrapup-time arithmetic (likely a bug in `/wave-wrapup` step 7 or 10) before continuing the retro. File a follow-up issue against the wrapup skill.
+
+**Why:** P3W4 wrapup wrote `wave_4_top_concentration_pct: 22` when the actual was 80% (recomputed at retro). P3W5 wrapup wrote `wave_5_changes_requested_cycles: 6` when the actual was 4 (recomputed at retro). Same-class drift across two consecutive waves: wrapup-time counters are not being re-verified, and they are being narrated into retro language as if authoritative. Operationally, drifted counters distort the trust matrix and the wave-shape table — either the retro relies on the wrong numbers, or a separate recomputation pass quietly happens with no record of the mismatch.
+
+**Acceptance:** Step 3 (gather review comments) does not begin until every numeric counter in `wave_{M}_*` either matches the PR-level recomputation OR has a `wave_{M}_counter_corrections` entry recording the gap.
+
 ### 3. Gather review comments and CI data
 
 For each merged PR:

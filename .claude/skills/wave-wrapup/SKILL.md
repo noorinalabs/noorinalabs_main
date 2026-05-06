@@ -319,3 +319,42 @@ If the count is **0**, the repo had declared work that did not ship. Resolve the
 **Why:** P3W4 declared `noorinalabs-isnad-ingest-platform` in scope but shipped 0 PRs to its wave branch. The drop was invisible at wrap-time because no check enforced reconciliation — the wave closed with a silent scope discrepancy that surfaced only at retro. Operationally, silent drops compound across waves: by W3-of-N, the declared scope drifts arbitrarily far from delivered, and planning-vs-execution accuracy becomes unmeasurable.
 
 **Acceptance:** A wave-wrapup is not complete until every repo in `wave_{N}_repos_in_scope` has either ≥1 PR merged to its wave branch OR an explicit de-scope/carry-forward record. Run this check BEFORE the wave-merge ceremony.
+
+## Implementer-Substitution Reconciliation (added P3W5 retro 2026-05-06)
+
+Symmetric to § Scope-Drop Reconciliation, but for the inverted case: the declared implementer was replaced silently. Before closing a wave, reconcile **declared implementer vs actual PR author** for every PR merged to a wave branch.
+
+```bash
+# For each repo in scope, for each merged PR:
+for repo in $(jq -r ".wave_{M}_repos_in_scope[]" "$REPO_ROOT/cross-repo-status.json"); do
+  for pr in $(gh pr list --repo "noorinalabs/$repo" --state merged --base "deployments/phase-{N}/wave-{M}" --json number --jq '.[].number'); do
+    actual=$(gh pr view $pr --repo "noorinalabs/$repo" --json author --jq '.author.login')
+    branch=$(gh pr view $pr --repo "noorinalabs/$repo" --json headRefName --jq '.headRefName')
+    # Compare actual against wave_{M}_scope.tier_*[].implementer or .tier_*[].assignee for that issue.
+    # Branch prefix (e.g., "T.Mansour/...") is the cheap proxy when author is the github org bot.
+  done
+done
+```
+
+If the actual author (or branch-prefix initials) does not match the kickoff-declared implementer, the substitution must be recorded EXPLICITLY — silent swaps are not allowed.
+
+**Required record:** add an entry to `wave_{N}_decisions.implementer_substitutions` in `cross-repo-status.json`:
+
+```json
+{
+  "implementer_substitutions": [
+    {
+      "repo": "noorinalabs-data-acquisition",
+      "issue": "data-acquisition#36",
+      "declared": "Sofia Cardoso",
+      "actual": "Tarek Mansour",
+      "swapped_at": "2026-05-05T23:42:00Z",
+      "rationale": "<one-line reason — e.g., declared implementer unavailable; reassigned by Pipeline Mgr Dilara>"
+    }
+  ]
+}
+```
+
+**Why:** P3W5 declared Sofia Cardoso as the T1A #263 implementer for data-acquisition; the actual PR (data-acquisition#37) was authored by Tarek Mansour with no recorded swap rationale. Same shape as W4's ingest-platform silent-drop, just inverted (silent-substitution vs silent-zero-PR). Both are scope-drift with no audit trail. Operationally, silent substitutions compound the same way silent drops do: trust matrix updates apply to the wrong engineer (Sofia gets credit she didn't earn, Tarek's first wave PR is invisible at retro), and planning-vs-execution accuracy degrades.
+
+**Acceptance:** A wave-wrapup is not complete until every PR with a declared-vs-actual mismatch has either an entry in `wave_{N}_decisions.implementer_substitutions` OR an explicit acknowledgment that the swap is benign (e.g., orchestrator-class spawn doing implementer-class work — already covered by other discipline). Run this check BEFORE the wave-merge ceremony, in the same pass as § Scope-Drop Reconciliation.
