@@ -50,3 +50,41 @@ Phase 3 Wave 1 produced 11 distinct instances across 3 people in one wave, despi
 ### Aspiration: post-publish audit (no enforcement)
 
 The proactive variant — self-audit of own previously-published claims absent any external prompt — was demonstrated by no team member in Phase 3 Wave 1. Charter aspires to this discipline but does not mandate it. Easily becomes box-checking; the team's discipline portfolio is honestly named to include this gap.
+
+<!-- Promoted from memory: feedback_canonical_source_via_git_show.md (P3W5 retro 2026-05-06) -->
+
+## Canonical Source via `git show <sha>:<path>` (Mandatory) <!-- promotion-target: skill -->
+
+For any task that says "use the canonical version from commit X" or "sync from parent sha X", the worktree is **convenience**, not truth. Local `main` may not yet include `X` even if `origin/main` does. The git object database is the source of truth.
+
+### How to apply
+
+For any "sync from parent sha X" or "use the canonical version from commit X" task:
+
+1. **Confirm the sha exists locally:**
+   ```bash
+   git log --oneline --all | grep <sha>
+   ```
+2. **Check whether local `main` actually contains it:**
+   ```bash
+   git branch --contains <sha>
+   ```
+3. **Pull the file via `git show` regardless of worktree state:**
+   ```bash
+   git show <sha>:<path> > /tmp/canonical.<filename>
+   ```
+   Copy FROM `/tmp/canonical.<filename>`, not from the worktree.
+
+If steps 1 and 2 disagree (sha exists locally but `main` doesn't contain it), you have a stale local main. Either fetch + fast-forward first, OR use `git show <sha>:<path>` directly — never trust the worktree path for a "from sha X" sync.
+
+### Severity if violated
+
+Silently copying a worktree file when the task said "from sha X" is moderate when the divergence has no behavior change, severe when the divergence is a downgrade through a load-bearing merge (e.g., the noorinalabs-main#112 part-(b) PR-#186 sync that would have downgraded the validate_commit_identity hook past its `_load_merged_roster` design).
+
+### Why
+
+Worktree state can lag origin by arbitrary amounts (un-pulled merges, in-progress branches checked out, paused rebase). The cost of an extra `git show` invocation is negligible; the cost of silently downgrading a child repo past a load-bearing merge is moderate-to-severe. The discipline is asymmetric: never costly to apply, sometimes catastrophic to skip.
+
+### Worked example
+
+`noorinalabs-main#112` part (b): task description said PR #186 at sha `508b6cd` was on main. True for `origin/main`, but the local worktree was on an earlier commit (`615f4c8`) that did NOT include #186. Worktree's `validate_commit_identity.py` was the pre-#186 design (no `_load_merged_roster`); copying it forward to child repos would have silently downgraded them. `git show 508b6cd:.claude/hooks/validate_commit_identity.py` returned the correct 232-line post-#186 version.

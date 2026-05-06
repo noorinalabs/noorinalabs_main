@@ -2,6 +2,8 @@
 
 This file defines the charter rules that govern skill invocation, composition, and wave-lifecycle discipline. For skill authorship itself, see individual skill directories under `.claude/skills/`.
 
+<!-- Promoted from memory: feedback_honest_audit_over_conclusion_claim.md (P3W5 retro 2026-05-06). Already enforced via Hook 17 (validate_wave_audit) per hooks.md L169 — the dedicated provenance entry there is now mirrored to the source memory's superseded_by. -->
+
 ## Wave Lifecycle — Open-Item Audit <!-- promotion-target: hook -->
 
 Before any skill or agent claims a wave, workstream, or milestone is **"concluded"**, **"complete"**, or **"done"**, it MUST run a cross-repo open-item count for the active wave scope. The claim is only permitted if one of two conditions holds:

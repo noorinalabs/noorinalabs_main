@@ -286,3 +286,50 @@ Track instance count at each retro. If the count grows materially (e.g., crossed
 ### Why
 
 P3W1 saw ~4 Lucas-side message-ordering races plus ≥1 analogous Aisha-side instance, all professionally handled but each costing ~30s of attention overhead. None caused duplicate work or wrong-direction shipping. The narrow trigger captures the high-consequence variant (spawn duplication) without sacrificing the wave-throughput-positive implementer-anticipates-context discipline.
+
+<!-- Promoted from memory: feedback_child_repo_implementer_rule.md (P3W5 retro 2026-05-06) -->
+
+## Child-Repo Implementer Rule + Spawn-Brief Verification (Mandatory) <!-- promotion-target: hook -->
+
+When spawning an implementer for a PR or feature in a child repo, the implementer's identity (`user.name` + `user.email`) MUST come from **that child repo's** team roster (`<child>/.claude/team/roster/` and `<child>/.claude/team/roster.json`) — NOT from the parent's org-level coordination team and NOT from a sibling repo's roster.
+
+### Why
+
+Hook 5 (`validate_commit_identity`) scans the working repo's `roster.json` and BLOCKS commits whose `user.name` isn't a roster member. Per the enforcement-hierarchy principle (hook > skill > charter), the hook is the binding source of truth — a wrong-roster spawn will fail at first commit, costing a respawn cycle. Each child repo has its own simulated team with its own role fit; cross-roster authorship is a category error the hook catches.
+
+### Orchestrator-side spawn-brief checklist
+
+Before authoring an implementer spawn brief for a child-repo issue:
+
+1. **Determine working repo for the change.** Read the issue body. Note that **issue location ≠ working repo** (e.g., a `noorinalabs-deploy` issue body may say the changes go in `noorinalabs-landing-page`). The repo that hosts the FILES the implementer will edit is the working repo.
+2. **Read that repo's roster.** `cat <working-repo>/.claude/team/roster.json` or list `<working-repo>/.claude/team/roster/`.
+3. **Pick a roster member with role fit** for the change class (frontend Dockerfile → frontend engineer; CI workflow → devops/platform engineer; security/CVE → security engineer; observability config → observability engineer; etc.).
+4. **In the spawn brief, set the implementer's identity to that roster member's `user.name` + `user.email`.**
+5. **Reviewer assignment is a separate decision.** Cross-team reviewer is OK (e.g., parent / sibling-team reviewer reading a child-repo PR). Don't conflate REVIEWER class with IMPLEMENTER class — see § Role-Class-Specific Boundaries elsewhere in charter for the distinction.
+
+### Per-repo implementer pools (verify at spawn time — these snapshots may drift)
+
+- `noorinalabs-deploy`: Lucas Ferreira, Aisha Idrissi, Bereket Tadesse, Weronika Zielinska, Nino Kavtaradze, others
+- `noorinalabs-isnad-graph`: Idris Yusuf, Linh Pham, Anya Kowalczyk, Mateo Salazar, others
+- `noorinalabs-user-service`: Mateo Salazar, Anya Kowalczyk, others
+- `noorinalabs-landing-page`: Anika Diop-Sarr, Cédric Novák, Kofi Mensah-Williams, Marcia Vasquez-Paredes, Nazia Rahman
+- `noorinalabs-main` (parent): Wanjiku Mwangi (TPM), Aino Virtanen (Standards), Santiago Ferreira (RC), Nadia Khoury (PD)
+- `noorinalabs-design-system`, `noorinalabs-data-acquisition`, `noorinalabs-isnad-ingest-platform`: per-repo rosters
+
+The verbatim canonical roster lives in each child repo's `.claude/team/roster.json` — read that at spawn time, not this snapshot.
+
+### Exceptions
+
+- **User explicitly directs otherwise** in a given session ("have Lucas do the landing-page work" overrides). Hook would still block; user would need to register the agent in the target roster first or accept the block.
+- **Child repo has no `.claude/team/` defined yet** — check recent git history for de-facto implementer (`git log --format='%an' -- <path>`) and match, or ask the user before defaulting.
+
+### Severity if violated
+
+Wrong-roster spawn (hook-blocked at first commit, respawn required): minor — auto-corrected by Hook 5; cost is one wasted Aino-spawn. Wrong-roster spawn that bypasses Hook 5 (e.g., committed via a different mechanism that escapes the hook): moderate — the child-repo's role-fit signal is corrupted in git history.
+
+### Failure modes seen and what blocked them
+
+| Date | Surface | What went wrong | What blocked it |
+|---|---|---|---|
+| 2026-04-22 | child-repo#139 prereqs | Deferred-under-misread of user intent | Owner correction next turn |
+| 2026-05-03 | P3W3 deploy#242 spawn brief | Spawned Lucas Ferreira (deploy roster) for landing-page work; conflated reviewer-class permission with implementer-class | Hook 5 blocked Lucas-242's first commit; Lucas-242 surfaced charter Pattern B catch (verify-vs-artifact: roster.json) and recommended Kofi from landing-page roster |
