@@ -200,10 +200,10 @@
       "tracked_at": "2026-04-16T21:36:05.052302+00:00"
     },
     "cross-repo-status.json": {
-      "last_tracked": "f4076e82e881364da9c9c167bcc21acb6c314962c742ce65fe9c622432b34c5b",
-      "last_resolved": "777badd0013b60c9bd302e947d4ca0d63372d08a8f03acd539df78a192763c9a",
-      "tracked_at": "2026-05-05T21:54:42.989705+00:00",
-      "resolved_at": "2026-05-04T02:51:53.699155Z"
+      "last_tracked": "7b955ebee85480b62c226122521f664af7cfdf053fd9eb35d62b8e4ea989d772",
+      "last_resolved": "7b955ebee85480b62c226122521f664af7cfdf053fd9eb35d62b8e4ea989d772",
+      "tracked_at": "2026-05-06T00:42:53.818666+00:00",
+      "resolved_at": "2026-05-06T00:49:39.816328+00:00"
     },
     "dependencies.yml": {
       "last_resolved": "f4b53ffd3e1f81e055130ae2f53ff08ba9b5f651782434bbf3ac8b3eab4276e8",
@@ -645,9 +645,9 @@
     },
     ".claude/team/promotion_audit_log/wave-4.md": {
       "last_tracked": "1bfd9875b711b475c4b25d26eb79895346777f36024816efac64be444273c33b",
-      "last_resolved": "",
+      "last_resolved": "1bfd9875b711b475c4b25d26eb79895346777f36024816efac64be444273c33b",
       "tracked_at": "2026-05-05T21:54:00.789969+00:00",
-      "resolved_at": ""
+      "resolved_at": "2026-05-06T00:49:39.816328+00:00"
     }
   },
   "last_cleanup": {
