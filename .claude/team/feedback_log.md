@@ -1699,7 +1699,7 @@ No memory crossed `retro_citations >= threshold` AND `promotion_target != none`.
 | Repos in scope | 8 declared (main + all 7 child repos) — **8 produced PRs** (zero-PR-repos: 0) |
 | PRs merged into wave branches | **11** (main: 4; isnad-graph: 1; user-service: 1; design-system: 1; data-acquisition: 1; ingest-platform: 1; deploy: 1; landing-page: 1) |
 | CI failures across all 11 PRs | **0** |
-| Admin overrides at wave-merge | **0** (3rd consecutive zero-override wave: W3=5/5 → W4=0 → W5=0) |
+| Admin overrides at wave-merge | **0** (2nd consecutive zero-override wave: W3=5/5 → W4=0 → W5=0) |
 | ChangesRequested cycles | 4 observable (main#276: 2 [Wanjiku+Nadia]; isnad-graph#861: 2 [Anya+Arjun]) — `cross-repo-status.json` counter says 6, discrepancy noted in pain points |
 | Top-implementer concentration | **3 / 11 = 27%** (Aino) — well below the 40% kickoff cap and the 60% retro-flag threshold; **down from W4's 80%** (W4 retro action item #2 fully discharged) |
 | Issues closed in wave | 11 declared (main#267, #273, #269, #271; isnad-graph#860; user-service#95; design-system#65; data-acquisition#36; ingest-platform#14; deploy#270; landing-page#78) |

@@ -65,10 +65,12 @@ for k in sorted(c): print(f'{k}: {c[k]}')
 "
 ```
 
-Expected:
+Expected (snapshot at audit run-time 2026-05-06T00:58:43Z):
 ```
 ALREADY-PROMOTED: 1
 AUTO: 5
 KEPT: 52
 SUPERSEDED: 11
 ```
+
+**Re-run note:** This snapshot reflects state immediately before PR #282 (charter codification) landed. After #282 merges, the 5 AUTO memories acquire `superseded_by:` frontmatter and re-running this recipe will produce `0 AUTO / 16 SUPERSEDED` (the 5 AUTO transition to SUPERSEDED). That is expected post-promotion behavior — the audit is byte-deterministic given fixed input state, but the input state changes when promotions land. To reproduce the wave-5 audit exactly, run against the tree state at the audit timestamp (use `git show` on `.claude/team/charter/` and the memory directory at the wave-5 wrapup sha).
