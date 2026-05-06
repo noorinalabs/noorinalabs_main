@@ -1,4 +1,6 @@
 {
+  "wave_6_scope_reconciled_at": "2026-05-06T02:36:55Z",
+  "wave_6_scope_reconciliation_note": "Manual /wave-scope run post-#274 close. Declared 11 unique refs across 4 tiers + 1 tracking-only mention; labeled 0 (p3-wave-6 label not yet created — kickoff Step 7 owns label creation/application per W5 precedent). All 5 W5→W6 carry-forwards folded into meta-body; no W6 memory must-includes filed; zero drift between declared and labeled state.",
   "wave_active": false,
   "current_wave": null,
   "next_wave": "wave-6",
